@@ -48,7 +48,6 @@ public class ZhiHuFetcher {
 				.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
 		connectionManager = new PoolingHttpClientConnectionManager(req);
 		connectionManager.setDefaultMaxPerRoute(100);
-
 	}
 
 	public CloseableHttpClient getClient() {
@@ -65,6 +64,10 @@ public class ZhiHuFetcher {
 	}
 
 	public HttpClientContext getContext() {
+		return generateContext();
+	}
+
+	private HttpClientContext generateContext() {
 		HttpClientContext context = null;
 		context = HttpClientContext.create();
 		Registry<CookieSpecProvider> registry = RegistryBuilder.<CookieSpecProvider> create()
