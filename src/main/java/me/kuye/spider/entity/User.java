@@ -1,6 +1,8 @@
 package me.kuye.spider.entity;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
 
 	private String location;
 	private String business;

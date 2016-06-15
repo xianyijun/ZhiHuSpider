@@ -33,8 +33,8 @@ public class ZhiHuSpider {
 		ProcessThreadPoolExecutor processThreadPoolExecutor = new ProcessThreadPoolExecutor(3, 5, 5, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardOldestPolicy());
 		HttpGet request = new HttpGet(startUrl);
-		downloadThreadPoolExecutor.execute(new DownloadTask(request, STORAGE, context, client, processThreadPoolExecutor,
-				downloadThreadPoolExecutor));
+		downloadThreadPoolExecutor.execute(new DownloadTask(request, STORAGE, context, client,
+				processThreadPoolExecutor, downloadThreadPoolExecutor));
 		ThreadPoolMonitor processThradPoolMonitor = new ThreadPoolMonitor(processThreadPoolExecutor, "解析页面线程池");
 		ThreadPoolMonitor downloadThreadPoolMonitor = new ThreadPoolMonitor(downloadThreadPoolExecutor, "下载页面线程池");
 		new Thread(processThradPoolMonitor).start();
