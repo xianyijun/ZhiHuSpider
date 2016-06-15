@@ -9,7 +9,7 @@ import me.kuye.spider.entity.User;
 
 public class ResultItem {
 	private Set<String> urlSet = new ConcurrentSkipListSet<String>();
-	private Queue<User> userList = new ConcurrentLinkedQueue<User>();
+	private Queue<User> userQueue = new ConcurrentLinkedQueue<User>();
 
 	public ResultItem() {
 	}
@@ -22,12 +22,12 @@ public class ResultItem {
 		this.urlSet = urlSet;
 	}
 
-	public Queue<User> getUserList() {
-		return userList;
+	public Queue<User> getUserQueue() {
+		return userQueue;
 	}
 
-	public void setUserList(Queue<User> userList) {
-		this.userList = userList;
+	public void setUserQueue(Queue<User> userQueue) {
+		this.userQueue = userQueue;
 	}
 
 }

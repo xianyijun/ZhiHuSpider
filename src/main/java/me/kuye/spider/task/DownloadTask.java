@@ -14,29 +14,26 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.executor.StatisticsThreadPoolExecutor;
+import me.kuye.spider.executor.ProcessThreadPoolExecutor;
 import me.kuye.spider.pipeline.Storage;
 
-public class FetchTask implements Runnable {
-	private static Logger logger = LoggerFactory.getLogger(FetchTask.class);
-	private static AtomicLong downloadPageCount = new AtomicLong();
+public class DownloadTask implements Runnable {
+	private static Logger logger = LoggerFactory.getLogger(DownloadTask.class);
+	public static AtomicLong downloadPageCount = new AtomicLong();
 	private HttpGet request = null;
-	private Storage storage;
+	private final Storage storage;
 	private HttpClientContext context;
 	private CloseableHttpClient client;
-	private StatisticsThreadPoolExecutor statisticsThreadPoolExecutor;
+	private ProcessThreadPoolExecutor processThreadPoolExecutor;
 	private ThreadPoolExecutor downloadThreadPoolExecutor;
 
-	public FetchTask() {
-	}
-
-	public FetchTask(HttpGet request, Storage storage, HttpClientContext context, CloseableHttpClient client,
-			StatisticsThreadPoolExecutor statisticsThreadPoolExecutor, ThreadPoolExecutor downloadThreadPoolExecutor) {
+	public DownloadTask(HttpGet request, Storage storage, HttpClientContext context, CloseableHttpClient client,
+			ProcessThreadPoolExecutor processThreadPoolExecutor, ThreadPoolExecutor downloadThreadPoolExecutor) {
 		this.request = request;
 		this.storage = storage;
 		this.context = context;
 		this.client = client;
-		this.statisticsThreadPoolExecutor = statisticsThreadPoolExecutor;
+		this.processThreadPoolExecutor = processThreadPoolExecutor;
 		this.downloadThreadPoolExecutor = downloadThreadPoolExecutor;
 	}
 
@@ -58,12 +55,12 @@ public class FetchTask implements Runnable {
 				downloadPageCount.incrementAndGet();
 				String content = EntityUtils.toString(response.getEntity());
 				storage.push(content);
-				downloadThreadPoolExecutor.execute(new ProcessorTask(storage, client, context,
-						statisticsThreadPoolExecutor, downloadThreadPoolExecutor));
+				processThreadPoolExecutor.execute(new ProcessorTask(storage, client, context,
+						processThreadPoolExecutor, downloadThreadPoolExecutor));
 			} else if (statusCode == 500 || statusCode == 502 || statusCode == 504) {
 				Thread.sleep(1000);
-				statisticsThreadPoolExecutor.execute(new FetchTask(request, storage, context, client,
-						statisticsThreadPoolExecutor, downloadThreadPoolExecutor));
+				downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
+						processThreadPoolExecutor, downloadThreadPoolExecutor));
 				return;
 			}
 		} catch (ClientProtocolException e) {

@@ -27,7 +27,7 @@ public class Storage {
 			e.printStackTrace();
 			logger.info(" throws InterruptedException", e);
 		}
-		logger.info(" add item successful , the queue size : " + resultQueue.size());
+		logger.info(" add the  page successful , the queue size : " + resultQueue.size());
 	}
 
 	public String pop() {
@@ -38,15 +38,8 @@ public class Storage {
 			e.printStackTrace();
 			logger.info(" throws InterruptedException", e);
 		}
+		logger.info(" pop the  page successful, the queue size : " + resultQueue.size());
 		return item;
-	}
-
-	public BlockingQueue<String> getResultQueue() {
-		return resultQueue;
-	}
-
-	public void setResultQueue(BlockingQueue<String> resultQueue) {
-		this.resultQueue = resultQueue;
 	}
 
 	public ResultItem getResultItem() {
@@ -55,5 +48,13 @@ public class Storage {
 
 	public void setResultItem(ResultItem resultItem) {
 		this.resultItem = resultItem;
+	}
+
+	public Logger getLogger() {
+		return logger;
+	}
+
+	public BlockingQueue<String> getResultQueue() {
+		return resultQueue;
 	}
 }
