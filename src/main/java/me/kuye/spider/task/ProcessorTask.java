@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.kuye.spider.dao.UserDao;
 import me.kuye.spider.entity.User;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
 import me.kuye.spider.pipeline.Storage;
@@ -29,6 +30,7 @@ public class ProcessorTask implements Runnable {
 	private ThreadPoolExecutor downloadThreadPoolExecutor;
 	public static AtomicLong userCount = new AtomicLong();
 	public static AtomicLong pageCount = new AtomicLong();
+	private UserDao userDao = new UserDao();
 
 	public ProcessorTask(Storage storage, CloseableHttpClient client, HttpClientContext context,
 			ProcessThreadPoolExecutor processThreadPoolExecutor, ThreadPoolExecutor downloadThreadPoolExecutor) {
@@ -50,8 +52,10 @@ public class ProcessorTask implements Runnable {
 				user = parseUserDetail(document);
 				logger.info(user.toString());
 				userCount.getAndIncrement();
-				storage.getResultItem().getUserQueue().add(user);
-				logger.info("当前已经添加用户数: " + userCount);
+				if (userDao.save(user)) {
+					storage.getResultItem().getUserQueue().add(user);
+					logger.info("当前已经添加用户数: " + userCount);
+				}
 				// https://www.zhihu.com/node/ProfileFolloweesListV2?method=next&params=%7B%22offset%22%3A20%2C%22order_by%22%3A%22created%22%2C%22hash_id%22%3A%229f6bd38abce3e6783f6aca46f0939e33%22%7D&_xsrf=7d97966cb8f4291e6992caed26e50f10
 				for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
 					String url = "https://www.zhihu.com/node/ProfileFolloweesListV2?params={%22offset%22:" + 20 * i
@@ -108,13 +112,12 @@ public class ProcessorTask implements Runnable {
 		user.setThanks(Integer.valueOf(document.select(".zm-profile-header-user-thanks strong").first().text()));
 		user.setFollowees(Integer.valueOf(document.select(".zm-profile-side-following strong").first().text()));
 		user.setFollowers(Integer.valueOf(document.select(".zm-profile-side-following strong").get(1).text()));
-		String hashId = "";
 		try {
-			hashId = document.select("zm-profile-header-op-btns.clearfix button").first().attr("data-id");
+			user.setHashId(document.select(".zm-profile-header-op-btns.clearfix button").first().attr("data-id"));
 		} catch (NullPointerException e) {
-			hashId = "9f6bd38abce3e6783f6aca46f0939e33";
+			user.setHashId("9f6bd38abce3e6783f6aca46f0939e33");
+			e.printStackTrace();
 		}
-		user.setHashId(hashId);
 		return user;
 	}
 

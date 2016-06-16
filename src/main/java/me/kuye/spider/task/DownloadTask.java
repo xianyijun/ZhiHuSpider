@@ -55,8 +55,8 @@ public class DownloadTask implements Runnable {
 				downloadPageCount.incrementAndGet();
 				String content = EntityUtils.toString(response.getEntity());
 				storage.push(content);
-				processThreadPoolExecutor.execute(new ProcessorTask(storage, client, context,
-						processThreadPoolExecutor, downloadThreadPoolExecutor));
+				processThreadPoolExecutor.execute(new ProcessorTask(storage, client, context, processThreadPoolExecutor,
+						downloadThreadPoolExecutor));
 			} else if (statusCode == 500 || statusCode == 502 || statusCode == 504) {
 				Thread.sleep(1000);
 				downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
@@ -73,7 +73,7 @@ public class DownloadTask implements Runnable {
 			e.printStackTrace();
 			logger.info(" InterruptedException ", e);
 		} finally {
-			if (response.getEntity() != null) {
+			if (response != null && response.getEntity() != null) {
 				try {
 					request.releaseConnection();
 					response.getEntity().getContent().close();
