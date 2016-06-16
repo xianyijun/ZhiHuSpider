@@ -1,6 +1,5 @@
 package me.kuye.spider.executor;
 
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -9,9 +8,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.ZhiHuSpider;
-import me.kuye.spider.entity.User;
-import me.kuye.spider.pipeline.Storage;
 import me.kuye.spider.task.DownloadTask;
 import me.kuye.spider.task.ProcessorTask;
 
@@ -32,8 +28,5 @@ public class ProcessThreadPoolExecutor extends ThreadPoolExecutor {
 		logger.info("耗费时间 : " + (endTime - startTime) + "ms");
 		logger.info(" the userCount : " + ProcessorTask.userCount + "  the processPageCount : "
 				+ ProcessorTask.pageCount + "  the theDownloadPageCount :" + DownloadTask.downloadPageCount);
-		Storage storage = ZhiHuSpider.STORAGE;
-		Queue<User> userQueue = storage.getResultItem().getUserQueue();
-		System.err.println(" the user queue count :" + userQueue.size());
 	}
 }

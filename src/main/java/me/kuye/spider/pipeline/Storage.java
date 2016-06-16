@@ -27,7 +27,6 @@ public class Storage {
 			e.printStackTrace();
 			logger.info(" throws InterruptedException", e);
 		}
-		logger.info(" add the  page successful , the queue size : " + resultQueue.size());
 	}
 
 	public String pop() {
@@ -38,7 +37,6 @@ public class Storage {
 			e.printStackTrace();
 			logger.info(" throws InterruptedException", e);
 		}
-		logger.info(" pop the  page successful, the queue size : " + resultQueue.size());
 		return item;
 	}
 

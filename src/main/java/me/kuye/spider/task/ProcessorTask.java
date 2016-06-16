@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.kuye.spider.dao.UrlItemDao;
 import me.kuye.spider.dao.UserDao;
 import me.kuye.spider.entity.User;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
@@ -31,6 +32,7 @@ public class ProcessorTask implements Runnable {
 	public static AtomicLong userCount = new AtomicLong();
 	public static AtomicLong pageCount = new AtomicLong();
 	private UserDao userDao = new UserDao();
+	private UrlItemDao urlItemDao = new UrlItemDao();
 
 	public ProcessorTask(Storage storage, CloseableHttpClient client, HttpClientContext context,
 			ProcessThreadPoolExecutor processThreadPoolExecutor, ThreadPoolExecutor downloadThreadPoolExecutor) {
@@ -79,10 +81,7 @@ public class ProcessorTask implements Runnable {
 
 	private void handleUrl(String url) {
 		String md5Url = MD5Util.MD5Encode(url);
-		if (storage.getResultItem().getUrlSet().contains(md5Url)) {
-			logger.info(url + " 链接已经解析过了 :");
-		} else if (storage.getResultItem().getUrlSet().add(md5Url)
-				|| downloadThreadPoolExecutor.getQueue().size() <= 50) {
+		if (urlItemDao.add(md5Url) || downloadThreadPoolExecutor.getQueue().size() <= 50) {
 			if (processThreadPoolExecutor.getQueue().size() <= 100) {
 				HttpGet request = null;
 				try {
@@ -93,6 +92,8 @@ public class ProcessorTask implements Runnable {
 					e.printStackTrace();
 				}
 			}
+		} else {
+			logger.info(url + " 链接已经解析过了 :");
 		}
 	}
 

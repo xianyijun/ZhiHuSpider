@@ -40,7 +40,7 @@ public class ZhiHuSpider {
 		new Thread(processThradPoolMonitor).start();
 		new Thread(downloadThreadPoolMonitor).start();
 		while (true) {
-			if (ProcessorTask.userCount.longValue() > 20L) {
+			if (ProcessorTask.userCount.longValue() > 1000L) {
 				downloadThreadPoolExecutor.shutdown();
 				if (downloadThreadPoolExecutor.isTerminated() && STORAGE.getResultQueue().size() == 0) {
 					processThreadPoolExecutor.shutdown();
