@@ -54,9 +54,11 @@ public class ProcessorTask implements Runnable {
 				user = parseUserDetail(document);
 				logger.info(user.toString());
 				userCount.getAndIncrement();
-				if (userDao.save(user)) {
+				if ((!userDao.exist(user.getHashId())) && userDao.save(user)) {
 					storage.getResultItem().getUserQueue().add(user);
 					logger.info("当前已经添加用户数: " + userCount);
+				} else {
+					logger.info("当用户已经添加过了" + user);
 				}
 				// https://www.zhihu.com/node/ProfileFolloweesListV2?method=next&params=%7B%22offset%22%3A20%2C%22order_by%22%3A%22created%22%2C%22hash_id%22%3A%229f6bd38abce3e6783f6aca46f0939e33%22%7D&_xsrf=7d97966cb8f4291e6992caed26e50f10
 				for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
@@ -85,10 +87,12 @@ public class ProcessorTask implements Runnable {
 			if (processThreadPoolExecutor.getQueue().size() <= 100) {
 				HttpGet request = null;
 				try {
+					//防止知乎反爬策略，访问频率太快
+					Thread.sleep(1000);
 					request = new HttpGet(url);
 					downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
 							processThreadPoolExecutor, downloadThreadPoolExecutor));
-				} catch (IllegalArgumentException e) {
+				} catch (IllegalArgumentException | InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
@@ -106,9 +110,13 @@ public class ProcessorTask implements Runnable {
 		user.setPosition((getUserInfo(document, UserInfo.POSITION)));
 		user.setEducation(getUserInfo(document, UserInfo.EDUCATION));
 		user.setEducationExtra(getUserInfo(document, UserInfo.EDUCATION_EXTRA));
-		user.setUserName(document.select(".title-section.ellipsis a").first().text());
-		user.setUserUrl(Constant.ZHIHU_URL + document.select(".title-section.ellipsis a").first().attr("href"));
-
+		try {
+			user.setUserName(document.select(".title-section.ellipsis a").first().text());
+			user.setUserUrl(Constant.ZHIHU_URL + document.select(".title-section.ellipsis a").first().attr("href"));
+		} catch (NullPointerException e) {
+			logger.info("NullPointerException", e);
+			logger.info(document.toString());
+		}
 		user.setAgree(Integer.valueOf(document.select(".zm-profile-header-user-agree strong").first().text()));
 		user.setThanks(Integer.valueOf(document.select(".zm-profile-header-user-thanks strong").first().text()));
 		user.setFollowees(Integer.valueOf(document.select(".zm-profile-side-following strong").first().text()));
@@ -117,7 +125,6 @@ public class ProcessorTask implements Runnable {
 			user.setHashId(document.select(".zm-profile-header-op-btns.clearfix button").first().attr("data-id"));
 		} catch (NullPointerException e) {
 			user.setHashId("9f6bd38abce3e6783f6aca46f0939e33");
-			e.printStackTrace();
 		}
 		return user;
 	}

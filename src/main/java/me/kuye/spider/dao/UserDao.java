@@ -6,8 +6,9 @@ import me.kuye.spider.entity.User;
 
 public class UserDao extends RedisBaseDao<User> {
 	private static final String USER_KEY = "user";
-	private static final String USER_INC_KEY = "user:inc";
 	private static final String NAMESPACE_SPERATOR = ":";
+	private static final String USER_INC_KEY = USER_KEY + NAMESPACE_SPERATOR + "incr";
+	private static final String USER_HASH_ID_KEY = USER_KEY + NAMESPACE_SPERATOR + "hashId";
 
 	public boolean save(User user) {
 		String key = USER_KEY + NAMESPACE_SPERATOR + generateNextId(USER_INC_KEY);
@@ -23,8 +24,7 @@ public class UserDao extends RedisBaseDao<User> {
 	}
 
 	public boolean exist(String hashId) {
-		String key = "user:" + hashId;
-		return redisManager.exists(key);
+		return redisManager.sismember(USER_HASH_ID_KEY, hashId);
 	}
 
 	private Long generateNextId(String key) {

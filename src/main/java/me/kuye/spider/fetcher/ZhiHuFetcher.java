@@ -1,5 +1,6 @@
 package me.kuye.spider.fetcher;
 
+import org.apache.http.HttpHost;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -54,11 +55,15 @@ public class ZhiHuFetcher {
 		return generateClient();
 	}
 
+	// TODO
 	private CloseableHttpClient generateClient() {
+
 		HttpClientBuilder builder = HttpClients.custom().setConnectionManager(connectionManager);
 		builder.setUserAgent(Constant.DEFAULT_USER_AGENT);
+		HttpHost proxy = new HttpHost("175.152.210.39", 8090);
 		SocketConfig socketConfig = SocketConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).build();
-		RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+		RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy)
+				.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 		builder.setDefaultSocketConfig(socketConfig).setDefaultRequestConfig(requestConfig);
 		return builder.build();
 	}

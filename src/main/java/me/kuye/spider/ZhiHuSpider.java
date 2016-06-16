@@ -24,11 +24,11 @@ public class ZhiHuSpider {
 		CloseableHttpClient client = ZhiHuFetcher.getInstance().getClient();
 		HttpClientContext context = ZhiHuFetcher.getInstance().getContext();
 		context.setCookieStore((CookieStore) LoginCookiesHelper.antiSerializeCookies("/cookies"));
-		download("https://www.zhihu.com/people/ku-xie-wei-diao-ling/followees", client, context);
+		download("https://www.zhihu.com/people/sun_lei/followees", client, context);
 	}
 
 	public static void download(String startUrl, CloseableHttpClient client, HttpClientContext context) {
-		ThreadPoolExecutor downloadThreadPoolExecutor = new ThreadPoolExecutor(5, 10, 3, TimeUnit.SECONDS,
+		ThreadPoolExecutor downloadThreadPoolExecutor = new ThreadPoolExecutor(5, 5, 3, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardOldestPolicy());
 		ProcessThreadPoolExecutor processThreadPoolExecutor = new ProcessThreadPoolExecutor(3, 5, 5, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardOldestPolicy());
