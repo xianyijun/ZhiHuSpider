@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import me.kuye.spider.entity.User;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
 import me.kuye.spider.pipeline.Storage;
+import me.kuye.spider.pipeline.mongo.UserMongoDao;
 import me.kuye.spider.pipeline.redis.UrlItemDao;
-import me.kuye.spider.pipeline.redis.UserRedisDao;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.MD5Util;
 import me.kuye.spider.util.UserInfo;
@@ -31,7 +31,7 @@ public class ProcessorTask implements Runnable {
 	private ThreadPoolExecutor downloadThreadPoolExecutor;
 	public static AtomicLong userCount = new AtomicLong();
 	public static AtomicLong pageCount = new AtomicLong();
-	private UserRedisDao userDao = new UserRedisDao();
+	private UserMongoDao userDao = new UserMongoDao();
 	private UrlItemDao urlItemDao = new UrlItemDao();
 
 	public ProcessorTask(Storage storage, CloseableHttpClient client, HttpClientContext context,
@@ -58,7 +58,7 @@ public class ProcessorTask implements Runnable {
 					storage.getResultItem().getUserQueue().add(user);
 					logger.info("当前已经添加用户数: " + userCount);
 				} else {
-//					logger.info("当用户已经添加过了" + user);
+					// logger.info("当用户已经添加过了" + user);
 				}
 				// https://www.zhihu.com/node/ProfileFolloweesListV2?method=next&params=%7B%22offset%22%3A20%2C%22order_by%22%3A%22created%22%2C%22hash_id%22%3A%229f6bd38abce3e6783f6aca46f0939e33%22%7D&_xsrf=7d97966cb8f4291e6992caed26e50f10
 				for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
@@ -87,8 +87,8 @@ public class ProcessorTask implements Runnable {
 			if (processThreadPoolExecutor.getQueue().size() <= 100) {
 				HttpGet request = null;
 				try {
-					//防止知乎反爬策略，访问频率太快
-//					Thread.sleep(1000);
+					// 防止知乎反爬策略，访问频率太快
+					// Thread.sleep(1000);
 					request = new HttpGet(url);
 					downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
 							processThreadPoolExecutor, downloadThreadPoolExecutor));
@@ -97,7 +97,7 @@ public class ProcessorTask implements Runnable {
 				}
 			}
 		} else {
-//			logger.info(url + " 链接已经解析过了 :");
+			// logger.info(url + " 链接已经解析过了 :");
 		}
 	}
 

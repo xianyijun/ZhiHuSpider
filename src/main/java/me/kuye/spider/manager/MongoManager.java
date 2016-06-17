@@ -60,10 +60,7 @@ public class MongoManager {
 
 	public boolean insertOne(String collectionName, Document document) {
 		try {
-			long startTime = System.currentTimeMillis();
 			getCollection(collectionName).insertOne(document);
-			;
-			logger.info("cost time :" + (System.currentTimeMillis() - startTime));
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -153,7 +150,7 @@ public class MongoManager {
 		return list;
 	}
 
-	public Document finyOne(String collectionName) {
+	public Document findOne(String collectionName) {
 		return getCollection(collectionName).find().first();
 	}
 
