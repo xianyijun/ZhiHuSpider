@@ -30,7 +30,7 @@ public class ZhiHuSpider {
 	public static void download(String startUrl, CloseableHttpClient client, HttpClientContext context) {
 		ThreadPoolExecutor downloadThreadPoolExecutor = new ThreadPoolExecutor(5, 5, 3, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardOldestPolicy());
-		ProcessThreadPoolExecutor processThreadPoolExecutor = new ProcessThreadPoolExecutor(3, 5, 5, TimeUnit.SECONDS,
+		ProcessThreadPoolExecutor processThreadPoolExecutor = new ProcessThreadPoolExecutor(1, 3, 5, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardOldestPolicy());
 		HttpGet request = new HttpGet(startUrl);
 		downloadThreadPoolExecutor.execute(new DownloadTask(request, STORAGE, context, client,
@@ -40,7 +40,7 @@ public class ZhiHuSpider {
 		new Thread(processThradPoolMonitor).start();
 		new Thread(downloadThreadPoolMonitor).start();
 		while (true) {
-			if (ProcessorTask.userCount.longValue() > 1000L) {
+			if (ProcessorTask.userCount.longValue() > 1000000L) {
 				downloadThreadPoolExecutor.shutdown();
 				if (downloadThreadPoolExecutor.isTerminated() && STORAGE.getResultQueue().size() == 0) {
 					processThreadPoolExecutor.shutdown();

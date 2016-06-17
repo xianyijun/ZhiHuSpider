@@ -88,11 +88,11 @@ public class ProcessorTask implements Runnable {
 				HttpGet request = null;
 				try {
 					//防止知乎反爬策略，访问频率太快
-					Thread.sleep(1000);
+//					Thread.sleep(1000);
 					request = new HttpGet(url);
 					downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
 							processThreadPoolExecutor, downloadThreadPoolExecutor));
-				} catch (IllegalArgumentException | InterruptedException e) {
+				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				}
 			}

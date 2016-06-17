@@ -73,18 +73,16 @@ public class DownloadTask implements Runnable {
 			e.printStackTrace();
 			logger.info(" InterruptedException ", e);
 		} finally {
-			if (response != null && response.getEntity() != null) {
-				try {
-					request.releaseConnection();
-					response.getEntity().getContent().close();
-				} catch (UnsupportedOperationException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (response.getStatusLine().getStatusCode() != 200) {
+			if (response != null && response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 				request.abort();
+				if (response.getEntity() != null) {
+					try {
+						request.releaseConnection();
+						EntityUtils.consumeQuietly(response.getEntity());
+					} catch (UnsupportedOperationException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}

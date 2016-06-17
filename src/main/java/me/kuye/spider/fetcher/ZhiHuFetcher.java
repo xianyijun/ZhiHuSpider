@@ -57,12 +57,13 @@ public class ZhiHuFetcher {
 
 	// TODO
 	private CloseableHttpClient generateClient() {
-
+		HttpHost proxy = new HttpHost("112.122.219.96", 8118, "http");
 		HttpClientBuilder builder = HttpClients.custom().setConnectionManager(connectionManager);
-		builder.setUserAgent(Constant.DEFAULT_USER_AGENT);
-		HttpHost proxy = new HttpHost("175.152.210.39", 8090);
+		// builder.setUserAgent(Constant.DEFAULT_USER_AGENT);
 		SocketConfig socketConfig = SocketConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).build();
-		RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy)
+		//设置请求超时，使用代理的话应该配置时间长
+		RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy).setConnectTimeout(15000)
+				.setSocketTimeout(15000).setConnectionRequestTimeout(15000)
 				.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 		builder.setDefaultSocketConfig(socketConfig).setDefaultRequestConfig(requestConfig);
 		return builder.build();
