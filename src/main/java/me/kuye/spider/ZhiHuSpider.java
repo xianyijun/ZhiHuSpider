@@ -37,8 +37,8 @@ public class ZhiHuSpider {
 				processThreadPoolExecutor, downloadThreadPoolExecutor));
 		ThreadPoolMonitor processThradPoolMonitor = new ThreadPoolMonitor(processThreadPoolExecutor, "解析页面线程池");
 		ThreadPoolMonitor downloadThreadPoolMonitor = new ThreadPoolMonitor(downloadThreadPoolExecutor, "下载页面线程池");
-		new Thread(processThradPoolMonitor).start();
-		new Thread(downloadThreadPoolMonitor).start();
+//		new Thread(processThradPoolMonitor).start();
+//		new Thread(downloadThreadPoolMonitor).start();
 		while (true) {
 			if (ProcessorTask.userCount.longValue() > 1000000L) {
 				downloadThreadPoolExecutor.shutdown();

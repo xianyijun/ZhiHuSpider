@@ -1670,15 +1670,14 @@ public class RedisManager {
 	*/
 	@SuppressWarnings("deprecation")
 	public void closeConnection(Jedis jedis, boolean broken) {
-//		if (jedis != null) {
-//			if (broken) {
-//				logger.error(" returnBrokenResource jedis = " + jedis);
-//				jedisPool.returnBrokenResource(jedis);
-//			} else {
-//				jedisPool.returnResource(jedis);
-//			}
-//		}
-		jedis.close();
+		if (jedis != null) {
+			if (broken) {
+				logger.error(" returnBrokenResource jedis = " + jedis);
+				jedisPool.returnBrokenResource(jedis);
+			} else {
+				jedisPool.returnResource(jedis);
+			}
+		}
 	}
 
 }

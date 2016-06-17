@@ -1,0 +1,169 @@
+package me.kuye.spider.manager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;;
+
+public class MongoManager {
+	private static Logger logger = LoggerFactory.getLogger(MongoManager.class);
+	private static final MongoManager manager = new MongoManager();
+	private static MongoClient mongoClient = null;
+	private static final String host = "localhost";
+	private static int port = 27017;
+	private static final String ZHIHU_MONGO_DATABASE = "zhihu";
+
+	private MongoManager() {
+
+	}
+
+	public static MongoManager getInstance() {
+		return manager;
+	}
+
+	public MongoDatabase getDataBase() {
+		try {
+			if (mongoClient == null) {
+				init();
+			}
+			return mongoClient.getDatabase(ZHIHU_MONGO_DATABASE);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private void init() {
+		try {
+			mongoClient = new MongoClient(host, port);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public MongoCollection<Document> getCollection(String collectionName) {
+		try {
+			return getDataBase().getCollection(collectionName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public boolean insertOne(String collectionName, Document document) {
+		try {
+			long startTime = System.currentTimeMillis();
+			getCollection(collectionName).insertOne(document);
+			;
+			logger.info("cost time :" + (System.currentTimeMillis() - startTime));
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean insertMany(String collectionName, List<Document> documentList) {
+		try {
+			getCollection(collectionName).insertMany(documentList);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean deleteOne(String collectionName, Bson filter) {
+		try {
+			getCollection(collectionName).deleteOne(filter);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean deleteMany(String collectionName, Bson filter) {
+		try {
+			getCollection(collectionName).deleteMany(filter);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean updateOne(String collectionName, Bson filter, Bson update) {
+		try {
+			UpdateResult result = getCollection(collectionName).updateOne(filter, new Document("$set", update));
+			return result.getModifiedCount() != 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean updateMany(String collectionName, Bson filter, Bson update) {
+		try {
+			UpdateResult result = getCollection(collectionName).updateMany(filter, update);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public List<Document> findMany(String collectionName) {
+		List<Document> list = new ArrayList<>();
+		for (Document doc : getCollection(collectionName).find()) {
+			list.add(doc);
+		}
+		return list;
+	}
+
+	public List<Document> findMany(String collectionName, Bson filter) {
+		List<Document> list = new ArrayList<>();
+		for (Document doc : getCollection(collectionName).find(filter)) {
+			list.add(doc);
+		}
+		return list;
+	}
+
+	public List<Document> findMany(String collectionName, Bson filter, int limit) {
+		List<Document> list = new ArrayList<>();
+		for (Document doc : getCollection(collectionName).find(filter).limit(limit)) {
+			list.add(doc);
+		}
+		return list;
+	}
+
+	public List<Document> findMany(String collectionName, int limit) {
+		List<Document> list = new ArrayList<>();
+		for (Document doc : getCollection(collectionName).find().limit(limit)) {
+			list.add(doc);
+		}
+		return list;
+	}
+
+	public Document finyOne(String collectionName) {
+		return getCollection(collectionName).find().first();
+	}
+
+	public Document finyOne(String collectionName, Bson filter) {
+		return getCollection(collectionName).find(filter).first();
+	}
+
+	public void close() {
+		if (mongoClient != null) {
+			mongoClient.close();
+		}
+	}
+}
