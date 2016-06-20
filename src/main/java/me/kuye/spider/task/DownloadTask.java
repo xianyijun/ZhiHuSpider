@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
+import me.kuye.spider.fetcher.ZhiHuFetcher;
 import me.kuye.spider.pipeline.Storage;
 
 public class DownloadTask implements Runnable {
@@ -40,7 +41,16 @@ public class DownloadTask implements Runnable {
 	public void run() {
 		CloseableHttpResponse response = null;
 		try {
-			response = client.execute(request, context);
+			try {
+				response = client.execute(request, context);
+
+			} catch (IOException e) {
+				logger.info("IOException",e);
+				processThreadPoolExecutor.execute(new ProcessorTask(storage, ZhiHuFetcher.getInstance().getClient(),
+						context, processThreadPoolExecutor, downloadThreadPoolExecutor));
+				return;
+			}
+
 			int statusCode = response.getStatusLine().getStatusCode();
 			logger.info(" the request uri " + request.getURI() + " request statuscode :" + statusCode);
 			while (statusCode == 429) {
@@ -64,22 +74,26 @@ public class DownloadTask implements Runnable {
 				return;
 			}
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			logger.info(" clientProtocolException ", e);
 		} catch (IOException e) {
-			e.printStackTrace();
-			logger.info(" IOException ");
+			// e.printStackTrace();
+			logger.info(" IOException ", e);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			logger.info(" InterruptedException ", e);
 		} finally {
 			if (response != null && response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 				request.abort();
 				if (response.getEntity() != null) {
 					try {
+						response.getEntity().writeTo(System.out);
 						request.releaseConnection();
 						EntityUtils.consumeQuietly(response.getEntity());
+						response.close();
 					} catch (UnsupportedOperationException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}

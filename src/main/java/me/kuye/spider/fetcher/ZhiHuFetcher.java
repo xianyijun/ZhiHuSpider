@@ -1,6 +1,5 @@
 package me.kuye.spider.fetcher;
 
-import org.apache.http.HttpHost;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -57,13 +56,14 @@ public class ZhiHuFetcher {
 
 	// TODO
 	private CloseableHttpClient generateClient() {
-		HttpHost proxy = new HttpHost("112.122.219.96", 8118, "http");
+		// HttpHost proxy = new HttpHost("183.230.80.79", 8080, "http");
+//		HttpHost proxy = ProxyManager.getNextProxy();
 		HttpClientBuilder builder = HttpClients.custom().setConnectionManager(connectionManager);
-		// builder.setUserAgent(Constant.DEFAULT_USER_AGENT);
+		builder.setUserAgent(Constant.DEFAULT_USER_AGENT);
 		SocketConfig socketConfig = SocketConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).build();
-		//设置请求超时，使用代理的话应该配置时间长
-		RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy).setConnectTimeout(15000)
-				.setSocketTimeout(15000).setConnectionRequestTimeout(15000)
+		// 设置请求超时，使用代理的话应该配置时间长
+		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(15000)
+				.setSocketTimeout(15000).setConnectionRequestTimeout(15000).setCircularRedirectsAllowed(true)
 				.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 		builder.setDefaultSocketConfig(socketConfig).setDefaultRequestConfig(requestConfig);
 		return builder.build();

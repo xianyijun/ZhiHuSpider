@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.entity.User;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
+import me.kuye.spider.fetcher.ZhiHuFetcher;
 import me.kuye.spider.pipeline.Storage;
 import me.kuye.spider.pipeline.mongo.UserMongoDao;
 import me.kuye.spider.pipeline.redis.UrlItemDao;
@@ -44,7 +45,6 @@ public class ProcessorTask implements Runnable {
 	}
 
 	public void run() {
-		pageCount.incrementAndGet();
 		try {
 			String content = storage.pop();
 			Document document = Jsoup.parse(content);
@@ -55,8 +55,13 @@ public class ProcessorTask implements Runnable {
 				logger.info(user.toString());
 				userCount.getAndIncrement();
 				if ((!userDao.exist(user.getHashId())) && userDao.save(user)) {
+					pageCount.incrementAndGet();
 					storage.getResultItem().getUserQueue().add(user);
 					logger.info("当前已经添加用户数: " + userCount);
+					if (userCount.intValue() >= 100) {
+						client = ZhiHuFetcher.getInstance().getClient();
+						userCount.set(0);
+					}
 				} else {
 					// logger.info("当用户已经添加过了" + user);
 				}
@@ -88,11 +93,11 @@ public class ProcessorTask implements Runnable {
 				HttpGet request = null;
 				try {
 					// 防止知乎反爬策略，访问频率太快
-					// Thread.sleep(1000);
+					Thread.sleep(1000);
 					request = new HttpGet(url);
 					downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
 							processThreadPoolExecutor, downloadThreadPoolExecutor));
-				} catch (IllegalArgumentException e) {
+				} catch (IllegalArgumentException | InterruptedException e) {
 					e.printStackTrace();
 				}
 			}

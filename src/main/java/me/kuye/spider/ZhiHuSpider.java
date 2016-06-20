@@ -24,7 +24,7 @@ public class ZhiHuSpider {
 		CloseableHttpClient client = ZhiHuFetcher.getInstance().getClient();
 		HttpClientContext context = ZhiHuFetcher.getInstance().getContext();
 		context.setCookieStore((CookieStore) LoginCookiesHelper.antiSerializeCookies("/cookies"));
-		download("https://www.zhihu.com/people/sun_lei/followees", client, context);
+		download("https://www.zhihu.com/people/imike/followees", client, context);
 	}
 
 	public static void download(String startUrl, CloseableHttpClient client, HttpClientContext context) {
@@ -37,8 +37,8 @@ public class ZhiHuSpider {
 				processThreadPoolExecutor, downloadThreadPoolExecutor));
 		ThreadPoolMonitor processThradPoolMonitor = new ThreadPoolMonitor(processThreadPoolExecutor, "解析页面线程池");
 		ThreadPoolMonitor downloadThreadPoolMonitor = new ThreadPoolMonitor(downloadThreadPoolExecutor, "下载页面线程池");
-		new Thread(processThradPoolMonitor).start();
-		new Thread(downloadThreadPoolMonitor).start();
+//		new Thread(processThradPoolMonitor).start();
+//		new Thread(downloadThreadPoolMonitor).start();
 		while (true) {
 			if (ProcessorTask.userCount.longValue() > 1000000L) {
 				downloadThreadPoolExecutor.shutdown();
