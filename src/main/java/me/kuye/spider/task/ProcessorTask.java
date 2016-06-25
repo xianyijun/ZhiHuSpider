@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.entity.User;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
-import me.kuye.spider.fetcher.ZhiHuFetcher;
+import me.kuye.spider.fetcher.ZhiHuClientGenerator;
 import me.kuye.spider.pipeline.Storage;
 import me.kuye.spider.pipeline.mongo.UserMongoDao;
 import me.kuye.spider.pipeline.redis.UrlItemDao;
@@ -56,14 +56,12 @@ public class ProcessorTask implements Runnable {
 				userCount.getAndIncrement();
 				if ((!userDao.exist(user.getHashId())) && userDao.save(user)) {
 					pageCount.incrementAndGet();
-					storage.getResultItem().getUserQueue().add(user);
 					logger.info("当前已经添加用户数: " + userCount);
 					if (userCount.intValue() >= 100) {
-						client = ZhiHuFetcher.getInstance().getClient();
-						userCount.set(0);
+						client = ZhiHuClientGenerator.getInstance().getClient();
 					}
 				} else {
-					// logger.info("当用户已经添加过了" + user);
+					 logger.info("当用户已经添加过了" + user);
 				}
 				// https://www.zhihu.com/node/ProfileFolloweesListV2?method=next&params=%7B%22offset%22%3A20%2C%22order_by%22%3A%22created%22%2C%22hash_id%22%3A%229f6bd38abce3e6783f6aca46f0939e33%22%7D&_xsrf=7d97966cb8f4291e6992caed26e50f10
 				for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
@@ -93,7 +91,7 @@ public class ProcessorTask implements Runnable {
 				HttpGet request = null;
 				try {
 					// 防止知乎反爬策略，访问频率太快
-					Thread.sleep(1000);
+					Thread.sleep(800);
 					request = new HttpGet(url);
 					downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
 							processThreadPoolExecutor, downloadThreadPoolExecutor));

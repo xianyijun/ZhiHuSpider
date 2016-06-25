@@ -54,39 +54,5 @@ public class ProxyServer {
 			}
 			client.close();
 		}
-		// System.setProperty("http.maxRedirects", "50");
-		// System.getProperties().setProperty("proxySet", "true");
-		// String ip = "182.140.132.107";
-		// System.getProperties().setProperty("http.proxyHost", ip);
-		// System.getProperties().setProperty("http.proxyPort", "8888");
-		// Proxy proxy = new Proxy(Proxy.Type.HTTP, new
-		// InetSocketAddress("182.140.132.107", 8888));
-		// StringBuilder result = new StringBuilder();
-		// BufferedInputStream in = null;
-		//
-		// HttpURLConnection connection = null;
-		// try {
-		// URL url = new URL("http://www.ip.cn/");
-		// connection = (HttpURLConnection) url.openConnection();
-		// connection.setReadTimeout(10000);
-		// connection.setConnectTimeout(10000);
-		// connection.setRequestProperty("User-Agent",
-		// "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
-		// Gecko) Ubuntu Chromium/50.0.2661.102 Chrome/50.0.2661.102
-		// Safari/537.36");
-		// in = new BufferedInputStream(connection.getInputStream());
-		// String line = null;
-		// byte[] buffer = new byte[1024];
-		// while ((in.read(buffer)) != -1) {
-		// line = new String(buffer, "UTF-8");
-		// result.append(line);
-		// }
-		// System.out.println(Jsoup.parse(result.toString()));
-		// } finally {
-		// if (in != null) {
-		// in.close();
-		// }
-		// connection = null;
-		// }
 	}
 }

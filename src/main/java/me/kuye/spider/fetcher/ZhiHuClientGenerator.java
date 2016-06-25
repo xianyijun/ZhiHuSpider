@@ -21,19 +21,19 @@ import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.util.Constant;
 
-public class ZhiHuFetcher {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuFetcher.class);
-	private static volatile ZhiHuFetcher ZHIHU_FETCHER;
+public class ZhiHuClientGenerator {
+	private static Logger logger = LoggerFactory.getLogger(ZhiHuClientGenerator.class);
+	private static volatile ZhiHuClientGenerator ZHIHU_FETCHER;
 	private PoolingHttpClientConnectionManager connectionManager;
-
-	private ZhiHuFetcher() {
+	
+	private ZhiHuClientGenerator() {
 	}
 
-	public static ZhiHuFetcher getInstance() {
+	public static ZhiHuClientGenerator getInstance() {
 		if (ZHIHU_FETCHER == null) {
-			synchronized (ZhiHuFetcher.class) {
+			synchronized (ZhiHuClientGenerator.class) {
 				if (ZHIHU_FETCHER == null) {
-					ZhiHuFetcher zhiHuFetcher = new ZhiHuFetcher();
+					ZhiHuClientGenerator zhiHuFetcher = new ZhiHuClientGenerator();
 					zhiHuFetcher.init();
 					ZHIHU_FETCHER = zhiHuFetcher;
 				}
@@ -48,6 +48,7 @@ public class ZhiHuFetcher {
 				.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
 		connectionManager = new PoolingHttpClientConnectionManager(req);
 		connectionManager.setDefaultMaxPerRoute(100);
+		connectionManager.setMaxTotal(15);
 	}
 
 	public CloseableHttpClient getClient() {
@@ -73,6 +74,7 @@ public class ZhiHuFetcher {
 		return generateContext();
 	}
 
+	@SuppressWarnings("deprecation")
 	private HttpClientContext generateContext() {
 		HttpClientContext context = null;
 		context = HttpClientContext.create();

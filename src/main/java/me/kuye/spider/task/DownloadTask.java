@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
-import me.kuye.spider.fetcher.ZhiHuFetcher;
+import me.kuye.spider.fetcher.ZhiHuClientGenerator;
 import me.kuye.spider.pipeline.Storage;
 
 public class DownloadTask implements Runnable {
@@ -46,7 +46,7 @@ public class DownloadTask implements Runnable {
 
 			} catch (IOException e) {
 				logger.info("IOException",e);
-				processThreadPoolExecutor.execute(new ProcessorTask(storage, ZhiHuFetcher.getInstance().getClient(),
+				processThreadPoolExecutor.execute(new ProcessorTask(storage, ZhiHuClientGenerator.getInstance().getClient(),
 						context, processThreadPoolExecutor, downloadThreadPoolExecutor));
 				return;
 			}

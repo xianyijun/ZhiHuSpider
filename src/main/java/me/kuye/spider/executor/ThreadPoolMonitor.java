@@ -1,4 +1,4 @@
-package me.kuye.spider.util;
+package me.kuye.spider.executor;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -18,7 +18,6 @@ public class ThreadPoolMonitor implements Runnable {
 
 	@Override
 	public void run() {
-		this.executor.getQueue().size();
 		while (!stop) {
 			logger.info(name + String.format(
 					"[monitor] [%d/%d] Active: %d, Completed: %d, queueSize: %d, Task: %d, isShutdown: %s, isTerminated: %s",

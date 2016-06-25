@@ -10,35 +10,35 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
-import me.kuye.spider.fetcher.ZhiHuFetcher;
+import me.kuye.spider.executor.ThreadPoolMonitor;
+import me.kuye.spider.fetcher.ZhiHuClientGenerator;
 import me.kuye.spider.helper.LoginCookiesHelper;
 import me.kuye.spider.pipeline.Storage;
 import me.kuye.spider.task.DownloadTask;
 import me.kuye.spider.task.ProcessorTask;
-import me.kuye.spider.util.ThreadPoolMonitor;
 
-public class ZhiHuSpider {
+public class UserInfoSpider {
 	public static final Storage STORAGE = new Storage();
 
 	public static void main(String[] args) {
-		CloseableHttpClient client = ZhiHuFetcher.getInstance().getClient();
-		HttpClientContext context = ZhiHuFetcher.getInstance().getContext();
+		CloseableHttpClient client = ZhiHuClientGenerator.getInstance().getClient();
+		HttpClientContext context = ZhiHuClientGenerator.getInstance().getContext();
 		context.setCookieStore((CookieStore) LoginCookiesHelper.antiSerializeCookies("/cookies"));
-		download("https://www.zhihu.com/people/imike/followees", client, context);
+		download("https://www.zhihu.com/people/aullik5/followees", client, context);
 	}
 
 	public static void download(String startUrl, CloseableHttpClient client, HttpClientContext context) {
-		ThreadPoolExecutor downloadThreadPoolExecutor = new ThreadPoolExecutor(5, 5, 3, TimeUnit.SECONDS,
+		ThreadPoolExecutor downloadThreadPoolExecutor = new ThreadPoolExecutor(5, 10, 3, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardOldestPolicy());
-		ProcessThreadPoolExecutor processThreadPoolExecutor = new ProcessThreadPoolExecutor(1, 3, 5, TimeUnit.SECONDS,
+		ProcessThreadPoolExecutor processThreadPoolExecutor = new ProcessThreadPoolExecutor(1, 1, 3, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardOldestPolicy());
 		HttpGet request = new HttpGet(startUrl);
 		downloadThreadPoolExecutor.execute(new DownloadTask(request, STORAGE, context, client,
 				processThreadPoolExecutor, downloadThreadPoolExecutor));
 		ThreadPoolMonitor processThradPoolMonitor = new ThreadPoolMonitor(processThreadPoolExecutor, "解析页面线程池");
 		ThreadPoolMonitor downloadThreadPoolMonitor = new ThreadPoolMonitor(downloadThreadPoolExecutor, "下载页面线程池");
-//		new Thread(processThradPoolMonitor).start();
-//		new Thread(downloadThreadPoolMonitor).start();
+		new Thread(processThradPoolMonitor).start();
+		new Thread(downloadThreadPoolMonitor).start();
 		while (true) {
 			if (ProcessorTask.userCount.longValue() > 1000000L) {
 				downloadThreadPoolExecutor.shutdown();

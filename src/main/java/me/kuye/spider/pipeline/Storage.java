@@ -13,11 +13,9 @@ import org.slf4j.LoggerFactory;
 public class Storage {
 	private Logger logger = LoggerFactory.getLogger(Storage.class);
 	private BlockingQueue<String> resultQueue;
-	private ResultItem resultItem;
 
 	public Storage() {
 		resultQueue = new LinkedBlockingQueue<String>();
-		resultItem = new ResultItem();
 	}
 
 	public void push(String item) {
@@ -38,18 +36,6 @@ public class Storage {
 			logger.info(" throws InterruptedException", e);
 		}
 		return item;
-	}
-
-	public ResultItem getResultItem() {
-		return resultItem;
-	}
-
-	public void setResultItem(ResultItem resultItem) {
-		this.resultItem = resultItem;
-	}
-
-	public Logger getLogger() {
-		return logger;
 	}
 
 	public BlockingQueue<String> getResultQueue() {
