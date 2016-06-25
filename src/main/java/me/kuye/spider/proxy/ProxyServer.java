@@ -20,7 +20,7 @@ import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import me.kuye.spider.util.Constant;
+import me.kuye.spider.util.HttpConstant;
 
 public class ProxyServer {
 	public static void main(String[] args) throws IOException {
@@ -34,7 +34,7 @@ public class ProxyServer {
 
 		RequestConfig config = RequestConfig.custom().setConnectTimeout(5000).setSocketTimeout(5000)
 				.setConnectionRequestTimeout(5000).setCircularRedirectsAllowed(true).build();
-		HttpClientBuilder builder = HttpClients.custom().setUserAgent(Constant.DEFAULT_USER_AGENT)
+		HttpClientBuilder builder = HttpClients.custom().setUserAgent(HttpConstant.DEFAULT_USER_AGENT)
 				.setConnectionManager(connectionManager).setDefaultRequestConfig(config);
 
 		CloseableHttpClient client = builder.build();

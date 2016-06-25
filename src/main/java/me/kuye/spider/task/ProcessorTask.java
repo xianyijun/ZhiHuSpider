@@ -13,9 +13,9 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.kuye.spider.downloader.ZhiHuClientGenerator;
 import me.kuye.spider.entity.User;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
-import me.kuye.spider.fetcher.ZhiHuClientGenerator;
 import me.kuye.spider.pipeline.Storage;
 import me.kuye.spider.pipeline.mongo.UserMongoDao;
 import me.kuye.spider.pipeline.redis.UrlItemDao;
@@ -23,11 +23,10 @@ import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.MD5Util;
 import me.kuye.spider.util.UserInfo;
 
-public class ProcessorTask implements Runnable {
+public class ProcessorTask implements Task {
 	private static Logger logger = LoggerFactory.getLogger(ProcessorTask.class);
 	private final Storage storage;
 	private CloseableHttpClient client;
-	private HttpClientContext context;
 	private ProcessThreadPoolExecutor processThreadPoolExecutor;
 	private ThreadPoolExecutor downloadThreadPoolExecutor;
 	public static AtomicLong userCount = new AtomicLong();
@@ -35,11 +34,10 @@ public class ProcessorTask implements Runnable {
 	private UserMongoDao userDao = new UserMongoDao();
 	private UrlItemDao urlItemDao = new UrlItemDao();
 
-	public ProcessorTask(Storage storage, CloseableHttpClient client, HttpClientContext context,
+	public ProcessorTask(Storage storage, CloseableHttpClient client,
 			ProcessThreadPoolExecutor processThreadPoolExecutor, ThreadPoolExecutor downloadThreadPoolExecutor) {
 		this.storage = storage;
 		this.client = client;
-		this.context = context;
 		this.processThreadPoolExecutor = processThreadPoolExecutor;
 		this.downloadThreadPoolExecutor = downloadThreadPoolExecutor;
 	}
@@ -57,11 +55,8 @@ public class ProcessorTask implements Runnable {
 				if ((!userDao.exist(user.getHashId())) && userDao.save(user)) {
 					pageCount.incrementAndGet();
 					logger.info("当前已经添加用户数: " + userCount);
-					if (userCount.intValue() >= 100) {
-						client = ZhiHuClientGenerator.getInstance().getClient();
-					}
 				} else {
-					 logger.info("当用户已经添加过了" + user);
+					logger.info("当用户已经添加过了" + user);
 				}
 				// https://www.zhihu.com/node/ProfileFolloweesListV2?method=next&params=%7B%22offset%22%3A20%2C%22order_by%22%3A%22created%22%2C%22hash_id%22%3A%229f6bd38abce3e6783f6aca46f0939e33%22%7D&_xsrf=7d97966cb8f4291e6992caed26e50f10
 				for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
@@ -93,7 +88,7 @@ public class ProcessorTask implements Runnable {
 					// 防止知乎反爬策略，访问频率太快
 					Thread.sleep(800);
 					request = new HttpGet(url);
-					downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
+					downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, client,
 							processThreadPoolExecutor, downloadThreadPoolExecutor));
 				} catch (IllegalArgumentException | InterruptedException e) {
 					e.printStackTrace();

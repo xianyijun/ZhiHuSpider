@@ -14,25 +14,23 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.kuye.spider.downloader.ZhiHuClientGenerator;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
-import me.kuye.spider.fetcher.ZhiHuClientGenerator;
 import me.kuye.spider.pipeline.Storage;
 
-public class DownloadTask implements Runnable {
+public class DownloadTask implements Task {
 	private static Logger logger = LoggerFactory.getLogger(DownloadTask.class);
 	public static AtomicLong downloadPageCount = new AtomicLong();
 	private HttpGet request = null;
 	private final Storage storage;
-	private HttpClientContext context;
 	private CloseableHttpClient client;
 	private ProcessThreadPoolExecutor processThreadPoolExecutor;
 	private ThreadPoolExecutor downloadThreadPoolExecutor;
 
-	public DownloadTask(HttpGet request, Storage storage, HttpClientContext context, CloseableHttpClient client,
+	public DownloadTask(HttpGet request, Storage storage, CloseableHttpClient client,
 			ProcessThreadPoolExecutor processThreadPoolExecutor, ThreadPoolExecutor downloadThreadPoolExecutor) {
 		this.request = request;
 		this.storage = storage;
-		this.context = context;
 		this.client = client;
 		this.processThreadPoolExecutor = processThreadPoolExecutor;
 		this.downloadThreadPoolExecutor = downloadThreadPoolExecutor;
@@ -42,12 +40,12 @@ public class DownloadTask implements Runnable {
 		CloseableHttpResponse response = null;
 		try {
 			try {
-				response = client.execute(request, context);
+				response = client.execute(request);
 
 			} catch (IOException e) {
-				logger.info("IOException",e);
-				processThreadPoolExecutor.execute(new ProcessorTask(storage, ZhiHuClientGenerator.getInstance().getClient(),
-						context, processThreadPoolExecutor, downloadThreadPoolExecutor));
+				logger.info("IOException", e);
+				processThreadPoolExecutor.execute(
+						new ProcessorTask(storage, client, processThreadPoolExecutor, downloadThreadPoolExecutor));
 				return;
 			}
 
@@ -55,7 +53,7 @@ public class DownloadTask implements Runnable {
 			logger.info(" the request uri " + request.getURI() + " request statuscode :" + statusCode);
 			while (statusCode == 429) {
 				Thread.sleep(1000);
-				response = client.execute(request, context);
+				response = client.execute(request);
 				statusCode = response.getStatusLine().getStatusCode();
 				if (statusCode != 429) {
 					break;
@@ -65,11 +63,11 @@ public class DownloadTask implements Runnable {
 				downloadPageCount.incrementAndGet();
 				String content = EntityUtils.toString(response.getEntity());
 				storage.push(content);
-				processThreadPoolExecutor.execute(new ProcessorTask(storage, client, context, processThreadPoolExecutor,
+				processThreadPoolExecutor.execute(new ProcessorTask(storage, client, processThreadPoolExecutor,
 						downloadThreadPoolExecutor));
 			} else if (statusCode == 500 || statusCode == 502 || statusCode == 504) {
 				Thread.sleep(1000);
-				downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, context, client,
+				downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, client,
 						processThreadPoolExecutor, downloadThreadPoolExecutor));
 				return;
 			}
