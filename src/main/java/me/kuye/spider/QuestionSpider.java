@@ -9,14 +9,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.downloader.HttpDownloader;
 import me.kuye.spider.entity.Answer;
 import me.kuye.spider.entity.Question;
 
 public class QuestionSpider {
+	private static Logger logger = LoggerFactory.getLogger(QuestionSpider.class);
+	private static final HttpDownloader downloader = new HttpDownloader();
+
 	public static void main(String[] args) throws IOException {
-		HttpDownloader downloader = new HttpDownloader();
 		String url = "https://www.zhihu.com/question/47706461";
 		HttpGet request = new HttpGet(url);
 		CloseableHttpResponse response = downloader.getHttpClient(null).execute(request);
@@ -33,7 +37,7 @@ public class QuestionSpider {
 
 			int answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));
 			question.setAnswerNum(answerNum);
-			
+
 			// 只有登录才存在
 			int visitTimes = Integer.parseInt(doc.select("div.zg-gray-normal strong").eq(1).text());
 			question.setVisitTimes(visitTimes);
@@ -55,8 +59,7 @@ public class QuestionSpider {
 				Answer answer = new Answer(element.attr("href"), element.baseUri() + element.attr("href"));
 				answer.setQuestion(question);
 				processAnswerDetail(answer);
-				System.out.println(answer);
-				System.out.println("///=======================================================");
+				logger.info("========================================================");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,6 +86,15 @@ public class QuestionSpider {
 				: authorInfo.select(".name").text();
 		answer.setAuthor(author);
 
-//		System.out.println(answerDoc.select(".zm-item-answer").attr("data-aid"));
+		String dataAid = answerDoc.select(".zm-item-answer").attr("data-aid");
+		answer.setDataAid(dataAid);
+		for (int i = 0; i < answer.getUpvote() / 10; i++) {
+			
+			String upvoteUserUrl = "https://www.zhihu.com/answer/" + dataAid + "/voters_profile?&offset=" + 10 * i;
+			HttpGet upvoteUserRequest = new HttpGet(upvoteUserUrl);
+			CloseableHttpResponse response = downloader.getHttpClient(null).execute(upvoteUserRequest);
+			String result = EntityUtils.toString(response.getEntity());
+			logger.info("upvote : "+answer.getUpvote()+" : "+result);
+		}
 	}
 }
