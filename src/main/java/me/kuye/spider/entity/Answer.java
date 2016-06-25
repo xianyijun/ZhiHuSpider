@@ -9,6 +9,7 @@ public class Answer {
 	private String author;
 	private long upvote;
 	private String content;
+	private String dataAid;
 
 	public Answer(String relativeUrl, String absUrl) {
 		this.relativeUrl = relativeUrl;
@@ -78,6 +79,14 @@ public class Answer {
 		this.content = content;
 	}
 
+	public String getDataAid() {
+		return dataAid;
+	}
+
+	public void setDataAid(String dataAid) {
+		this.dataAid = dataAid;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -85,6 +94,7 @@ public class Answer {
 		result = prime * result + ((absUrl == null) ? 0 : absUrl.hashCode());
 		result = prime * result + ((author == null) ? 0 : author.hashCode());
 		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + ((dataAid == null) ? 0 : dataAid.hashCode());
 		result = prime * result + ((question == null) ? 0 : question.hashCode());
 		result = prime * result + ((relativeUrl == null) ? 0 : relativeUrl.hashCode());
 		result = prime * result + (int) (upvote ^ (upvote >>> 32));
@@ -116,6 +126,11 @@ public class Answer {
 				return false;
 		} else if (!content.equals(other.content))
 			return false;
+		if (dataAid == null) {
+			if (other.dataAid != null)
+				return false;
+		} else if (!dataAid.equals(other.dataAid))
+			return false;
 		if (question == null) {
 			if (other.question != null)
 				return false;
@@ -139,7 +154,8 @@ public class Answer {
 	@Override
 	public String toString() {
 		return "Answer [absUrl=" + absUrl + ", relativeUrl=" + relativeUrl + ", question=" + question + ", author="
-				+ author + ", upvote=" + upvote + ", content=" + content + ", upvoteUserList=" + upvoteUserList + "]";
+				+ author + ", upvote=" + upvote + ", content=" + content + ", dataAid=" + dataAid + ", upvoteUserList="
+				+ upvoteUserList + "]";
 	}
 
 }

@@ -11,7 +11,6 @@ public class Question {
 	private long visitTimes;
 	private String[] topics;
 	private List<Answer> allAnswerList;
-	private String createTime;
 
 	public Question() {
 
@@ -83,14 +82,6 @@ public class Question {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
 	}
 
 }
