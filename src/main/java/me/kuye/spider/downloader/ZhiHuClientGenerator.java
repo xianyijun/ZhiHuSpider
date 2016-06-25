@@ -1,5 +1,8 @@
 package me.kuye.spider.downloader;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -9,6 +12,8 @@ import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -48,8 +53,8 @@ public class ZhiHuClientGenerator {
 		SocketConfig socketConfig = SocketConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).build();
 		// 设置请求超时，使用代理的话应该配置时间长
 		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(15000).setSocketTimeout(15000)
-				.setConnectionRequestTimeout(15000).setCircularRedirectsAllowed(true)
-				.setCookieSpec(CookieSpecs.DEFAULT).build();
+				.setConnectionRequestTimeout(15000).setCircularRedirectsAllowed(true).setCookieSpec(CookieSpecs.DEFAULT)
+				.build();
 		builder.setDefaultSocketConfig(socketConfig).setDefaultRequestConfig(requestConfig);
 		builder.setRetryHandler(new DefaultHttpRequestRetryHandler(HttpConstant.DEFAULT_RETRY_TIMES, true));
 		// 读取模拟登录后的cooike

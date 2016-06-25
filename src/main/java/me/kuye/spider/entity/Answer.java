@@ -7,6 +7,7 @@ public class Answer {
 	private Question question;
 	private String author;
 	private long upvote;
+	private String content;
 	/*
 	 * https://www.zhihu.com/answer/38441951/voters_profile?&offset=10
 	 * 根据answer的data-aid获取点赞用户列表，然后根据返回的json数据的next是否为空判断 此处存储点赞用户的url地址
@@ -54,4 +55,12 @@ public class Answer {
 		this.upvoteUserList = upvoteUserList;
 	}
 
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
 }

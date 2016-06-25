@@ -12,28 +12,43 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import me.kuye.spider.downloader.HttpDownloader;
+import me.kuye.spider.entity.Question;
 
 public class QuestionSpider {
 	public static void main(String[] args) throws IOException {
 		HttpDownloader downloader = new HttpDownloader();
-		HttpGet request = new HttpGet("https://www.zhihu.com/question/47706461");
+		String url = "https://www.zhihu.com/question/47706461";
+		HttpGet request = new HttpGet(url);
 		CloseableHttpResponse response = downloader.getHttpClient(null).execute(request);
-		byte[] imgData = null;
+		Question question = new Question(url);
 		try {
 			String body = EntityUtils.toString(response.getEntity());
 			Document doc = Jsoup.parse(body);
+			
 			String title = doc.select("#zh-question-title  h2  span").first().text();
-			System.out.println(title);
+			question.setTitle(title);
+			
 			String description = doc.select("#zh-question-detail div").first().text();
-			System.out.println(description);
-			Elements elements = doc.select("#zh-question-answer-wrap div.zm-item-rich-text.expandable");
-			System.out.println(elements.size());
-			Iterator<Element> it = elements.iterator();
-			while (it.hasNext()) {
-				Element element = it.next();
-				System.out.println(element.select("div.zm-editable-content").outerHtml());
+			question.setDescription(description);
+			
+			int answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));
+			question.setAnswerNum(answerNum);
+			
+			int visitTimes = Integer.parseInt(doc.select("div.zg-gray-normal strong").eq(1).text());
+			question.setVisitTimes(visitTimes);
+			
+			int answerFollowersNum = Integer.parseInt(doc.select("div.zh-question-followers-sidebar strong").text());
+			question.setAnswerFollowersNum(answerFollowersNum);
+			
+			Elements topicElements = doc.select(".zm-tag-editor-labels a");
+			String[] topics = new String[topicElements.size()];
+			for (int i = 0; i < topicElements.size(); i++) {
+				topics[i] = topicElements.get(i).text();
 			}
+			question.setTopics(topics);
+			//===============================================
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.close();
 		}
 	}
