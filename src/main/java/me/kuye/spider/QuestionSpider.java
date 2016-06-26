@@ -59,9 +59,10 @@ public class QuestionSpider {
 			question.setAnswerFollowersNum(answerFollowersNum);
 
 			Elements topicElements = doc.select(".zm-tag-editor-labels a");
-			String[] topics = new String[topicElements.size()];
+			// String[] topics = new String[topicElements.size()];
+			List<String> topics = new LinkedList<>();
 			for (int i = 0; i < topicElements.size(); i++) {
-				topics[i] = topicElements.get(i).text();
+				topics.add(topicElements.get(i).text());
 			}
 			question.setTopics(topics);
 			List<Answer> answerList = new ArrayList<>();
@@ -69,12 +70,12 @@ public class QuestionSpider {
 			for (int i = 0; i < elementList.length; i++) {
 				Element element = (Element) elementList[i];
 				Answer answer = new Answer(element.attr("href"), element.baseUri() + element.attr("href"));
-//				answer.setQuestion(question);
+				// answer.setQuestion(question);
 				processAnswerDetail(answer);
 				answerList.add(answer);
 			}
 			question.setAllAnswerList(answerList);
-			MongoManager.getInstance().insertOne("question",MongoUtil.objectToDocument(Question.class, question));
+			MongoManager.getInstance().insertOne("question", MongoUtil.objectToDocument(Question.class, question));
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.close();

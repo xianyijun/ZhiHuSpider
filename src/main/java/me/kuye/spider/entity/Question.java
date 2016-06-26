@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class Question implements Serializable{
+public class Question implements Serializable {
 
 	private static final long serialVersionUID = -109150094039975443L;
 
@@ -14,7 +14,7 @@ public class Question implements Serializable{
 	private long answerNum;
 	private long answerFollowersNum;
 	private long visitTimes;
-	private String[] topics;
+	private List<String> topics;
 	private List<Answer> allAnswerList;
 
 	public Question() {
@@ -41,6 +41,14 @@ public class Question implements Serializable{
 		this.title = title;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public long getAnswerNum() {
 		return answerNum;
 	}
@@ -57,20 +65,20 @@ public class Question implements Serializable{
 		this.answerFollowersNum = answerFollowersNum;
 	}
 
-	public String[] getTopics() {
-		return topics;
-	}
-
-	public void setTopics(String[] topics) {
-		this.topics = topics;
-	}
-
 	public long getVisitTimes() {
 		return visitTimes;
 	}
 
 	public void setVisitTimes(long visitTimes) {
 		this.visitTimes = visitTimes;
+	}
+
+	public List<String> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(List<String> topics) {
+		this.topics = topics;
 	}
 
 	public List<Answer> getAllAnswerList() {
@@ -81,12 +89,8 @@ public class Question implements Serializable{
 		this.allAnswerList = allAnswerList;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override
@@ -98,7 +102,7 @@ public class Question implements Serializable{
 		result = prime * result + (int) (answerNum ^ (answerNum >>> 32));
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + Arrays.hashCode(topics);
+		result = prime * result + ((topics == null) ? 0 : topics.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		result = prime * result + (int) (visitTimes ^ (visitTimes >>> 32));
 		return result;
@@ -132,7 +136,10 @@ public class Question implements Serializable{
 				return false;
 		} else if (!title.equals(other.title))
 			return false;
-		if (!Arrays.equals(topics, other.topics))
+		if (topics == null) {
+			if (other.topics != null)
+				return false;
+		} else if (!topics.equals(other.topics))
 			return false;
 		if (url == null) {
 			if (other.url != null)
@@ -147,8 +154,8 @@ public class Question implements Serializable{
 	@Override
 	public String toString() {
 		return "Question [url=" + url + ", title=" + title + ", description=" + description + ", answerNum=" + answerNum
-				+ ", answerFollowersNum=" + answerFollowersNum + ", visitTimes=" + visitTimes + ", topics="
-				+ Arrays.toString(topics) + ", allAnswerList=" + allAnswerList + "]";
+				+ ", answerFollowersNum=" + answerFollowersNum + ", visitTimes=" + visitTimes + ", topics=" + topics
+				+ ", allAnswerList=" + allAnswerList + "]";
 	}
-	
+
 }
