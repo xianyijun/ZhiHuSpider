@@ -2,7 +2,8 @@ package me.kuye.spider.entity;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class User implements Serializable {
+	private static final long serialVersionUID = -6389497861623596669L;
 
 	private String location;
 	private String business;

@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.UpdateResult;;
+import com.mongodb.client.result.UpdateResult;
+
+import me.kuye.spider.mongo.codec.UpvoteUserCodec;
+import me.kuye.spider.mongo.provider.AnswerProvider;;
 
 public class MongoManager {
 	private static Logger logger = LoggerFactory.getLogger(MongoManager.class);
@@ -43,7 +50,12 @@ public class MongoManager {
 
 	private void init() {
 		try {
-			mongoClient = new MongoClient(host, port);
+			CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+					CodecRegistries.fromCodecs(new UpvoteUserCodec()),
+					CodecRegistries.fromProviders(new AnswerProvider()), 
+					MongoClient.getDefaultCodecRegistry());
+			MongoClientOptions options = MongoClientOptions.builder().codecRegistry(codecRegistry).build();
+			mongoClient = new MongoClient(new ServerAddress(host, port), options);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
