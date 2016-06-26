@@ -1,5 +1,9 @@
 package me.kuye.spider.vo;
 
+/**
+ * @author xianyijun
+ *
+ */
 public class UpVoteUser {
 	private String avatar;
 	private String name;

@@ -18,6 +18,10 @@ import me.kuye.spider.pipeline.Storage;
 import me.kuye.spider.task.DownloadTask;
 import me.kuye.spider.task.ProcessorTask;
 
+/**
+ * @author xianyijun
+ *
+ */
 public class UserInfoSpider {
 	public static final Storage STORAGE = new Storage();
 

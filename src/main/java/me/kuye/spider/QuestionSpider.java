@@ -28,6 +28,10 @@ import me.kuye.spider.util.MongoUtil;
 import me.kuye.spider.vo.UpVoteResult;
 import me.kuye.spider.vo.UpVoteUser;
 
+/**
+ * @author xianyijun
+ *
+ */
 public class QuestionSpider {
 	private static Logger logger = LoggerFactory.getLogger(QuestionSpider.class);
 	private static final HttpDownloader downloader = new HttpDownloader();
@@ -41,6 +45,9 @@ public class QuestionSpider {
 		try {
 			String body = EntityUtils.toString(response.getEntity());
 			Document doc = Jsoup.parse(body, "https://www.zhihu.com");
+
+			String urlToken = doc.select("zh-single-question-page").attr("data-urltoken");
+			question.setUrlToken(urlToken);
 
 			String title = doc.select("#zh-question-title  h2  span").first().text();
 			question.setTitle(title);

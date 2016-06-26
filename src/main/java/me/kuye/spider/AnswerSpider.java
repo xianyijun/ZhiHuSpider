@@ -1,55 +1,57 @@
 package me.kuye.spider;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.http.Consts;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 import me.kuye.spider.downloader.HttpDownloader;
-import me.kuye.spider.vo.UpVoteResult;
-import me.kuye.spider.vo.UpVoteUser;
+import me.kuye.spider.vo.AnswerResult;
 
+/**
+ * @author xianyijun
+ *
+ */
 public class AnswerSpider {
 	public static void main(String[] args) {
-		/// answer/38441951/voters_profile?total=175&offset=30
-		String upvoteUrl = "/answer/38441951/voters_profile?total=175&offset=0";
+		// https://www.zhihu.com/node/QuestionAnswerListV2?method=next&params=%7B%22url_token%22%3A35720340%2C%22pagesize%22%3A10%2C%22offset%22%3A20%7D&_xsrf=2ed0ca3e32800c09bb7d35f42d23cb69
 		HttpDownloader downloader = new HttpDownloader();
 		CloseableHttpClient client = downloader.getHttpClient(null);
-		HttpGet request = null;
+		String url = "https://www.zhihu.com/node/QuestionAnswerListV2";
+		HttpPost request = null;
 		CloseableHttpResponse response = null;
-		UpVoteResult upVoteResult = null;
-		String result = "";
-		List<UpVoteUser> userList = new LinkedList<>();
+		List<NameValuePair> valuePairs = new LinkedList<NameValuePair>();
 		try {
-			while (upvoteUrl != null && !upvoteUrl.equals("")) {
-				request = new HttpGet("https://www.zhihu.com" + upvoteUrl);
-				response = client.execute(request);
-				result = EntityUtils.toString(response.getEntity());
-				upVoteResult = JSON.parseObject(result, UpVoteResult.class);
-				String[] payload = upVoteResult.getPayload();
-				for (int i = 0; i < payload.length; i++) {
-					Document doc = Jsoup.parse(payload[i]);
-					UpVoteUser upVoteUser = new UpVoteUser();
-					upVoteUser.setName(doc.select(".zg-link").attr("title"));
-					upVoteUser.setAvatar(doc.select("img.zm-item-img-avatar").attr("src"));
-					upVoteUser.setBio(doc.select(".bio").text());
-					upVoteUser.setAgree(doc.select(".status").first().child(0).text());
-					upVoteUser.setThanks(doc.select(".status").first().child(1).text());
-					upVoteUser.setAnswers(doc.select(".status").first().child(3).text());
-					upVoteUser.setAsks(doc.select(".status").first().child(2).text());
-					userList.add(upVoteUser);
-				}
-				upvoteUrl = upVoteResult.getPaging().getNext();
+			request = new HttpPost(url);
+			valuePairs.add(new BasicNameValuePair("method", "next"));
+			JSONObject obj = new JSONObject();
+			obj.put("url_token", "35720340");
+			obj.put("pagesize", 10);
+			obj.put("offset", 20);
+			valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);
+			request.setEntity(entity);
+			response = client.execute(request);
+			String result = EntityUtils.toString(response.getEntity());
+			AnswerResult answerResult = JSONObject.parseObject(result, AnswerResult.class);
+			String[] msg = answerResult.getMsg();
+			for (int i = 0; i < msg.length; i++) {
+				Document doc = Jsoup.parse(msg[i]);
+				System.out.println(doc);
+				System.out.println("//==================================================");
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

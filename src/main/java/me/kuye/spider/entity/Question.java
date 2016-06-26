@@ -7,7 +7,7 @@ import java.util.List;
 public class Question implements Serializable {
 
 	private static final long serialVersionUID = -109150094039975443L;
-
+	private String urlToken;//用来获取回答
 	private String url;// 绝对路径
 	private String title;
 	private String description;
@@ -104,6 +104,7 @@ public class Question implements Serializable {
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		result = prime * result + ((topics == null) ? 0 : topics.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((urlToken == null) ? 0 : urlToken.hashCode());
 		result = prime * result + (int) (visitTimes ^ (visitTimes >>> 32));
 		return result;
 	}
@@ -146,16 +147,29 @@ public class Question implements Serializable {
 				return false;
 		} else if (!url.equals(other.url))
 			return false;
+		if (urlToken == null) {
+			if (other.urlToken != null)
+				return false;
+		} else if (!urlToken.equals(other.urlToken))
+			return false;
 		if (visitTimes != other.visitTimes)
 			return false;
 		return true;
 	}
 
+	public String getUrlToken() {
+		return urlToken;
+	}
+
+	public void setUrlToken(String urlToken) {
+		this.urlToken = urlToken;
+	}
+
 	@Override
 	public String toString() {
-		return "Question [url=" + url + ", title=" + title + ", description=" + description + ", answerNum=" + answerNum
-				+ ", answerFollowersNum=" + answerFollowersNum + ", visitTimes=" + visitTimes + ", topics=" + topics
-				+ ", allAnswerList=" + allAnswerList + "]";
+		return "Question [urlToken=" + urlToken + ", url=" + url + ", title=" + title + ", description=" + description
+				+ ", answerNum=" + answerNum + ", answerFollowersNum=" + answerFollowersNum + ", visitTimes="
+				+ visitTimes + ", topics=" + topics + ", allAnswerList=" + allAnswerList + "]";
 	}
 
 }
