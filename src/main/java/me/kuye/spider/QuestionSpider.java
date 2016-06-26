@@ -6,9 +6,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.http.Consts;
+import org.apache.http.Header;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 import me.kuye.spider.downloader.HttpDownloader;
 import me.kuye.spider.entity.Answer;
@@ -25,6 +33,7 @@ import me.kuye.spider.entity.Question;
 import me.kuye.spider.manager.MongoManager;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.MongoUtil;
+import me.kuye.spider.vo.AnswerResult;
 import me.kuye.spider.vo.UpVoteResult;
 import me.kuye.spider.vo.UpVoteUser;
 
@@ -40,9 +49,10 @@ public class QuestionSpider {
 	public static void main(String[] args) throws IOException {
 		String url = "https://www.zhihu.com/question/47706461";
 		HttpGet request = new HttpGet(url);
-		CloseableHttpResponse response = client.execute(request);
+		CloseableHttpResponse response = null;
 		Question question = new Question(url);
 		try {
+			response = client.execute(request);
 			String body = EntityUtils.toString(response.getEntity());
 			Document doc = Jsoup.parse(body, "https://www.zhihu.com");
 
@@ -66,31 +76,73 @@ public class QuestionSpider {
 			question.setAnswerFollowersNum(answerFollowersNum);
 
 			Elements topicElements = doc.select(".zm-tag-editor-labels a");
-			// String[] topics = new String[topicElements.size()];
 			List<String> topics = new LinkedList<>();
 			for (int i = 0; i < topicElements.size(); i++) {
 				topics.add(topicElements.get(i).text());
 			}
 			question.setTopics(topics);
+
+			String xsrf = doc.select("input[name=_xsrf]").attr("value");
+			HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);
 			List<Answer> answerList = new ArrayList<>();
-			Object[] elementList = doc.select(".zm-item-answer link").toArray();
-			for (int i = 0; i < elementList.length; i++) {
-				Element element = (Element) elementList[i];
-				Answer answer = new Answer(element.attr("href"), element.baseUri() + element.attr("href"));
-				// answer.setQuestion(question);
-				processAnswerDetail(answer);
-				answerList.add(answer);
+
+			List<NameValuePair> valuePairs = new LinkedList<NameValuePair>();
+			valuePairs.add(new BasicNameValuePair("method", "next"));
+			valuePairs.add(new BasicNameValuePair("_xsrf", xsrf));
+			JSONObject obj = new JSONObject();
+			obj.put("url_token", urlToken);
+			// 并没有什么用，服务器端固定为10
+			obj.put("pagesize", 10);
+			for (int i = 0; i < answerNum / 10 + 1; i++) {
+				obj.put("offset", 0);
+				valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
+
+				UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);
+				answerRequest.setHeader("Referer", "https://www.zhihu.com");
+				answerRequest.setEntity(entity);
+
+				response = client.execute(answerRequest);
+
+				String result = EntityUtils.toString(response.getEntity());
+
+				logger.info("result : " + result);
+
+				AnswerResult answerResult = null;
+				try {
+					answerResult = JSONObject.parseObject(result, AnswerResult.class);
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				String[] msg = answerResult.getMsg();
+
+				for (int j = 0; j < msg.length; j++) {
+					Document answerDoc = Jsoup.parse(msg[j]);
+					String relativeUrl = answerDoc.select("div.zm-item-answer link").attr("href");
+
+					Answer answer = new Answer(relativeUrl, Constant.ZHIHU_URL + relativeUrl);
+					processAnswerDetail(answer);
+
+					answerList.add(answer);
+				}
+				question.setAllAnswerList(answerList);
+				MongoManager.getInstance().insertOne("question", MongoUtil.objectToDocument(Question.class, question));
+
 			}
-			question.setAllAnswerList(answerList);
-			MongoManager.getInstance().insertOne("question", MongoUtil.objectToDocument(Question.class, question));
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
+			logger.info("user not login");
 			e.printStackTrace();
-			response.close();
+		} finally {
+			request.abort();
+			if (response != null) {
+				EntityUtils.consumeQuietly(response.getEntity());
+			}
 		}
 	}
 
 	private static void processAnswerDetail(Answer answer) throws IOException {
-		logger.info(answer.getAbsUrl());
+		logger.info(" answer absUrl: " + answer.getAbsUrl());
 		Document answerDoc = Jsoup.connect(answer.getAbsUrl()).get();
 
 		answer.setContent(answerDoc.select("div[data-entry-url=" + answer.getRelativeUrl() + "]  .zm-editable-content")
@@ -130,7 +182,7 @@ public class QuestionSpider {
 		try {
 			while (upvoteUserUrl != null && !upvoteUserUrl.equals("")) {
 				request = new HttpGet(Constant.ZHIHU_URL + upvoteUserUrl);
-				logger.info(request.getURI().toString());
+				logger.info(" upVoteUser request url " + request.getURI().toString());
 				response = client.execute(request);
 				result = EntityUtils.toString(response.getEntity());
 				upVoteResult = JSON.parseObject(result, UpVoteResult.class);

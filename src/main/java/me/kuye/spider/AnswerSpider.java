@@ -57,6 +57,7 @@ public class AnswerSpider {
 		valuePairs.add(new BasicNameValuePair("method", "next"));
 		JSONObject obj = new JSONObject();
 		obj.put("url_token", urlToken);
+		// 并没有什么用，服务器端固定为10
 		obj.put("pagesize", 10);
 		try {
 			for (int i = 0; i < answerNum / 10 + 1; i++) {
@@ -74,7 +75,6 @@ public class AnswerSpider {
 				}
 
 			}
-			// 并没有什么用，服务器端固定为10
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

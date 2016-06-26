@@ -24,7 +24,7 @@ import me.kuye.spider.util.HttpConstant;
 
 public class ProxyServer {
 	public static void main(String[] args) throws IOException {
-		// HttpHost proxy = new HttpHost("182.89.6.82", 8123, "http");
+		 HttpHost proxy = new HttpHost("39.78.132.255", 8888, "http");
 
 		Registry<ConnectionSocketFactory> req = RegistryBuilder.<ConnectionSocketFactory> create()
 				.register("http", PlainConnectionSocketFactory.INSTANCE)
@@ -32,7 +32,7 @@ public class ProxyServer {
 		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(req);
 		connectionManager.setDefaultMaxPerRoute(100);
 
-		RequestConfig config = RequestConfig.custom().setConnectTimeout(5000).setSocketTimeout(5000)
+		RequestConfig config = RequestConfig.custom().setConnectTimeout(5000).setProxy(proxy).setSocketTimeout(5000)
 				.setConnectionRequestTimeout(5000).setCircularRedirectsAllowed(true).build();
 		HttpClientBuilder builder = HttpClients.custom().setUserAgent(HttpConstant.DEFAULT_USER_AGENT)
 				.setConnectionManager(connectionManager).setDefaultRequestConfig(config);
@@ -41,7 +41,7 @@ public class ProxyServer {
 		HttpGet request = null;
 		CloseableHttpResponse response = null;
 		try {
-			request = new HttpGet("https://www.zhihu.com/");
+			request = new HttpGet("http://www.ip138.com/");
 			response = client.execute(request);
 			HttpEntity entity = response.getEntity();
 			String str = EntityUtils.toString(entity);
