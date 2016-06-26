@@ -37,6 +37,7 @@ public class AnswerSpider {
 			valuePairs.add(new BasicNameValuePair("method", "next"));
 			JSONObject obj = new JSONObject();
 			obj.put("url_token", "35720340");
+			// 并没有什么用，服务器端固定为10
 			obj.put("pagesize", 10);
 			obj.put("offset", 20);
 			valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
@@ -48,8 +49,7 @@ public class AnswerSpider {
 			String[] msg = answerResult.getMsg();
 			for (int i = 0; i < msg.length; i++) {
 				Document doc = Jsoup.parse(msg[i]);
-				System.out.println(doc);
-				System.out.println("//==================================================");
+				System.out.println(doc.select("div.zm-item-answer link").attr("href"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
