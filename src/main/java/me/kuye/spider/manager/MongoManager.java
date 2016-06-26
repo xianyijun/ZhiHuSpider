@@ -24,12 +24,22 @@ public class MongoManager {
 	private static Logger logger = LoggerFactory.getLogger(MongoManager.class);
 	private static final MongoManager manager = new MongoManager();
 	private static MongoClient mongoClient = null;
+	// 配置文件配置
 	private static final String host = "localhost";
 	private static int port = 27017;
 	private static final String ZHIHU_MONGO_DATABASE = "zhihu";
 
-	private MongoManager() {
-
+	static {
+		try {
+			CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+					CodecRegistries.fromCodecs(new UpvoteUserCodec()),
+					CodecRegistries.fromProviders(new AnswerProvider()), MongoClient.getDefaultCodecRegistry());
+			MongoClientOptions options = MongoClientOptions.builder().codecRegistry(codecRegistry).build();
+			mongoClient = new MongoClient(new ServerAddress(host, port), options);
+		} catch (Exception e) {
+			logger.info("mongodb start failure");
+			e.printStackTrace();
+		}
 	}
 
 	public static MongoManager getInstance() {
@@ -38,27 +48,11 @@ public class MongoManager {
 
 	public MongoDatabase getDataBase() {
 		try {
-			if (mongoClient == null) {
-				init();
-			}
 			return mongoClient.getDatabase(ZHIHU_MONGO_DATABASE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	private void init() {
-		try {
-			CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
-					CodecRegistries.fromCodecs(new UpvoteUserCodec()),
-					CodecRegistries.fromProviders(new AnswerProvider()), 
-					MongoClient.getDefaultCodecRegistry());
-			MongoClientOptions options = MongoClientOptions.builder().codecRegistry(codecRegistry).build();
-			mongoClient = new MongoClient(new ServerAddress(host, port), options);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public MongoCollection<Document> getCollection(String collectionName) {

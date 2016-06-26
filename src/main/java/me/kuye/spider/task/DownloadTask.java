@@ -20,7 +20,7 @@ import me.kuye.spider.pipeline.Storage;
 
 public class DownloadTask implements Task {
 	private static Logger logger = LoggerFactory.getLogger(DownloadTask.class);
-	public static AtomicLong downloadPageCount = new AtomicLong();
+	public static final AtomicLong downloadPageCount = new AtomicLong();
 	private HttpGet request = null;
 	private final Storage storage;
 	private CloseableHttpClient client;
@@ -63,12 +63,12 @@ public class DownloadTask implements Task {
 				downloadPageCount.incrementAndGet();
 				String content = EntityUtils.toString(response.getEntity());
 				storage.push(content);
-				processThreadPoolExecutor.execute(new ProcessorTask(storage, client, processThreadPoolExecutor,
-						downloadThreadPoolExecutor));
+				processThreadPoolExecutor.execute(
+						new ProcessorTask(storage, client, processThreadPoolExecutor, downloadThreadPoolExecutor));
 			} else if (statusCode == 500 || statusCode == 502 || statusCode == 504) {
 				Thread.sleep(1000);
-				downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, client,
-						processThreadPoolExecutor, downloadThreadPoolExecutor));
+				downloadThreadPoolExecutor.execute(new DownloadTask(request, storage, client, processThreadPoolExecutor,
+						downloadThreadPoolExecutor));
 				return;
 			}
 		} catch (ClientProtocolException e) {

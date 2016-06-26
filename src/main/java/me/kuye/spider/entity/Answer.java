@@ -44,14 +44,6 @@ public class Answer implements Serializable {
 		this.relativeUrl = relativeUrl;
 	}
 
-	// public Question getQuestion() {
-	// return question;
-	// }
-	//
-	// public void setQuestion(Question question) {
-	// this.question = question;
-	// }
-
 	public String getAuthor() {
 		return author;
 	}

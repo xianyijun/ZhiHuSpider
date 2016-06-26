@@ -29,8 +29,8 @@ public class ProcessorTask implements Task {
 	private CloseableHttpClient client;
 	private ProcessThreadPoolExecutor processThreadPoolExecutor;
 	private ThreadPoolExecutor downloadThreadPoolExecutor;
-	public static AtomicLong userCount = new AtomicLong();
-	public static AtomicLong pageCount = new AtomicLong();
+	public static final AtomicLong userCount = new AtomicLong();
+	public static final AtomicLong pageCount = new AtomicLong();
 	private UserMongoDao userDao = new UserMongoDao();
 	private UrlItemDao urlItemDao = new UrlItemDao();
 

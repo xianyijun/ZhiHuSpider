@@ -24,7 +24,7 @@ import me.kuye.spider.util.HttpConstant;
 
 public class ProxyServer {
 	public static void main(String[] args) throws IOException {
-		HttpHost proxy = new HttpHost("182.89.6.82", 8123, "http");
+		// HttpHost proxy = new HttpHost("182.89.6.82", 8123, "http");
 
 		Registry<ConnectionSocketFactory> req = RegistryBuilder.<ConnectionSocketFactory> create()
 				.register("http", PlainConnectionSocketFactory.INSTANCE)
