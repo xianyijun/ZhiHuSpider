@@ -17,6 +17,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.kuye.spider.helper.LoginCookiesHelper;
 import me.kuye.spider.util.HttpConstant;
 
 public class ZhiHuClientGenerator {
@@ -41,7 +42,7 @@ public class ZhiHuClientGenerator {
 	}
 
 	private CloseableHttpClient generateClient(String domain) {
-//		HttpHost proxy = ProxyManager.getNextProxy();
+		// HttpHost proxy = ProxyManager.getNextProxy();
 		HttpClientBuilder builder = HttpClients.custom().setConnectionManager(connectionManager);
 		// 暂时设置默认userAgent;
 		builder.setUserAgent(HttpConstant.DEFAULT_USER_AGENT);
@@ -53,14 +54,15 @@ public class ZhiHuClientGenerator {
 		builder.setDefaultSocketConfig(socketConfig).setDefaultRequestConfig(requestConfig);
 		builder.setRetryHandler(new DefaultHttpRequestRetryHandler(HttpConstant.DEFAULT_RETRY_TIMES, true));
 		// 读取模拟登录后的cooike
-		generateCookie(builder);
+		if (domain != null) {
+			generateCookie(builder);
+		}
 		return builder.build();
 	}
 
 	private void generateCookie(HttpClientBuilder builder) {
 		CookieStore cookieStore = null;
-		// cookieStore = (CookieStore)
-		// LoginCookiesHelper.antiSerializeCookies("/cookies");
+		cookieStore = (CookieStore) LoginCookiesHelper.antiSerializeCookies("/cookies");
 		// System.out.println(cookieStore);
 		builder.setDefaultCookieStore(cookieStore);
 	}

@@ -44,7 +44,7 @@ import me.kuye.spider.vo.UpVoteUser;
 public class QuestionSpider {
 	private static Logger logger = LoggerFactory.getLogger(QuestionSpider.class);
 	private static final HttpDownloader downloader = new HttpDownloader();
-	private static final CloseableHttpClient client = downloader.getHttpClient("question");
+	private static CloseableHttpClient client = downloader.getHttpClient("question");
 
 	public static void main(String[] args) throws IOException {
 		String url = "https://www.zhihu.com/question/47706461";
@@ -54,66 +54,61 @@ public class QuestionSpider {
 		try {
 			response = client.execute(request);
 			String body = EntityUtils.toString(response.getEntity());
+
 			Document doc = Jsoup.parse(body, "https://www.zhihu.com");
 
-			String urlToken = doc.select("zh-single-question-page").attr("data-urltoken");
-			question.setUrlToken(urlToken);
-
-			String title = doc.select("#zh-question-title  h2  span").first().text();
-			question.setTitle(title);
-
-			String description = doc.select("#zh-question-detail div").first().text();
-			question.setDescription(description);
-
-			int answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));
-			question.setAnswerNum(answerNum);
-
-			// 只有登录才存在
-			int visitTimes = Integer.parseInt(doc.select("div.zg-gray-normal strong").eq(1).text());
-			question.setVisitTimes(visitTimes);
-
-			int answerFollowersNum = Integer.parseInt(doc.select("div.zh-question-followers-sidebar strong").text());
-			question.setAnswerFollowersNum(answerFollowersNum);
-
-			Elements topicElements = doc.select(".zm-tag-editor-labels a");
-			List<String> topics = new LinkedList<>();
-			for (int i = 0; i < topicElements.size(); i++) {
-				topics.add(topicElements.get(i).text());
-			}
-			question.setTopics(topics);
+			processQuestion(doc, question);
 
 			String xsrf = doc.select("input[name=_xsrf]").attr("value");
-			HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);
-			List<Answer> answerList = new ArrayList<>();
 
-			List<NameValuePair> valuePairs = new LinkedList<NameValuePair>();
-			valuePairs.add(new BasicNameValuePair("method", "next"));
-			valuePairs.add(new BasicNameValuePair("_xsrf", xsrf));
-			JSONObject obj = new JSONObject();
-			obj.put("url_token", urlToken);
-			// 并没有什么用，服务器端固定为10
-			obj.put("pagesize", 10);
-			for (int i = 0; i < answerNum / 10 + 1; i++) {
-				obj.put("offset", 0);
-				valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
+			List<Answer> answerList = processAnswerList(question.getUrlToken(), xsrf, question.getAnswerNum());
 
-				UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);
-				answerRequest.setHeader("Referer", "https://www.zhihu.com");
-				answerRequest.setEntity(entity);
+			question.setAllAnswerList(answerList);
 
+			MongoManager.getInstance().insertOne("question", MongoUtil.objectToDocument(Question.class, question));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			request.abort();
+			if (response != null) {
+				EntityUtils.consumeQuietly(response.getEntity());
+			}
+		}
+	}
+
+	private static List<Answer> processAnswerList(String urlToken, String xsrf, long answerNum) {
+		client = downloader.getHttpClient(null);
+		logger.info(" urlToken : " + urlToken + " answerNum: " + answerNum);
+
+		HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);
+
+		CloseableHttpResponse response = null;
+		List<Answer> answerList = new ArrayList<>();
+
+		List<NameValuePair> valuePairs = new LinkedList<NameValuePair>();
+		valuePairs.add(new BasicNameValuePair("method", "next"));
+		valuePairs.add(new BasicNameValuePair("xsrf", xsrf));
+		JSONObject obj = new JSONObject();
+		obj.put("url_token", urlToken);
+		// 并没有什么用，服务器端固定为10
+		obj.put("pagesize", 10);
+
+		for (int i = 0; i < answerNum / 10 + 1; i++) {
+			obj.put("offset", 10 * i);
+			valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
+
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);
+			answerRequest.setHeader("Referer", "https://www.zhihu.com");
+			answerRequest.setEntity(entity);
+
+			try {
 				response = client.execute(answerRequest);
-
 				String result = EntityUtils.toString(response.getEntity());
-
 				logger.info("result : " + result);
 
 				AnswerResult answerResult = null;
-				try {
-					answerResult = JSONObject.parseObject(result, AnswerResult.class);
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				answerResult = JSONObject.parseObject(result, AnswerResult.class);
 
 				String[] msg = answerResult.getMsg();
 
@@ -126,23 +121,17 @@ public class QuestionSpider {
 
 					answerList.add(answer);
 				}
-				question.setAllAnswerList(answerList);
-				MongoManager.getInstance().insertOne("question", MongoUtil.objectToDocument(Question.class, question));
-
-			}
-		} catch (NumberFormatException e) {
-			logger.info("user not login");
-			e.printStackTrace();
-		} finally {
-			request.abort();
-			if (response != null) {
-				EntityUtils.consumeQuietly(response.getEntity());
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
 		}
+		return answerList;
 	}
 
 	private static void processAnswerDetail(Answer answer) throws IOException {
+
 		logger.info(" answer absUrl: " + answer.getAbsUrl());
+
 		Document answerDoc = Jsoup.connect(answer.getAbsUrl()).get();
 
 		answer.setContent(answerDoc.select("div[data-entry-url=" + answer.getRelativeUrl() + "]  .zm-editable-content")
@@ -207,5 +196,35 @@ public class QuestionSpider {
 			logger.info("processAnswerDetail failure");
 		}
 		return userList;
+	}
+
+	private static void processQuestion(Document doc, Question question) {
+		logger.info(doc.toString());
+		String urlToken = doc.select("#zh-single-question-page").attr("data-urltoken");
+		question.setUrlToken(urlToken);
+
+		String title = doc.select("#zh-question-title  h2  span").first().text();
+		question.setTitle(title);
+
+		String description = doc.select("#zh-question-detail div").first().text();
+		question.setDescription(description);
+
+		int answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));
+		question.setAnswerNum(answerNum);
+
+		// 只有登录才存在
+		int visitTimes = Integer.parseInt(doc.select("div.zg-gray-normal strong").eq(1).text());
+		question.setVisitTimes(visitTimes);
+
+		int answerFollowersNum = Integer.parseInt(doc.select("div.zh-question-followers-sidebar strong").text());
+		question.setAnswerFollowersNum(answerFollowersNum);
+
+		Elements topicElements = doc.select(".zm-tag-editor-labels a");
+		List<String> topics = new LinkedList<>();
+		for (int i = 0; i < topicElements.size(); i++) {
+			topics.add(topicElements.get(i).text());
+		}
+		question.setTopics(topics);
+		logger.info(question.toString());
 	}
 }

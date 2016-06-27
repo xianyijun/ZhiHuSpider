@@ -67,6 +67,7 @@ public class AnswerSpider {
 				answerRequest.setEntity(entity);
 				response = client.execute(answerRequest);
 				String result = EntityUtils.toString(response.getEntity());
+				logger.info(result);
 				AnswerResult answerResult = JSONObject.parseObject(result, AnswerResult.class);
 				String[] msg = answerResult.getMsg();
 				for (int j = 0; j < msg.length; j++) {
