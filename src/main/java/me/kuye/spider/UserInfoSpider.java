@@ -27,7 +27,7 @@ public class UserInfoSpider {
 
 	public static void main(String[] args) {
 		HttpDownloader downloader = new HttpDownloader();
-		CloseableHttpClient client = downloader.getHttpClient(null);
+		CloseableHttpClient client = downloader.getHttpClient("user");
 		download("https://www.zhihu.com/people/aullik5/followees", client);
 	}
 

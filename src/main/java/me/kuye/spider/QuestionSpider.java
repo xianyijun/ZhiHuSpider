@@ -105,7 +105,6 @@ public class QuestionSpider {
 			try {
 				response = client.execute(answerRequest);
 				String result = EntityUtils.toString(response.getEntity());
-				logger.info("result : " + result);
 
 				AnswerResult answerResult = null;
 				answerResult = JSONObject.parseObject(result, AnswerResult.class);
@@ -199,7 +198,6 @@ public class QuestionSpider {
 	}
 
 	private static void processQuestion(Document doc, Question question) {
-		logger.info(doc.toString());
 		String urlToken = doc.select("#zh-single-question-page").attr("data-urltoken");
 		question.setUrlToken(urlToken);
 
@@ -225,6 +223,7 @@ public class QuestionSpider {
 			topics.add(topicElements.get(i).text());
 		}
 		question.setTopics(topics);
+
 		logger.info(question.toString());
 	}
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public class Question implements Serializable {
 
 	private static final long serialVersionUID = -109150094039975443L;
-	private String urlToken;//用来获取回答
+	private String urlToken;// 用来获取回答
 	private String url;// 绝对路径
 	private String title;
 	private String description;
@@ -169,7 +169,7 @@ public class Question implements Serializable {
 	public String toString() {
 		return "Question [urlToken=" + urlToken + ", url=" + url + ", title=" + title + ", description=" + description
 				+ ", answerNum=" + answerNum + ", answerFollowersNum=" + answerFollowersNum + ", visitTimes="
-				+ visitTimes + ", topics=" + topics + ", allAnswerList=" + allAnswerList + "]";
+				+ visitTimes + ", topics=" + topics + "]";
 	}
 
 }

@@ -50,7 +50,7 @@ public class ZhiHuClientGenerator {
 		// 设置请求超时，使用代理的话应该配置时间长
 		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(15000).setSocketTimeout(15000)
 				.setConnectionRequestTimeout(15000).setCircularRedirectsAllowed(true).setMaxRedirects(3)
-				.setCookieSpec(CookieSpecs.DEFAULT).build();
+				.setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 		builder.setDefaultSocketConfig(socketConfig).setDefaultRequestConfig(requestConfig);
 		builder.setRetryHandler(new DefaultHttpRequestRetryHandler(HttpConstant.DEFAULT_RETRY_TIMES, true));
 		// 读取模拟登录后的cooike
@@ -63,7 +63,7 @@ public class ZhiHuClientGenerator {
 	private void generateCookie(HttpClientBuilder builder) {
 		CookieStore cookieStore = null;
 		cookieStore = (CookieStore) LoginCookiesHelper.antiSerializeCookies("/cookies");
-		// System.out.println(cookieStore);
+		System.out.println(cookieStore);
 		builder.setDefaultCookieStore(cookieStore);
 	}
 }
