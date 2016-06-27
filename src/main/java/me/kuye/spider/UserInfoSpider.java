@@ -4,16 +4,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import me.kuye.spider.downloader.HttpDownloader;
-import me.kuye.spider.downloader.ZhiHuClientGenerator;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
 import me.kuye.spider.executor.ThreadPoolMonitor;
-import me.kuye.spider.helper.LoginCookiesHelper;
 import me.kuye.spider.pipeline.Storage;
 import me.kuye.spider.task.DownloadTask;
 import me.kuye.spider.task.ProcessorTask;
