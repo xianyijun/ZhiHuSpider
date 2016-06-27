@@ -36,8 +36,10 @@ public class AnswerSpider {
 		// https://www.zhihu.com/node/QuestionAnswerListV2?method=next&params=%7B%22url_token%22%3A35720340%2C%22pagesize%22%3A10%2C%22offset%22%3A20%7D&_xsrf=2ed0ca3e32800c09bb7d35f42d23cb69
 		HttpDownloader downloader = new HttpDownloader();
 		CloseableHttpClient client = downloader.getHttpClient(null);
-
 		String questionUrl = "https://www.zhihu.com/question/39152967";
+		if (args != null && args.length > 0) {
+			questionUrl = args[0];
+		}
 		HttpGet questionRequest = new HttpGet(questionUrl);
 
 		HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);
@@ -47,12 +49,12 @@ public class AnswerSpider {
 		response = client.execute(questionRequest);
 
 		Document doc = Jsoup.parse(EntityUtils.toString(response.getEntity()));
-		
+
 		int answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));
 		String urlToken = doc.select("#zh-single-question-page").attr("data-urltoken");
-		
+
 		logger.info(" answerNum :" + answerNum + " urlToken: " + urlToken);
-		
+
 		List<NameValuePair> valuePairs = new LinkedList<NameValuePair>();
 		valuePairs.add(new BasicNameValuePair("method", "next"));
 		JSONObject obj = new JSONObject();
@@ -67,7 +69,6 @@ public class AnswerSpider {
 				answerRequest.setEntity(entity);
 				response = client.execute(answerRequest);
 				String result = EntityUtils.toString(response.getEntity());
-				logger.info(result);
 				AnswerResult answerResult = JSONObject.parseObject(result, AnswerResult.class);
 				String[] msg = answerResult.getMsg();
 				for (int j = 0; j < msg.length; j++) {

@@ -45,7 +45,13 @@ public class QuestionSpider {
 	private static CloseableHttpClient client = downloader.getHttpClient("question");
 
 	public static void main(String[] args) throws IOException {
-		String url = "https://www.zhihu.com/question/47706461";
+
+		String url = "https://www.zhihu.com/question/47809575";
+
+		if (args != null && args.length > 0) {
+			url = args[0];
+		}
+
 		HttpGet request = new HttpGet(url);
 		CloseableHttpResponse response = null;
 		Question question = new Question(url);
@@ -63,7 +69,20 @@ public class QuestionSpider {
 
 			question.setAllAnswerList(answerList);
 
-			MongoManager.getInstance().insertOne("question", MongoUtil.objectToDocument(Question.class, question));
+			logger.info(" question url : " + question.getUrl());
+			logger.info(" title : " + question.getTitle());
+			logger.info(" description : " + question.getDescription());
+			logger.info(" followerNum : " + question.getAnswerFollowersNum());
+			logger.info(" answerNum : " + question.getAnswerNum());
+			logger.info(" visitTimes : " + question.getVisitTimes());
+			for (int i = 0; i < answerList.size(); i++) {
+				Answer answer = answerList.get(i);
+				logger.info(" author : " + answer.getAuthor());
+				logger.info(" upvote : " + answer.getUpvote());
+				logger.info(" content : " + answer.getContent());
+				logger.info("=============================================");
+			}
+//			MongoManager.getInstance().insertOne("question", MongoUtil.objectToDocument(Question.class, question));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,7 +95,9 @@ public class QuestionSpider {
 	}
 
 	private static List<Answer> processAnswerList(String urlToken, String xsrf, long answerNum) {
+		// 更换client，key为null的client没有cookie，防止用户访问频率被封
 		client = downloader.getHttpClient(null);
+
 		logger.info(" urlToken : " + urlToken + " answerNum: " + answerNum);
 
 		HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);

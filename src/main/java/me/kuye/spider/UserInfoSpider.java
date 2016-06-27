@@ -22,9 +22,13 @@ public class UserInfoSpider {
 	public static final Storage STORAGE = new Storage();
 
 	public static void main(String[] args) {
+		String userUrl = "https://www.zhihu.com/people/aullik5/followees";
+		if (args != null && args.length > 0) {
+			userUrl = args[0];
+		}
 		HttpDownloader downloader = new HttpDownloader();
 		CloseableHttpClient client = downloader.getHttpClient("user");
-		download("https://www.zhihu.com/people/aullik5/followees", client);
+		download(userUrl, client);
 	}
 
 	public static void download(String startUrl, CloseableHttpClient client) {
@@ -33,8 +37,8 @@ public class UserInfoSpider {
 		ProcessThreadPoolExecutor processThreadPoolExecutor = new ProcessThreadPoolExecutor(1, 1, 3, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardOldestPolicy());
 		HttpGet request = new HttpGet(startUrl);
-		downloadThreadPoolExecutor.execute(new DownloadTask(request, STORAGE, client,
-				processThreadPoolExecutor, downloadThreadPoolExecutor));
+		downloadThreadPoolExecutor.execute(
+				new DownloadTask(request, STORAGE, client, processThreadPoolExecutor, downloadThreadPoolExecutor));
 		ThreadPoolMonitor processThradPoolMonitor = new ThreadPoolMonitor(processThreadPoolExecutor, "解析页面线程池");
 		ThreadPoolMonitor downloadThreadPoolMonitor = new ThreadPoolMonitor(downloadThreadPoolExecutor, "下载页面线程池");
 		new Thread(processThradPoolMonitor).start();
