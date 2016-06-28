@@ -4,7 +4,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,12 +12,11 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.downloader.ZhiHuClientGenerator;
+import me.kuye.spider.dao.mongo.UserMongoDao;
+import me.kuye.spider.dao.redis.UrlItemDao;
 import me.kuye.spider.entity.User;
 import me.kuye.spider.executor.ProcessThreadPoolExecutor;
 import me.kuye.spider.pipeline.Storage;
-import me.kuye.spider.pipeline.mongo.UserMongoDao;
-import me.kuye.spider.pipeline.redis.UrlItemDao;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.MD5Util;
 import me.kuye.spider.util.UserInfo;

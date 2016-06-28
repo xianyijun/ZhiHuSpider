@@ -59,7 +59,7 @@ public class QuestionSpider {
 			response = client.execute(request);
 			String body = EntityUtils.toString(response.getEntity());
 
-			Document doc = Jsoup.parse(body, "https://www.zhihu.com");
+			Document doc = Jsoup.parse(body,Constant.ZHIHU_URL);
 
 			processQuestion(doc, question);
 
@@ -80,11 +80,13 @@ public class QuestionSpider {
 				logger.info(" author : " + answer.getAuthor());
 				logger.info(" upvote : " + answer.getUpvote());
 				logger.info(" content : " + answer.getContent());
-				logger.info("=============================================");
 			}
 			// MongoManager.getInstance().insertOne("question",
 			// MongoUtil.objectToDocument(Question.class, question));
-			doc.select("#zh-question-related-questions ul li a").forEach((Element e)->{System.out.println(e.attr("abs:href"));});;
+			doc.select("#zh-question-related-questions ul li a").forEach((Element e) -> {
+				System.out.println(e.attr("abs:href"));
+			});
+			;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

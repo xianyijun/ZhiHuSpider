@@ -1,8 +1,6 @@
 package me.kuye.spider.entity;
 
-import java.io.Serializable;
-
-public class UrlItem implements Serializable{
+public class UrlItem implements Entity{
 	private static final long serialVersionUID = -9129135237392352652L;
 	
 	private String url;// MD后的url

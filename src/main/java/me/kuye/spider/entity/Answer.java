@@ -1,11 +1,10 @@
 package me.kuye.spider.entity;
 
-import java.io.Serializable;
 import java.util.List;
 
 import me.kuye.spider.vo.UpVoteUser;
 
-public class Answer implements Serializable {
+public class Answer implements Entity {
 
 	private static final long serialVersionUID = -3316280175987809356L;
 	private String absUrl;

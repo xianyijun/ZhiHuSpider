@@ -1,4 +1,4 @@
-package me.kuye.spider.pipeline.redis;
+package me.kuye.spider.dao.redis;
 
 import me.kuye.spider.entity.UrlItem;
 

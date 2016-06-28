@@ -1,10 +1,8 @@
 package me.kuye.spider.entity;
 
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
-public class Question implements Serializable {
+public class Question implements Entity {
 
 	private static final long serialVersionUID = -109150094039975443L;
 	private String urlToken;// 用来获取回答

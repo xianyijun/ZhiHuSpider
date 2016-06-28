@@ -1,4 +1,4 @@
-package me.kuye.spider.pipeline.mongo;
+package me.kuye.spider.dao.mongo;
 
 import com.mongodb.client.model.Filters;
 
