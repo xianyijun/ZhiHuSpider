@@ -82,8 +82,9 @@ public class QuestionSpider {
 				logger.info(" content : " + answer.getContent());
 				logger.info("=============================================");
 			}
-//			MongoManager.getInstance().insertOne("question", MongoUtil.objectToDocument(Question.class, question));
-
+			// MongoManager.getInstance().insertOne("question",
+			// MongoUtil.objectToDocument(Question.class, question));
+			doc.select("#zh-question-related-questions ul li a").forEach((Element e)->{System.out.println(e.attr("abs:href"));});;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

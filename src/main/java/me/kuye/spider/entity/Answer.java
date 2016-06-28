@@ -10,7 +10,6 @@ public class Answer implements Serializable {
 	private static final long serialVersionUID = -3316280175987809356L;
 	private String absUrl;
 	private String relativeUrl;
-	// private Question question;
 	private String author;
 	private long upvote;
 	private String content;
