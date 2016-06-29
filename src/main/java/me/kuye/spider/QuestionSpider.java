@@ -86,7 +86,6 @@ public class QuestionSpider {
 			doc.select("#zh-question-related-questions ul li a").forEach((Element e) -> {
 				System.out.println(e.attr("abs:href"));
 			});
-			;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

@@ -131,6 +131,7 @@ public class ZhiHuSpider implements Runnable {
 		for (Pipeline pipeline : pipelineList) {
 			pipeline.process(page.getResult());
 		}
+		sleep(sleepTime);
 	}
 
 	private void extractAndAddRequest(Page page) {

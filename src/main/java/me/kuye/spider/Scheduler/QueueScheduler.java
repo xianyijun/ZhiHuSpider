@@ -7,12 +7,12 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueueScheduler implements Scheduler {
+public class QueueScheduler extends Duplicatecheduler {
 	private static Logger logger = LoggerFactory.getLogger(QueueScheduler.class);
 	private BlockingQueue<HttpRequestBase> queue = new LinkedBlockingQueue<>();
 
 	@Override
-	public void push(HttpRequestBase request) {
+	public void doPush(HttpRequestBase request) {
 		try {
 			queue.put(request);
 		} catch (InterruptedException e) {
@@ -22,7 +22,7 @@ public class QueueScheduler implements Scheduler {
 	}
 
 	@Override
-	public HttpRequestBase poll() {
+	public synchronized HttpRequestBase poll() {
 		HttpRequestBase request = null;
 		try {
 			request = queue.take();

@@ -77,8 +77,6 @@ public class ZhiHuClientGenerator {
 		CookieStore cookieStore = null;
 		cookieStore = (CookieStore) LoginCookiesHelper.antiSerializeCookies("/cookies");
 
-		logger.info(cookieStore.toString());
-
 		builder.setDefaultCookieStore(cookieStore);
 	}
 }

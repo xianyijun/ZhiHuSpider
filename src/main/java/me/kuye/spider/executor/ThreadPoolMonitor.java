@@ -25,7 +25,7 @@ public class ThreadPoolMonitor implements Runnable {
 					this.executor.getCompletedTaskCount(), this.executor.getQueue().size(),
 					this.executor.getTaskCount(), this.executor.isShutdown(), this.executor.isTerminated()));
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				logger.error("InterruptedException", e);
