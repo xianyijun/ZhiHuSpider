@@ -160,10 +160,10 @@ public class ZhiHuSpider implements Runnable {
 		if (downloader == null) {
 			this.downloader = new HttpDownloader();
 		}
+		this.downloader.setThreaNum(threadNum);
 		if (pipelineList.isEmpty()) {
 			pipelineList.add(new ConsolePipeline());
 		}
-		downloader.setThreaNum(threadNum);
 		if (threadPool == null || threadPool.isShutdown()) {
 			if (executorService != null && !executorService.isShutdown()) {
 				this.threadPool = new ThreadPool(threadNum, executorService);

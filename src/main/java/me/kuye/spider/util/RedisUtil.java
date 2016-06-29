@@ -14,6 +14,9 @@ import com.sun.xml.internal.bind.v2.TODO;
 
 public class RedisUtil {
 	private static Logger logger = LoggerFactory.getLogger(RedisUtil.class);
+	
+	private RedisUtil() {
+	}
 
 	/**
 	 * @Title: objectToString

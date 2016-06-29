@@ -17,6 +17,10 @@ public class ConfigUtil {
 	private static Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
 	private static Map<String, Properties> propertiesMap = new HashMap<>();
 
+	private ConfigUtil() {
+
+	}
+
 	public static List<String> getConfigList(String sourceName) {
 		InputStream in = null;
 		List<String> list = null;

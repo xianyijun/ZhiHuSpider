@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 public class MongoUtil {
 	private static Logger logger = LoggerFactory.getLogger(MongoUtil.class);
 
+	private MongoUtil(){
+		
+	}
+	
 	public static Document objectToDocument(Class<?> clazz, Object obj) {
 		if (obj == null) {
 			return null;

@@ -11,5 +11,7 @@ public class UserInfo {
 	public static final String EDUCATION_EXTRA = "education-extra";
 	public static final String NAME = "name";
 	public static final String BIO ="bio";
-
+	private UserInfo(){
+		
+	}
 }

@@ -49,7 +49,7 @@ public class RedisManager {
 			value = jedis.get(key);
 		} catch (JedisConnectionException e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -74,7 +74,7 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			return jedis.set(key, value);
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 			broken = false;
 			return "0";
 		} finally {
@@ -83,12 +83,9 @@ public class RedisManager {
 	}
 
 	/**
-	* @Title: delete
-	* @Description: 删除指定的key,也可以传入一个包含key的数组
-	* @param     一个key  也可以使 string 数组
-	* @return Long     返回删除成功的个数 
-	* @throws
-	*/
+	 * @Title: delete @Description: 删除指定的key,也可以传入一个包含key的数组 @param 一个key 也可以使
+	 * string 数组 @return Long 返回删除成功的个数 @throws
+	 */
 	public Long delete(String... keys) {
 		Jedis jedis = null;
 		boolean broken = false;
@@ -96,7 +93,7 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			return jedis.del(keys);
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 			broken = true;
 			return 0L;
 		} finally {
@@ -104,14 +101,10 @@ public class RedisManager {
 		}
 	}
 
-	
 	/**
-	* @Title: append
-	* @Description: 通过key向指定的value值追加值
-	* @param     参数
-	* @return    成功返回 添加后value的长度 失败 返回 添加的 value 的长度  异常返回
-	* @throws
-	*/
+	 * @Title: append @Description: 通过key向指定的value值追加值 @param 参数 @return 成功返回
+	 * 添加后value的长度 失败 返回 添加的 value 的长度 异常返回 @throws
+	 */
 	public Long append(String key, String str) {
 		Jedis jedis = null;
 		boolean broken = false;
@@ -119,7 +112,7 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			return jedis.append(key, str);
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 			broken = true;
 			return 0L;
 		} finally {
@@ -134,7 +127,7 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			return jedis.exists(key);
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 			broken = true;
 			return false;
 		} finally {
@@ -149,7 +142,7 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			return jedis.setnx(key, value);
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 			broken = true;
 			return 0L;
 		} finally {
@@ -165,7 +158,7 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			res = jedis.setex(key, seconds, value);
 		} catch (JedisConnectionException e) {
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 			broken = true;
 		} finally {
 			closeConnection(jedis, broken);
@@ -180,8 +173,8 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			return jedis.setrange(key, offset, str);
 		} catch (Exception e) {
+			logger.error("JedisConnectionException", e);
 			broken = true;
-			e.printStackTrace();
 			return 0L;
 		} finally {
 			closeConnection(jedis, broken);
@@ -196,7 +189,7 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			values = jedis.mget(keys);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 			broken = false;
 		} finally {
 			closeConnection(jedis, broken);
@@ -212,8 +205,8 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			res = jedis.mset(keysvalues);
 		} catch (Exception e) {
+			logger.error("JedisConnectionException", e);
 			broken = true;
-			e.printStackTrace();
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -228,8 +221,8 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			res = jedis.msetnx(keysvalues);
 		} catch (Exception e) {
+			logger.error("JedisConnectionException", e);
 			broken = true;
-			e.printStackTrace();
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -244,8 +237,8 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			res = jedis.getSet(key, value);
 		} catch (Exception e) {
+			logger.error("JedisConnectionException", e);
 			broken = true;
-			e.printStackTrace();
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -271,7 +264,7 @@ public class RedisManager {
 			jedis = jedisPool.getResource();
 			res = jedis.getrange(key, startOffset, endOffset);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 			broken = true;
 		} finally {
 			closeConnection(jedis, broken);
@@ -288,7 +281,7 @@ public class RedisManager {
 			res = jedis.incr(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -304,7 +297,7 @@ public class RedisManager {
 			res = jedis.incrBy(key, integer);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -320,7 +313,7 @@ public class RedisManager {
 			res = jedis.decr(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -336,7 +329,7 @@ public class RedisManager {
 			res = jedis.decrBy(key, integer);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -352,7 +345,7 @@ public class RedisManager {
 			res = jedis.strlen(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -368,7 +361,7 @@ public class RedisManager {
 			res = jedis.hset(key, field, value);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -384,7 +377,7 @@ public class RedisManager {
 			res = jedis.hsetnx(key, field, value);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -400,7 +393,7 @@ public class RedisManager {
 			res = jedis.hmset(key, hash);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -416,7 +409,7 @@ public class RedisManager {
 			res = jedis.hget(key, field);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -432,7 +425,7 @@ public class RedisManager {
 			res = jedis.hmget(key, fields);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -448,7 +441,7 @@ public class RedisManager {
 			res = jedis.hincrBy(key, field, value);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -465,7 +458,7 @@ public class RedisManager {
 
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -481,7 +474,7 @@ public class RedisManager {
 			res = jedis.hlen(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -498,7 +491,7 @@ public class RedisManager {
 			res = jedis.hdel(key, fields);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -514,7 +507,7 @@ public class RedisManager {
 			res = jedis.hkeys(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -538,7 +531,7 @@ public class RedisManager {
 			res = jedis.hvals(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -562,7 +555,7 @@ public class RedisManager {
 			res = jedis.hgetAll(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -588,7 +581,7 @@ public class RedisManager {
 			res = jedis.lpush(key, strs);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -614,7 +607,7 @@ public class RedisManager {
 			res = jedis.rpush(key, strs);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -644,7 +637,7 @@ public class RedisManager {
 			res = jedis.linsert(key, where, pivot, value);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -674,7 +667,7 @@ public class RedisManager {
 			res = jedis.lset(key, index, value);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -701,7 +694,7 @@ public class RedisManager {
 			res = jedis.lrem(key, count, value);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -727,7 +720,7 @@ public class RedisManager {
 			res = jedis.ltrim(key, start, end);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -751,7 +744,7 @@ public class RedisManager {
 			res = jedis.lpop(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -775,7 +768,7 @@ public class RedisManager {
 			res = jedis.rpop(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -803,7 +796,7 @@ public class RedisManager {
 			res = jedis.rpoplpush(srckey, dstkey);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -828,7 +821,7 @@ public class RedisManager {
 			res = jedis.lindex(key, index);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -852,7 +845,7 @@ public class RedisManager {
 			res = jedis.llen(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -881,7 +874,7 @@ public class RedisManager {
 			res = jedis.lrange(key, start, end);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -907,7 +900,7 @@ public class RedisManager {
 			res = jedis.sadd(key, members);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -933,7 +926,7 @@ public class RedisManager {
 			res = jedis.srem(key, members);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -957,7 +950,7 @@ public class RedisManager {
 			res = jedis.spop(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -985,7 +978,7 @@ public class RedisManager {
 			res = jedis.sdiff(keys);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1015,7 +1008,7 @@ public class RedisManager {
 			res = jedis.sdiffstore(dstkey, keys);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1031,7 +1024,7 @@ public class RedisManager {
 			res = jedis.sinter(keys);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1057,7 +1050,7 @@ public class RedisManager {
 			res = jedis.sinterstore(dstkey, keys);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1082,7 +1075,7 @@ public class RedisManager {
 			res = jedis.sunion(keys);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1108,7 +1101,7 @@ public class RedisManager {
 			res = jedis.sunionstore(dstkey, keys);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1137,7 +1130,7 @@ public class RedisManager {
 			res = jedis.smove(srckey, dstkey, member);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1161,7 +1154,7 @@ public class RedisManager {
 			res = jedis.scard(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1186,7 +1179,7 @@ public class RedisManager {
 			res = jedis.sismember(key, member);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1210,7 +1203,7 @@ public class RedisManager {
 			res = jedis.srandmember(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1234,7 +1227,7 @@ public class RedisManager {
 			res = jedis.smembers(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1263,7 +1256,7 @@ public class RedisManager {
 			jedis.zadd(key, scoreMembers);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1292,7 +1285,7 @@ public class RedisManager {
 			res = jedis.zadd(key, score, member);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1318,7 +1311,7 @@ public class RedisManager {
 			res = jedis.zrem(key, members);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1344,7 +1337,7 @@ public class RedisManager {
 			res = jedis.zincrby(key, score, member);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1372,7 +1365,7 @@ public class RedisManager {
 			res = jedis.zrank(key, member);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1400,7 +1393,7 @@ public class RedisManager {
 			res = jedis.zrevrank(key, member);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1432,7 +1425,7 @@ public class RedisManager {
 			res = jedis.zrevrange(key, start, end);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1458,7 +1451,7 @@ public class RedisManager {
 			res = jedis.zrevrangeByScore(key, max, min);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1484,7 +1477,7 @@ public class RedisManager {
 			res = jedis.zrevrangeByScore(key, max, min);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1510,7 +1503,7 @@ public class RedisManager {
 			res = jedis.zcount(key, min, max);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1534,7 +1527,7 @@ public class RedisManager {
 			res = jedis.zcard(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1559,7 +1552,7 @@ public class RedisManager {
 			res = jedis.zscore(key, member);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1585,7 +1578,7 @@ public class RedisManager {
 			res = jedis.zremrangeByRank(key, start, end);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1593,12 +1586,12 @@ public class RedisManager {
 	}
 
 	/**
-	* @Title: zremrangeByScore
-	* @Description: 通过key删除指定score内的元素
-	* @param     key start end 
-	* @return Long    返回类型
-	* @throws
-	*/
+	 * @Title: zremrangeByScore 
+	 * @Description: 通过key删除指定score内的元素 
+	 * @param key start end 
+	 * @return Long 返回类型 
+	 * @throws
+	 */
 	public Long zremrangeByScore(String key, double start, double end) {
 		Jedis jedis = null;
 		Long res = null;
@@ -1608,7 +1601,7 @@ public class RedisManager {
 			res = jedis.zremrangeByScore(key, start, end);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1616,12 +1609,12 @@ public class RedisManager {
 	}
 
 	/**
-	* @Title: keys
-	* @Description: TODO(这里用一句话描述这个方法的作用)
-	* @param     参数
-	* @return Set<String>    返回类型
-	* @throws
-	*/
+	 * @Title: keys 
+	 * @Description: TODO(这里用一句话描述这个方法的作用) 
+	 * @param 参数 
+	 * @return Set<String> 返回类型 
+	 * @throws
+	 */
 	public Set<String> keys(String pattern) {
 		Jedis jedis = null;
 		Set<String> res = null;
@@ -1631,7 +1624,7 @@ public class RedisManager {
 			res = jedis.keys(pattern);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1639,12 +1632,12 @@ public class RedisManager {
 	}
 
 	/**
-	* @Title: type
-	* @Description: TODO(这里用一句话描述这个方法的作用)
-	* @param     参数
-	* @return String    返回类型
-	* @throws
-	*/
+	 * @Title: type 
+	 * @Description: TODO(这里用一句话描述这个方法的作用) 
+	 * @param 参数 
+	 * @return String 返回类型 
+	 * @throws
+	 */
 	public String type(String key) {
 		Jedis jedis = null;
 		String res = null;
@@ -1654,7 +1647,7 @@ public class RedisManager {
 			res = jedis.type(key);
 		} catch (Exception e) {
 			broken = true;
-			e.printStackTrace();
+			logger.error("JedisConnectionException", e);
 		} finally {
 			closeConnection(jedis, broken);
 		}
@@ -1662,12 +1655,12 @@ public class RedisManager {
 	}
 
 	/**
-	* @Title: closeConnection
-	* @Description: 释放连接
-	* @param     参数
-	* @return void    
-	* @throws
-	*/
+	 * @Title: closeConnection 
+	 * @Description: 释放连接 
+	 * @param 参数 
+	 * @return void 
+	 * @throws
+	 */
 	@SuppressWarnings("deprecation")
 	public void closeConnection(Jedis jedis, boolean broken) {
 		if (jedis != null) {
