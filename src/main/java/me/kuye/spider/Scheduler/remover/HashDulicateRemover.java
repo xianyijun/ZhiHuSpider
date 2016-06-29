@@ -1,6 +1,5 @@
 package me.kuye.spider.Scheduler.remover;
 
-import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,12 +15,7 @@ public class HashDulicateRemover implements DuplicateRemover {
 	}
 
 	private String getUrl(HttpRequestBase request) {
-		try {
-			return request.getURI().toURL().toString();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return request.getURI().toString();
 	}
 
 }

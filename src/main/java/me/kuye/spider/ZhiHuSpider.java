@@ -53,9 +53,9 @@ public class ZhiHuSpider implements Runnable {
 	private ReentrantLock urlLock = new ReentrantLock();
 	private Condition newUrlCondition = urlLock.newCondition();
 
-	private int sleepTime = 30000;
+	private int sleepTime = 3000;
 
-	private int retryTime = 30000;
+	private int retryTime = 5000;
 
 	private String domain;
 

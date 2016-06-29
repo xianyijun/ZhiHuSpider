@@ -16,6 +16,8 @@ public abstract class Duplicatecheduler implements Scheduler {
 	public void push(HttpRequestBase request) {
 		if (!remover.isDuplicate(request)) {
 			doPush(request);
+		}else{
+			logger.info(request.getURI().toString()+" 已经抓取过了");
 		}
 	}
 

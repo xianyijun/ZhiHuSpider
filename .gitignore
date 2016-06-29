@@ -5,4 +5,5 @@
 /image/
 /logs/
 src/main/resources/cookies
+src/main/resources/default.properties
 
