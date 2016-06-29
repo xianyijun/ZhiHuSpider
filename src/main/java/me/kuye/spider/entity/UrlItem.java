@@ -1,8 +1,8 @@
 package me.kuye.spider.entity;
 
-public class UrlItem implements Entity{
+public class UrlItem implements Entity {
 	private static final long serialVersionUID = -9129135237392352652L;
-	
+
 	private String url;// MD后的url
 	private String sourceUrl;
 
@@ -57,5 +57,10 @@ public class UrlItem implements Entity{
 	public String toString() {
 		return "UrlItem [url=" + url + ", sourceUrl=" + sourceUrl + "]";
 	}
-	
+
+	@Override
+	public String getKey() {
+		return "urlItem";
+	}
+
 }

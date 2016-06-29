@@ -45,7 +45,7 @@ public class HttpDownloader {
 
 	public Page download(HttpRequestBase request, String domain) {
 		CloseableHttpResponse response = null;
-		CloseableHttpClient client = clientMap.get(domain);
+		CloseableHttpClient client = getHttpClient(domain);
 		try {
 			try {
 				response = client.execute(request);

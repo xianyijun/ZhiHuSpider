@@ -228,4 +228,9 @@ public class User implements Entity {
 				+ educationExtra + ", userName=" + userName + ", userUrl=" + userUrl + ", agree=" + agree + ", thanks="
 				+ thanks + ", followees=" + followees + ", followers=" + followers + ", hashId=" + hashId + "]";
 	}
+
+	@Override
+	public String getKey() {
+		return "user";
+	}
 }

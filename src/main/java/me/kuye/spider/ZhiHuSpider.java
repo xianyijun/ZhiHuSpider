@@ -61,6 +61,14 @@ public class ZhiHuSpider implements Runnable {
 
 	private Processor processor;
 
+	private ZhiHuSpider(Processor processor) {
+		this.processor = processor;
+	}
+
+	public static ZhiHuSpider getInstance(Processor processor) {
+		return new ZhiHuSpider(processor);
+	}
+
 	@Override
 	public void run() {
 		initSpider();
@@ -75,7 +83,6 @@ public class ZhiHuSpider implements Runnable {
 			} else {
 				final HttpRequestBase finalRequest = request;
 				threadPool.execute(new Runnable() {
-
 					@Override
 					public void run() {
 						try {
@@ -114,7 +121,7 @@ public class ZhiHuSpider implements Runnable {
 	}
 
 	private void processRequest(HttpRequestBase request) {
-		Page page = downloader.download(request, null);
+		Page page = downloader.download(request, domain);
 		if (page == null) {
 			sleep(retryTime);
 			return;

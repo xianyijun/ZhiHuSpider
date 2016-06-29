@@ -1,5 +1,6 @@
 package me.kuye.spider.entity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import org.jsoup.nodes.Document;
 
 public class Page {
 	private Document document;
-	private List<Entity> result;
+	private List<Entity> result = new ArrayList<>();
 	private HttpRequestBase request;
 	private List<HttpRequestBase> targetRequest = new LinkedList<>();
 

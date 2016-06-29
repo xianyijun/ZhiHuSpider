@@ -170,4 +170,9 @@ public class Question implements Entity {
 				+ visitTimes + ", topics=" + topics + "]";
 	}
 
+	@Override
+	public String getKey() {
+		return "question";
+	}
+
 }

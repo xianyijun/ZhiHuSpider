@@ -146,4 +146,9 @@ public class Answer implements Entity {
 				+ ", content=" + content + ", dataAid=" + dataAid + ", upvoteUserList=" + upvoteUserList + "]";
 	}
 
+	@Override
+	public String getKey() {
+		return "answer";
+	}
+
 }
