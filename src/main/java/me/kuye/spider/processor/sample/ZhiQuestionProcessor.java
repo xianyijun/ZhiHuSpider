@@ -38,8 +38,11 @@ public class ZhiQuestionProcessor implements Processor {
 	}
 
 	/**
-	 * @Title: processQuestion @Description: 解析Question信息 @param 参数 @return void
-	 *         返回类型 @throws
+	 * @Title: processQuestion 
+	 * @Description: 解析Question信息 
+	 * @param 参数 
+	 * @return void 返回类型 
+	 * @throws
 	 */
 	private static void processQuestion(Document doc, Question question) {
 		try {

@@ -16,7 +16,6 @@ public class QueueScheduler extends Duplicatecheduler {
 		try {
 			queue.put(request);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 			logger.info(" throws InterruptedException", e);
 		}
 	}
@@ -27,7 +26,6 @@ public class QueueScheduler extends Duplicatecheduler {
 		try {
 			request = queue.take();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 			logger.info(" throws InterruptedException", e);
 		}
 		return request;
