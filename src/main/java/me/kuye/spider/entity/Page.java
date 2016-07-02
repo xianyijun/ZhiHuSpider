@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.http.client.methods.HttpRequestBase;
 import org.jsoup.nodes.Document;
 
 public class Page {
 	private Document document;
+	private String rawtext;
 	private List<Entity> result = new ArrayList<>();
-	private HttpRequestBase request;
-	private List<HttpRequestBase> targetRequest = new LinkedList<>();
+	private Request request;
+	private List<Request> targetRequest = new LinkedList<>();
 
 	public Document getDocument() {
 		return document;
@@ -29,20 +29,28 @@ public class Page {
 		this.result = result;
 	}
 
-	public HttpRequestBase getRequest() {
+	public Request getRequest() {
 		return request;
 	}
 
-	public void setRequest(HttpRequestBase request) {
+	public void setRequest(Request request) {
 		this.request = request;
 	}
 
-	public List<HttpRequestBase> getTargetRequest() {
+	public List<Request> getTargetRequest() {
 		return targetRequest;
 	}
 
-	public void setTargetRequest(List<HttpRequestBase> targetRequest) {
+	public void setTargetRequest(List<Request> targetRequest) {
 		this.targetRequest = targetRequest;
 	}
 
+	public String getRawtext() {
+		return rawtext;
+	}
+
+	public void setRawtext(String rawtext) {
+		this.rawtext = rawtext;
+	}
+	
 }

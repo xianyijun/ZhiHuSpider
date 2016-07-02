@@ -9,15 +9,18 @@ import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.ZhiHuSpider;
 import me.kuye.spider.entity.Page;
+import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.User;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.pipeline.MongoPipeline;
 import me.kuye.spider.processor.Processor;
-import me.kuye.spider.task.DownloadTask;
 import me.kuye.spider.util.Constant;
-import me.kuye.spider.util.MD5Util;
 import me.kuye.spider.util.UserInfo;
 
+/**
+ * @author xianyijun
+ * 批量抓取用户信息
+ */
 public class ZhiHuUserProcessor implements Processor {
 	private static Logger logger = LoggerFactory.getLogger(ZhiHuUserProcessor.class);
 
@@ -33,14 +36,16 @@ public class ZhiHuUserProcessor implements Processor {
 				String url = "https://www.zhihu.com/node/ProfileFolloweesListV2?params={%22offset%22:" + 20 * i
 						+ ",%22order_by%22:%22created%22,%22hash_id%22:%22" + user.getHashId() + "%22}";
 				url = url.replaceAll("[{]", "%7B").replaceAll("[}]", "%7D").replaceAll(" ", "%20");
-				page.getTargetRequest().add(new HttpGet(url));
+				HttpGet httpGet = new HttpGet(url);
+				page.getTargetRequest().add(new Request(httpGet.getMethod(), httpGet.getURI().toString(), httpGet));
 			}
 			page.getResult().add(user);
 		} else {
-			Elements es = document.select(".zm-list-content-medium .zm-list-content-title a");
-			for (Element element : es) {
+			Elements elements = document.select(".zm-list-content-medium .zm-list-content-title a");
+			for (Element element : elements) {
 				String url = element.attr("href") + "/followees";
-				page.getTargetRequest().add(new HttpGet(url));
+				HttpGet httpGet = new HttpGet(url);
+				page.getTargetRequest().add(new Request(httpGet.getMethod(), httpGet.getURI().toString(), httpGet));
 			}
 		}
 	}
@@ -92,9 +97,10 @@ public class ZhiHuUserProcessor implements Processor {
 	}
 
 	public static void main(String[] args) {
+		HttpGet getRequest = new HttpGet("https://www.zhihu.com/people/aullik5/followees");
 		ZhiHuSpider.getInstance(new ZhiHuUserProcessor()).setThreadNum(3).setDomain("question")
 				.addPipeline(new MongoPipeline()).addPipeline(new ConsolePipeline())
-				.setStartRequest(new HttpGet("https://www.zhihu.com/people/aullik5/followees")).run();
+				.setStartRequest(new Request(getRequest.getMethod(), getRequest.getURI().toString(), getRequest)).run();
 	}
 
 }

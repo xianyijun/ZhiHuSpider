@@ -13,27 +13,35 @@ import org.slf4j.LoggerFactory;
 import me.kuye.spider.ZhiHuSpider;
 import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Question;
+import me.kuye.spider.entity.Request;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.pipeline.MongoPipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.Constant;
 
+/**
+ * @author xianyijun
+ *批量抓取问题，只抓问题信息不抓问题回答
+ */
 public class ZhiQuestionProcessor implements Processor {
 	private static Logger logger = LoggerFactory.getLogger(ZhiQuestionProcessor.class);
 
 	public static void main(String[] args) {
+		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/40924763");
 		ZhiHuSpider.getInstance(new ZhiQuestionProcessor()).setThreadNum(3).setDomain("question")
 				.addPipeline(new MongoPipeline()).addPipeline(new ConsolePipeline())
-				.setStartRequest(new HttpGet("https://www.zhihu.com/question/40924763")).run();
+				.setStartRequest(new Request(getRequest.getMethod(), getRequest.getURI().toString(), getRequest)).run();
 	}
 
 	@Override
 	public void process(Page page) {
-		Question question = new Question(page.getRequest().getURI().toString());
+		Question question = new Question(page.getRequest().getUrl().toString());
 		processQuestion(page.getDocument(), question);
 		page.getResult().add(question);
 		page.getDocument().select("#zh-question-related-questions ul li a").forEach((Element e) -> {
-			page.getTargetRequest().add(new HttpGet(Constant.ZHIHU_URL + e.attr("href")));
+			HttpGet getRequest = new HttpGet(Constant.ZHIHU_URL + e.attr("href"));
+			page.getTargetRequest()
+					.add(new Request(getRequest.getMethod(), getRequest.getURI().toString(), getRequest));
 		});
 	}
 
@@ -83,8 +91,7 @@ public class ZhiQuestionProcessor implements Processor {
 			}
 			question.setTopics(topics);
 		} catch (Exception e) {
-			logger.info(doc.toString());
-			e.printStackTrace();
+			logger.info(e.getMessage(), e);
 		}
 
 	}

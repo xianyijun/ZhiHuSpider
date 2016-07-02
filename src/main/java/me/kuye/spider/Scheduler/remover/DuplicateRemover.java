@@ -1,7 +1,7 @@
 package me.kuye.spider.Scheduler.remover;
 
-import org.apache.http.client.methods.HttpRequestBase;
+import me.kuye.spider.entity.Request;
 
 public interface DuplicateRemover {
-	public boolean isDuplicate(HttpRequestBase request);
+	public boolean isDuplicate(Request request);
 }

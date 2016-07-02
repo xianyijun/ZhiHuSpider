@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.entity.Page;
+import me.kuye.spider.entity.Request;
+import me.kuye.spider.util.HttpConstant;
 
 public class HttpDownloader {
 	private static Logger logger = LoggerFactory.getLogger(HttpDownloader.class);
@@ -23,8 +25,8 @@ public class HttpDownloader {
 	private ZhiHuClientGenerator generator = new ZhiHuClientGenerator();
 
 	public CloseableHttpClient getHttpClient(String domain) {
-		if (domain == null) {
-			return generator.getClient(null);
+		if (domain == HttpConstant.NO_COOKIE) {
+			return generator.getClient(HttpConstant.NO_COOKIE);
 		}
 		CloseableHttpClient client = clientMap.get(domain);
 		if (client == null) {
@@ -43,13 +45,16 @@ public class HttpDownloader {
 		this.generator.setPoolSize(threadNum);
 	}
 
-	public Page download(HttpRequestBase request, String domain) {
+	public Page download(Request request, String domain) {
+		HttpRequestBase executeRequest = request.getRequest();
 		CloseableHttpResponse response = null;
+		if (request.getExtra().containsKey(HttpConstant.NO_COOKIE)) {
+			domain = HttpConstant.NO_COOKIE;
+		}
 		CloseableHttpClient client = getHttpClient(domain);
 		try {
 			try {
-				response = client.execute(request);
-
+				response = client.execute(executeRequest);
 			} catch (IOException e) {
 				logger.info("IOException", e);
 				return null;
@@ -58,7 +63,7 @@ public class HttpDownloader {
 			int statusCode = response.getStatusLine().getStatusCode();
 			while (statusCode == 429) {
 				Thread.sleep(1000);
-				response = client.execute(request);
+				response = client.execute(executeRequest);
 				statusCode = response.getStatusLine().getStatusCode();
 				if (statusCode != 429) {
 					break;
@@ -80,11 +85,11 @@ public class HttpDownloader {
 			logger.info(" InterruptedException ", e);
 		} finally {
 			if (response != null && response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				request.abort();
+				executeRequest.abort();
 				if (response.getEntity() != null) {
 					try {
 						response.getEntity().writeTo(System.out);
-						request.releaseConnection();
+						executeRequest.releaseConnection();
 						EntityUtils.consumeQuietly(response.getEntity());
 						response.close();
 					} catch (UnsupportedOperationException e) {
@@ -98,9 +103,10 @@ public class HttpDownloader {
 		return null;
 	}
 
-	private Page handlePage(String content, HttpRequestBase request) {
+	private Page handlePage(String content, Request request) {
 		Page page = new Page();
 		page.setRequest(request);
+		page.setRawtext(content);
 		page.setDocument(Jsoup.parse(content));
 		return page;
 	}

@@ -17,6 +17,7 @@ import me.kuye.spider.Scheduler.QueueScheduler;
 import me.kuye.spider.Scheduler.Scheduler;
 import me.kuye.spider.downloader.HttpDownloader;
 import me.kuye.spider.entity.Page;
+import me.kuye.spider.entity.Request;
 import me.kuye.spider.executor.ThreadPool;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.pipeline.Pipeline;
@@ -39,7 +40,7 @@ public class ZhiHuSpider implements Runnable {
 
 	protected List<Pipeline> pipelineList = new ArrayList<>();
 	// TODO 将http request进行抽象
-	protected HttpRequestBase startRequest;
+	protected Request startRequest;
 
 	protected ThreadPool threadPool;
 
@@ -73,7 +74,7 @@ public class ZhiHuSpider implements Runnable {
 	public void run() {
 		initSpider();
 		while (!Thread.currentThread().isInterrupted()) {
-			HttpRequestBase request = scheduler.poll();
+			Request request = scheduler.poll();
 			if (request == null) {
 				if (threadPool.getThreadAlive() == 0) {
 					break;
@@ -81,12 +82,12 @@ public class ZhiHuSpider implements Runnable {
 				// 等待新的请求连接
 				waitNewUrl();
 			} else {
-				final HttpRequestBase finalRequest = request;
+				final Request finalRequest = request;
 				threadPool.execute(new Runnable() {
 					@Override
 					public void run() {
 						try {
-							processRequest(finalRequest);
+							processRequest(finalRequest, domain);
 						} finally {
 							pageCount.incrementAndGet();
 							signalNewUrl();
@@ -95,6 +96,11 @@ public class ZhiHuSpider implements Runnable {
 				});
 			}
 		}
+		close();
+	}
+
+	private void close() {
+		threadPool.shutdown();
 	}
 
 	private void waitNewUrl() {
@@ -120,7 +126,7 @@ public class ZhiHuSpider implements Runnable {
 		}
 	}
 
-	private void processRequest(HttpRequestBase request) {
+	private void processRequest(Request request, String domain) {
 		Page page = downloader.download(request, domain);
 		if (page == null) {
 			sleep(retryTime);
@@ -135,12 +141,12 @@ public class ZhiHuSpider implements Runnable {
 	}
 
 	private void extractAndAddRequest(Page page) {
-		for (HttpRequestBase request : page.getTargetRequest()) {
+		for (Request request : page.getTargetRequest()) {
 			addRequest(request);
 		}
 	}
 
-	private void addRequest(HttpRequestBase request) {
+	private void addRequest(Request request) {
 		scheduler.push(request);
 	}
 
@@ -240,11 +246,11 @@ public class ZhiHuSpider implements Runnable {
 		return this;
 	}
 
-	public HttpRequestBase getStartRequest() {
+	public Request getStartRequest() {
 		return startRequest;
 	}
 
-	public ZhiHuSpider setStartRequest(HttpRequestBase startRequest) {
+	public ZhiHuSpider setStartRequest(Request startRequest) {
 		this.startRequest = startRequest;
 		return this;
 	}

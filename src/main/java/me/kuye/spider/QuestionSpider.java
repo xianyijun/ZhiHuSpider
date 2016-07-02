@@ -30,6 +30,7 @@ import me.kuye.spider.entity.Answer;
 import me.kuye.spider.entity.Question;
 import me.kuye.spider.manager.MongoManager;
 import me.kuye.spider.util.Constant;
+import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.util.MongoUtil;
 import me.kuye.spider.vo.AnswerResult;
 import me.kuye.spider.vo.UpVoteResult;
@@ -59,7 +60,7 @@ public class QuestionSpider {
 			response = client.execute(request);
 			String body = EntityUtils.toString(response.getEntity());
 
-			Document doc = Jsoup.parse(body,Constant.ZHIHU_URL);
+			Document doc = Jsoup.parse(body, Constant.ZHIHU_URL);
 
 			processQuestion(doc, question);
 
@@ -98,7 +99,7 @@ public class QuestionSpider {
 
 	private static List<Answer> processAnswerList(String urlToken, String xsrf, long answerNum) {
 		// 更换client，key为null的client没有cookie，防止用户访问频率被封
-		client = downloader.getHttpClient(null);
+		client = downloader.getHttpClient(HttpConstant.NO_COOKIE);
 
 		logger.info(" urlToken : " + urlToken + " answerNum: " + answerNum);
 
@@ -126,7 +127,7 @@ public class QuestionSpider {
 			try {
 				response = client.execute(answerRequest);
 				String result = EntityUtils.toString(response.getEntity());
-
+				logger.info(result);
 				AnswerResult answerResult = null;
 				answerResult = JSONObject.parseObject(result, AnswerResult.class);
 
@@ -227,8 +228,14 @@ public class QuestionSpider {
 
 		String description = doc.select("#zh-question-detail div").first().text();
 		question.setDescription(description);
-
-		int answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));
+		
+		int answerNum = 0;
+		try {
+			answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));
+		} catch (NumberFormatException e) {
+			//当问题回答数目小于1的时候，#zh-question-answer-num元素不存在。
+			answerNum = doc.select(".zm-item-answer").size();
+		}
 		question.setAnswerNum(answerNum);
 
 		// 只有登录才存在

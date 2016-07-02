@@ -67,7 +67,7 @@ public class ZhiHuClientGenerator {
 
 		builder.setRetryHandler(new DefaultHttpRequestRetryHandler(HttpConstant.DEFAULT_RETRY_TIMES, true));
 		// 读取模拟登录后的cooike
-		if (domain != null) {
+		if (domain != HttpConstant.NO_COOKIE) {
 			generateCookie(builder);
 		}
 		return builder.build();

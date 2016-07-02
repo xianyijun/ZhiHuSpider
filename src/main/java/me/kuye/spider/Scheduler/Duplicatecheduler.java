@@ -1,27 +1,27 @@
 package me.kuye.spider.Scheduler;
 
-import org.apache.http.client.methods.HttpRequestBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.Scheduler.remover.DuplicateRemover;
-import me.kuye.spider.Scheduler.remover.HashDulicateRemover;
+import me.kuye.spider.Scheduler.remover.RedisDuplicateRemover;
+import me.kuye.spider.entity.Request;
 
 public abstract class Duplicatecheduler implements Scheduler {
 	private static Logger logger = LoggerFactory.getLogger(Duplicatecheduler.class);
 
-	private DuplicateRemover remover = new HashDulicateRemover();
+	private DuplicateRemover remover = new RedisDuplicateRemover();
 
 	@Override
-	public void push(HttpRequestBase request) {
+	public void push(Request request) {
 		if (!remover.isDuplicate(request)) {
 			doPush(request);
-		}else{
-			logger.info(request.getURI().toString()+" 已经抓取过了");
+		} else {
+			logger.info(request.getUrl() + " 已经抓取过了");
 		}
 	}
 
-	protected void doPush(HttpRequestBase request) {
+	protected void doPush(Request request) {
 
 	}
 

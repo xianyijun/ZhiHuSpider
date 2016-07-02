@@ -8,18 +8,20 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HashDulicateRemover implements DuplicateRemover {
+import me.kuye.spider.entity.Request;
+
+public class HashSetDulicateRemover implements DuplicateRemover {
 	private Set<String> urlSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
-	private static Logger logger = LoggerFactory.getLogger(HashDulicateRemover.class);
+	private static Logger logger = LoggerFactory.getLogger(HashSetDulicateRemover.class);
 
 	@Override
-	public boolean isDuplicate(HttpRequestBase request) {
+	public boolean isDuplicate(Request request) {
 		return !urlSet.add(getUrl(request));
 	}
 
-	private String getUrl(HttpRequestBase request) {
-		logger.info(request.getURI().toString());
-		return request.getURI().toString();
+	private String getUrl(Request request) {
+		logger.info(request.getUrl());
+		return request.getUrl();
 	}
 
 }

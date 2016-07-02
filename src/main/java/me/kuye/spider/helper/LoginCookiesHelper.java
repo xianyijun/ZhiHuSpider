@@ -37,11 +37,11 @@ public class LoginCookiesHelper {
 			ois = new ObjectInputStream(fis);
 			object = ois.readObject();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			try {
 				if (fis != null) {
@@ -51,7 +51,7 @@ public class LoginCookiesHelper {
 					ois.close();
 				}
 			} catch (IOException e) {
-				logger.error(" IOException", e);
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return object;
@@ -67,7 +67,7 @@ public class LoginCookiesHelper {
 			oos.writeObject(cookieStore);
 			oos.flush();
 		} catch (IOException e) {
-			logger.info("IOException", e);
+			logger.info(e.getMessage(), e);
 		} finally {
 			try {
 				if (oos != null) {
@@ -79,7 +79,7 @@ public class LoginCookiesHelper {
 					fos = null;
 				}
 			} catch (IOException e) {
-				logger.error("IOException", e);
+				logger.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -114,7 +114,7 @@ public class LoginCookiesHelper {
 			client.execute(request, context);
 			serializeCookies(context.getCookieStore(), Constant.COOIKES_SERIALIZE_PATH);
 		} catch (IOException e) {
-			logger.error("IOExceptione", e);
+			logger.error(e.getMessage(), e);
 		}
 	}
 

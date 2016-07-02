@@ -1,10 +1,14 @@
 package me.kuye.spider.vo;
 
+import me.kuye.spider.entity.Entity;
+
 /**
  * @author xianyijun
  *
  */
-public class UpVoteUser {
+public class UpVoteUser implements Entity {
+	
+	private static final long serialVersionUID = -5279850430034997640L;
 	private String avatar;
 	private String name;
 	private String bio;
@@ -134,6 +138,11 @@ public class UpVoteUser {
 	public String toString() {
 		return "UpVoteUser [avatar=" + avatar + ", name=" + name + ", bio=" + bio + ", agree=" + agree + ", thanks="
 				+ thanks + ", asks=" + asks + ", answers=" + answers + "]";
+	}
+
+	@Override
+	public String getKey() {
+		return "upVoteUser";
 	}
 
 }

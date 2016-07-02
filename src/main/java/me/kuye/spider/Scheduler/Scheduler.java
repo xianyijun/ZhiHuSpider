@@ -1,9 +1,9 @@
 package me.kuye.spider.Scheduler;
 
-import org.apache.http.client.methods.HttpRequestBase;
+import me.kuye.spider.entity.Request;
 
 public interface Scheduler {
-	public void push(HttpRequestBase request);
+	public void push(Request request);
 	
-	public HttpRequestBase poll();
+	public Request poll();
 }
