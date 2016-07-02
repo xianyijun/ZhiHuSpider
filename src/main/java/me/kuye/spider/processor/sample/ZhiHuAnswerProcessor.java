@@ -26,7 +26,6 @@ import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Question;
 import me.kuye.spider.entity.Request;
 import me.kuye.spider.pipeline.ConsolePipeline;
-import me.kuye.spider.pipeline.MongoPipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
@@ -41,7 +40,6 @@ public class ZhiHuAnswerProcessor implements Processor {
 	public void process(Page page) {
 		String requestUrl = page.getRequest().getUrl();
 		Document doc = page.getDocument();
-		logger.info(requestUrl);
 		//解析点赞用户列表请求
 		if (requestUrl.indexOf("voters_profile") != -1) {
 			List<UpVoteUser> upVoteUserList = processUpVoteUserList(page);
@@ -180,7 +178,6 @@ public class ZhiHuAnswerProcessor implements Processor {
 		String upvoteUserUrl = "/answer/" + dataAid + "/voters_profile?&offset=0";
 		HttpGet request = new HttpGet(Constant.ZHIHU_URL + upvoteUserUrl);
 		page.getTargetRequest().add(new Request(request.getMethod(), request.getURI().toString(), request));
-
 	}
 
 	/**
@@ -215,14 +212,14 @@ public class ZhiHuAnswerProcessor implements Processor {
 		}
 		String nextUrl = upVoteResult.getPaging().getNext();
 		if (!nextUrl.equals("") && nextUrl.trim().length() > 0) {
-			HttpGet getMethod = new HttpGet(nextUrl);
+			HttpGet getMethod = new HttpGet(Constant.ZHIHU_URL + nextUrl);
 			page.getTargetRequest().add(new Request(getMethod.getMethod(), getMethod.getURI().toString(), getMethod));
 		}
 		return userList;
 	}
 
 	public static void main(String[] args) {
-		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/40586989");
+		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/24430010");
 
 		ZhiHuSpider.getInstance(new ZhiHuAnswerProcessor()).setThreadNum(3).setDomain("answer")
 				.addPipeline(new ConsolePipeline())
