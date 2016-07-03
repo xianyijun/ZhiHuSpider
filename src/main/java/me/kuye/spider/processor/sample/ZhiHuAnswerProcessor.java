@@ -25,13 +25,13 @@ import me.kuye.spider.entity.Answer;
 import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Question;
 import me.kuye.spider.entity.Request;
+import me.kuye.spider.entity.UpVoteUser;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.vo.AnswerResult;
 import me.kuye.spider.vo.UpVoteResult;
-import me.kuye.spider.vo.UpVoteUser;
 
 public class ZhiHuAnswerProcessor implements Processor {
 	private static Logger logger = LoggerFactory.getLogger(ZhiHuAnswerProcessor.class);
@@ -40,33 +40,22 @@ public class ZhiHuAnswerProcessor implements Processor {
 	public void process(Page page) {
 		String requestUrl = page.getRequest().getUrl();
 		Document doc = page.getDocument();
-		//解析点赞用户列表请求
-		if (requestUrl.indexOf("voters_profile") != -1) {
-			List<UpVoteUser> upVoteUserList = processUpVoteUserList(page);
-			page.getResult().addAll(upVoteUserList);
-		}
-		//解析问题列表请求
-		else if (requestUrl.equals(Constant.ZHIHU_ANSWER_URL)) {
+		if (requestUrl.equals(Constant.ZHIHU_ANSWER_URL)) {
 			AnswerResult answerResult = null;
 			answerResult = JSONObject.parseObject(page.getRawtext(), AnswerResult.class);
 			String[] msg = answerResult.getMsg();
 			for (int i = 0; i < msg.length; i++) {
 				Document answerDoc = Jsoup.parse(msg[i]);
 				String relativeUrl = answerDoc.select("div.zm-item-answer link").attr("href");
-
 				Answer answer = new Answer(relativeUrl, Constant.ZHIHU_URL + relativeUrl);
-				processAnswerDetail(page, answerDoc, answer);
+				processAnswerDetail(answerDoc, answer);
 				page.getResult().add(answer);
 			}
-		} else if (requestUrl.matches("")) {
-
-		}
-		//解析问题详情请求
-		else {
+		} else {
+			//解析问题详情请求
 			Question question = new Question(requestUrl);
 			processQuestion(page, question);
 			page.getResult().add(question);
-
 			String xsrf = doc.select("input[name=_xsrf]").attr("value");
 			List<Request> answerList = processAnswerList(question.getUrlToken(), xsrf, question.getAnswerNum());
 			page.getTargetRequest().addAll(answerList);
@@ -124,8 +113,11 @@ public class ZhiHuAnswerProcessor implements Processor {
 	*/
 	private static List<Request> processAnswerList(String urlToken, String xsrf, long answerNum) {
 		List<Request> answerRequestList = new ArrayList<>();
+	
 		for (int i = 0; i < answerNum / 10 + 1; i++) {
+			
 			HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);
+			
 			List<NameValuePair> valuePairs = new LinkedList<NameValuePair>();
 			valuePairs.add(new BasicNameValuePair("method", "next"));
 			valuePairs.add(new BasicNameValuePair("xsrf", xsrf));
@@ -135,9 +127,11 @@ public class ZhiHuAnswerProcessor implements Processor {
 			obj.put("pagesize", 10);
 			obj.put("offset", 10 * i);
 			valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
-			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);
-			answerRequest.setHeader("Referer", "https://www.zhihu.com");
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);			
+			
 			answerRequest.setEntity(entity);
+			
+			answerRequest.setHeader("Referer", "https://www.zhihu.com");
 
 			answerRequestList
 					.add(new Request(answerRequest.getMethod(), answerRequest.getURI().toString(), answerRequest)
@@ -153,11 +147,10 @@ public class ZhiHuAnswerProcessor implements Processor {
 	* @return void    返回类型
 	* @throws
 	*/
-	private static void processAnswerDetail(Page page, Document answerDoc, Answer answer) {
+	private static void processAnswerDetail(Document answerDoc, Answer answer) {
 		answer.setContent(answerDoc.select("div[data-entry-url=" + answer.getRelativeUrl() + "]  .zm-editable-content")
 				.html().replaceAll("<br>", ""));
-
-		answer.setUpvote(Long.parseLong(answerDoc.select(".zm-votebar span.count").first().text()));
+		answer.setUpvote(answerDoc.select(".zm-votebar span.count").first().text());
 
 		/*
 		 * 不可以直接用a.author-link来获取，如果是知乎用户的话，不存在该标签 
@@ -175,9 +168,8 @@ public class ZhiHuAnswerProcessor implements Processor {
 		String dataAid = answerDoc.select(".zm-item-answer").attr("data-aid");
 		answer.setDataAid(dataAid);
 
-		String upvoteUserUrl = "/answer/" + dataAid + "/voters_profile?&offset=0";
-		HttpGet request = new HttpGet(Constant.ZHIHU_URL + upvoteUserUrl);
-		page.getTargetRequest().add(new Request(request.getMethod(), request.getURI().toString(), request));
+		String upvoteUserUrl = Constant.ZHIHU_URL + "/answer/" + dataAid + "/voters_profile?&offset=0";
+		answer.setStartUpvoteUserUrl(upvoteUserUrl);
 	}
 
 	/**
@@ -187,39 +179,39 @@ public class ZhiHuAnswerProcessor implements Processor {
 	* @return List<UpVoteUser>    返回类型
 	* @throws
 	*/
-	private static List<UpVoteUser> processUpVoteUserList(Page page) {
-		UpVoteResult upVoteResult = null;
-		List<UpVoteUser> userList = new LinkedList<>();
-		upVoteResult = JSON.parseObject(page.getRawtext(), UpVoteResult.class);
-		String[] payload = upVoteResult.getPayload();
-		for (int i = 0; i < payload.length; i++) {
-			Document doc = Jsoup.parse(payload[i]);
-			UpVoteUser upVoteUser = new UpVoteUser();
-			Element avatar = doc.select("img.zm-item-img-avatar").first();
-			upVoteUser.setAvatar(avatar.attr("src"));
-			//点赞用户不为匿名用户
-			if (!"匿名用户".equals(avatar.attr("title"))) {
-				upVoteUser.setName(doc.select(".zg-link").attr("title"));
-				upVoteUser.setBio(doc.select(".bio").text());
-				upVoteUser.setAgree(doc.select(".status").first().child(0).text());
-				upVoteUser.setThanks(doc.select(".status").first().child(1).text());
-				upVoteUser.setAnswers(doc.select(".status").first().child(3).text());
-				upVoteUser.setAsks(doc.select(".status").first().child(2).text());
-			} else {
-				upVoteUser.setName(avatar.attr("title"));
-			}
-			userList.add(upVoteUser);
-		}
-		String nextUrl = upVoteResult.getPaging().getNext();
-		if (!nextUrl.equals("") && nextUrl.trim().length() > 0) {
-			HttpGet getMethod = new HttpGet(Constant.ZHIHU_URL + nextUrl);
-			page.getTargetRequest().add(new Request(getMethod.getMethod(), getMethod.getURI().toString(), getMethod));
-		}
-		return userList;
-	}
+	//	private static List<UpVoteUser> processUpVoteUserList(Page page) {
+	//		UpVoteResult upVoteResult = null;
+	//		List<UpVoteUser> userList = new LinkedList<>();
+	//		upVoteResult = JSON.parseObject(page.getRawtext(), UpVoteResult.class);
+	//		String[] payload = upVoteResult.getPayload();
+	//		for (int i = 0; i < payload.length; i++) {
+	//			Document doc = Jsoup.parse(payload[i]);
+	//			UpVoteUser upVoteUser = new UpVoteUser();
+	//			Element avatar = doc.select("img.zm-item-img-avatar").first();
+	//			upVoteUser.setAvatar(avatar.attr("src"));
+	//			//点赞用户不为匿名用户
+	//			if (!"匿名用户".equals(avatar.attr("title"))) {
+	//				upVoteUser.setName(doc.select(".zg-link").attr("title"));
+	//				upVoteUser.setBio(doc.select(".bio").text());
+	//				upVoteUser.setAgree(doc.select(".status").first().child(0).text());
+	//				upVoteUser.setThanks(doc.select(".status").first().child(1).text());
+	//				upVoteUser.setAnswers(doc.select(".status").first().child(3).text());
+	//				upVoteUser.setAsks(doc.select(".status").first().child(2).text());
+	//			} else {
+	//				upVoteUser.setName(avatar.attr("title"));
+	//			}
+	//			userList.add(upVoteUser);
+	//		}
+	//		String nextUrl = upVoteResult.getPaging().getNext();
+	//		if (!nextUrl.equals("") && nextUrl.trim().length() > 0) {
+	//			HttpGet getMethod = new HttpGet(Constant.ZHIHU_URL + nextUrl);
+	//			page.getTargetRequest().add(new Request(getMethod.getMethod(), getMethod.getURI().toString(), getMethod));
+	//		}
+	//		return userList;
+	//	}
 
 	public static void main(String[] args) {
-		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/24430010");
+		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/20790679");
 
 		ZhiHuSpider.getInstance(new ZhiHuAnswerProcessor()).setThreadNum(3).setDomain("answer")
 				.addPipeline(new ConsolePipeline())

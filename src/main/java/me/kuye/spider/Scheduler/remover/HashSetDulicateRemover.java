@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.entity.Request;
+import me.kuye.spider.util.MD5Util;
 
 public class HashSetDulicateRemover implements DuplicateRemover {
 	private Set<String> urlSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -16,12 +17,12 @@ public class HashSetDulicateRemover implements DuplicateRemover {
 
 	@Override
 	public boolean isDuplicate(Request request) {
-		return !urlSet.add(getUrl(request));
+		return !urlSet.add(getMD5Url(request));
 	}
 
-	private String getUrl(Request request) {
-		logger.info(request.getUrl());
-		return request.getUrl();
+	private String getMD5Url(Request request) {
+		logger.info(request.toString());
+		return MD5Util.MD5Encode(request.getUrl() + request.hashCode());
 	}
 
 }

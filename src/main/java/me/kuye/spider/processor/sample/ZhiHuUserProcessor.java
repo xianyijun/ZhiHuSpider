@@ -27,9 +27,9 @@ public class ZhiHuUserProcessor implements Processor {
 	@Override
 	public void process(Page page) {
 		Document document = page.getDocument();
-		User user = null;
 		// 用户个人页面
 		if (document.select("title").size() > 0) {
+			User user = null;
 			user = parseUserDetail(document);
 			logger.info(user.toString());
 			for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
@@ -64,7 +64,6 @@ public class ZhiHuUserProcessor implements Processor {
 			user.setUserUrl(Constant.ZHIHU_URL + document.select(".title-section.ellipsis a").first().attr("href"));
 		} catch (NullPointerException e) {
 			logger.info("NullPointerException", e);
-			logger.info(document.toString());
 		}
 		user.setAgree(Integer.valueOf(document.select(".zm-profile-header-user-agree strong").first().text()));
 		user.setThanks(Integer.valueOf(document.select(".zm-profile-header-user-thanks strong").first().text()));
@@ -97,7 +96,7 @@ public class ZhiHuUserProcessor implements Processor {
 	}
 
 	public static void main(String[] args) {
-		HttpGet getRequest = new HttpGet("https://www.zhihu.com/people/aullik5/followees");
+		HttpGet getRequest = new HttpGet("https://www.zhihu.com/people/van-bruce");
 		ZhiHuSpider.getInstance(new ZhiHuUserProcessor()).setThreadNum(3).setDomain("question")
 				.addPipeline(new MongoPipeline()).addPipeline(new ConsolePipeline())
 				.setStartRequest(new Request(getRequest.getMethod(), getRequest.getURI().toString(), getRequest)).run();

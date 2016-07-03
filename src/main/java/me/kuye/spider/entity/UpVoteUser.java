@@ -1,6 +1,4 @@
-package me.kuye.spider.vo;
-
-import me.kuye.spider.entity.Entity;
+package me.kuye.spider.entity;
 
 /**
  * @author xianyijun

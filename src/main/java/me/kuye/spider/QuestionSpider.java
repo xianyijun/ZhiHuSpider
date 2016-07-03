@@ -28,13 +28,13 @@ import com.alibaba.fastjson.JSONObject;
 import me.kuye.spider.downloader.HttpDownloader;
 import me.kuye.spider.entity.Answer;
 import me.kuye.spider.entity.Question;
+import me.kuye.spider.entity.UpVoteUser;
 import me.kuye.spider.manager.MongoManager;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.util.MongoUtil;
 import me.kuye.spider.vo.AnswerResult;
 import me.kuye.spider.vo.UpVoteResult;
-import me.kuye.spider.vo.UpVoteUser;
 
 /**
  * @author xianyijun
@@ -158,7 +158,7 @@ public class QuestionSpider {
 		answer.setContent(answerDoc.select("div[data-entry-url=" + answer.getRelativeUrl() + "]  .zm-editable-content")
 				.html().replaceAll("<br>", ""));
 
-		answer.setUpvote(Long.parseLong(answerDoc.select(".zm-votebar span.count").first().text()));
+		answer.setUpvote(answerDoc.select(".zm-votebar span.count").first().text());
 
 		/*
 		 * 不可以直接用a.author-link来获取，如果是知乎用户的话，不存在该标签 #zh-question-answer-wrap >
@@ -228,7 +228,7 @@ public class QuestionSpider {
 
 		String description = doc.select("#zh-question-detail div").first().text();
 		question.setDescription(description);
-		
+
 		int answerNum = 0;
 		try {
 			answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));

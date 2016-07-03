@@ -6,7 +6,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
-import me.kuye.spider.vo.UpVoteUser;
+import me.kuye.spider.entity.UpVoteUser;
 
 public class UpvoteUserCodec implements Codec<UpVoteUser> {
 

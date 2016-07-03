@@ -2,18 +2,16 @@ package me.kuye.spider.entity;
 
 import java.util.List;
 
-import me.kuye.spider.vo.UpVoteUser;
-
 public class Answer implements Entity {
 
 	private static final long serialVersionUID = -3316280175987809356L;
 	private String absUrl;
 	private String relativeUrl;
 	private String author;
-	private long upvote;
+	private String upvote;
 	private String content;
 	private String dataAid;
-
+	private String startUpvoteUserUrl;
 	/*
 	 * https://www.zhihu.com/answer/38441951/voters_profile?&offset=10
 	 * 根据answer的data-aid获取点赞用户列表，然后根据返回的json数据的next是否为空判断 此处存储点赞用户的url地址
@@ -50,11 +48,11 @@ public class Answer implements Entity {
 		this.author = author;
 	}
 
-	public long getUpvote() {
+	public String getUpvote() {
 		return upvote;
 	}
 
-	public void setUpvote(long upvote) {
+	public void setUpvote(String upvote) {
 		this.upvote = upvote;
 	}
 
@@ -82,6 +80,14 @@ public class Answer implements Entity {
 		this.dataAid = dataAid;
 	}
 
+	public String getStartUpvoteUserUrl() {
+		return startUpvoteUserUrl;
+	}
+
+	public void setStartUpvoteUserUrl(String startUpvoteUserUrl) {
+		this.startUpvoteUserUrl = startUpvoteUserUrl;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -91,7 +97,8 @@ public class Answer implements Entity {
 		result = prime * result + ((content == null) ? 0 : content.hashCode());
 		result = prime * result + ((dataAid == null) ? 0 : dataAid.hashCode());
 		result = prime * result + ((relativeUrl == null) ? 0 : relativeUrl.hashCode());
-		result = prime * result + (int) (upvote ^ (upvote >>> 32));
+		result = prime * result + ((startUpvoteUserUrl == null) ? 0 : startUpvoteUserUrl.hashCode());
+		result = prime * result + ((upvote == null) ? 0 : upvote.hashCode());
 		result = prime * result + ((upvoteUserList == null) ? 0 : upvoteUserList.hashCode());
 		return result;
 	}
@@ -130,7 +137,15 @@ public class Answer implements Entity {
 				return false;
 		} else if (!relativeUrl.equals(other.relativeUrl))
 			return false;
-		if (upvote != other.upvote)
+		if (startUpvoteUserUrl == null) {
+			if (other.startUpvoteUserUrl != null)
+				return false;
+		} else if (!startUpvoteUserUrl.equals(other.startUpvoteUserUrl))
+			return false;
+		if (upvote == null) {
+			if (other.upvote != null)
+				return false;
+		} else if (!upvote.equals(other.upvote))
 			return false;
 		if (upvoteUserList == null) {
 			if (other.upvoteUserList != null)
@@ -143,7 +158,8 @@ public class Answer implements Entity {
 	@Override
 	public String toString() {
 		return "Answer [absUrl=" + absUrl + ", relativeUrl=" + relativeUrl + ", author=" + author + ", upvote=" + upvote
-				+ ", content=" + content + ", dataAid=" + dataAid + ", upvoteUserList=" + upvoteUserList + "]";
+				+ ", content=" + content + ", dataAid=" + dataAid + ", startUpvoteUserUrl=" + startUpvoteUserUrl
+				+ ", upvoteUserList=" + upvoteUserList + "]";
 	}
 
 	@Override

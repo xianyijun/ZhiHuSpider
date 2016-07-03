@@ -12,7 +12,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 
 import me.kuye.spider.entity.Answer;
-import me.kuye.spider.vo.UpVoteUser;
+import me.kuye.spider.entity.UpVoteUser;
 
 public class AnswerCodec implements Codec<Answer> {
 	private final CodecRegistry codecRegistry;
@@ -35,7 +35,7 @@ public class AnswerCodec implements Codec<Answer> {
 		writer.writeName("dataAid");
 		writer.writeString(answer.getDataAid());
 		writer.writeName("upvote");
-		writer.writeInt64(answer.getUpvote());
+		writer.writeString(answer.getUpvote());
 		writer.writeStartArray("upvoteUserList");
 		for (UpVoteUser upVoteUser : answer.getUpvoteUserList()) {
 			Codec<UpVoteUser> codec = codecRegistry.get(UpVoteUser.class);
@@ -60,7 +60,7 @@ public class AnswerCodec implements Codec<Answer> {
 		reader.readName("dataAid");
 		answer.setDataAid(reader.readString());
 		reader.readName("upvote");
-		answer.setUpvote(reader.readInt64());
+		answer.setUpvote(reader.readString());
 		List<UpVoteUser> upvoteUserList = new ArrayList<>();
 		Codec<UpVoteUser> upVoteUserCodec = codecRegistry.get(UpVoteUser.class);
 		reader.readStartArray();

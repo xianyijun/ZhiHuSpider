@@ -1,5 +1,9 @@
 package me.kuye.spider;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.Chronology;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,7 +13,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.http.client.methods.HttpRequestBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +52,7 @@ public class ZhiHuSpider implements Runnable {
 	private int threadNum = 1;
 	private final AtomicLong pageCount = new AtomicLong(0);
 
-	private Date startTime;
+	private LocalDateTime startTime;
 
 	private ReentrantLock urlLock = new ReentrantLock();
 	private Condition newUrlCondition = urlLock.newCondition();
@@ -100,7 +103,9 @@ public class ZhiHuSpider implements Runnable {
 	}
 
 	private void close() {
+		LocalDateTime endTime = LocalDateTime.now();
 		threadPool.shutdown();
+		logger.info(" 爬虫从 " + startTime + " 开始抓取 , 到 " + endTime + " 结束 .");
 	}
 
 	private void waitNewUrl() {
@@ -180,7 +185,7 @@ public class ZhiHuSpider implements Runnable {
 		if (startRequest != null) {
 			scheduler.push(startRequest);
 		}
-		this.startTime = new Date();
+		this.startTime = LocalDateTime.now();
 	}
 
 	public HttpDownloader getDownloader() {
@@ -208,7 +213,7 @@ public class ZhiHuSpider implements Runnable {
 		return pageCount;
 	}
 
-	public Date getStartTime() {
+	public LocalDateTime getStartTime() {
 		return startTime;
 	}
 
