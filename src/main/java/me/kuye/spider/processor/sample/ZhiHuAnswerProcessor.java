@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -113,12 +110,12 @@ public class ZhiHuAnswerProcessor implements Processor {
 	*/
 	private static List<Request> processAnswerList(String urlToken, String xsrf, long answerNum) {
 		List<Request> answerRequestList = new ArrayList<>();
-	
+
 		for (int i = 0; i < answerNum / 10 + 1; i++) {
-			
-			HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);
-			
-			List<NameValuePair> valuePairs = new LinkedList<NameValuePair>();
+
+			//			HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);
+
+			List<NameValuePair> valuePairs = new ArrayList<NameValuePair>();
 			valuePairs.add(new BasicNameValuePair("method", "next"));
 			valuePairs.add(new BasicNameValuePair("xsrf", xsrf));
 			JSONObject obj = new JSONObject();
@@ -127,15 +124,15 @@ public class ZhiHuAnswerProcessor implements Processor {
 			obj.put("pagesize", 10);
 			obj.put("offset", 10 * i);
 			valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
-			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);			
-			
-			answerRequest.setEntity(entity);
-			
-			answerRequest.setHeader("Referer", "https://www.zhihu.com");
+			//			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);			
+			//			
+			//			answerRequest.setEntity(entity);
+			//			
+			//			answerRequest.setHeader("Referer", "https://www.zhihu.com");
 
-			answerRequestList
-					.add(new Request(answerRequest.getMethod(), answerRequest.getURI().toString(), answerRequest)
-							.addExtra(HttpConstant.NO_COOKIE, HttpConstant.NO_COOKIE));
+			answerRequestList.add(new Request(HttpConstant.POST, Constant.ZHIHU_ANSWER_URL)
+					.addExtra(HttpConstant.NAMEVALUEPAIR, valuePairs)
+					.addExtra(HttpConstant.NO_COOKIE, HttpConstant.NO_COOKIE));
 		}
 		return answerRequestList;
 	}
@@ -179,42 +176,40 @@ public class ZhiHuAnswerProcessor implements Processor {
 	* @return List<UpVoteUser>    返回类型
 	* @throws
 	*/
-	//	private static List<UpVoteUser> processUpVoteUserList(Page page) {
-	//		UpVoteResult upVoteResult = null;
-	//		List<UpVoteUser> userList = new LinkedList<>();
-	//		upVoteResult = JSON.parseObject(page.getRawtext(), UpVoteResult.class);
-	//		String[] payload = upVoteResult.getPayload();
-	//		for (int i = 0; i < payload.length; i++) {
-	//			Document doc = Jsoup.parse(payload[i]);
-	//			UpVoteUser upVoteUser = new UpVoteUser();
-	//			Element avatar = doc.select("img.zm-item-img-avatar").first();
-	//			upVoteUser.setAvatar(avatar.attr("src"));
-	//			//点赞用户不为匿名用户
-	//			if (!"匿名用户".equals(avatar.attr("title"))) {
-	//				upVoteUser.setName(doc.select(".zg-link").attr("title"));
-	//				upVoteUser.setBio(doc.select(".bio").text());
-	//				upVoteUser.setAgree(doc.select(".status").first().child(0).text());
-	//				upVoteUser.setThanks(doc.select(".status").first().child(1).text());
-	//				upVoteUser.setAnswers(doc.select(".status").first().child(3).text());
-	//				upVoteUser.setAsks(doc.select(".status").first().child(2).text());
-	//			} else {
-	//				upVoteUser.setName(avatar.attr("title"));
-	//			}
-	//			userList.add(upVoteUser);
-	//		}
-	//		String nextUrl = upVoteResult.getPaging().getNext();
-	//		if (!nextUrl.equals("") && nextUrl.trim().length() > 0) {
-	//			HttpGet getMethod = new HttpGet(Constant.ZHIHU_URL + nextUrl);
-	//			page.getTargetRequest().add(new Request(getMethod.getMethod(), getMethod.getURI().toString(), getMethod));
-	//		}
-	//		return userList;
-	//	}
+	private static List<UpVoteUser> processUpVoteUserList(Page page) {
+		UpVoteResult upVoteResult = null;
+		List<UpVoteUser> userList = new LinkedList<>();
+		upVoteResult = JSON.parseObject(page.getRawtext(), UpVoteResult.class);
+		String[] payload = upVoteResult.getPayload();
+		for (int i = 0; i < payload.length; i++) {
+			Document doc = Jsoup.parse(payload[i]);
+			UpVoteUser upVoteUser = new UpVoteUser();
+			Element avatar = doc.select("img.zm-item-img-avatar").first();
+			upVoteUser.setAvatar(avatar.attr("src"));
+			//点赞用户不为匿名用户
+			if (!"匿名用户".equals(avatar.attr("title"))) {
+				upVoteUser.setName(doc.select(".zg-link").attr("title"));
+				upVoteUser.setBio(doc.select(".bio").text());
+				upVoteUser.setAgree(doc.select(".status").first().child(0).text());
+				upVoteUser.setThanks(doc.select(".status").first().child(1).text());
+				upVoteUser.setAnswers(doc.select(".status").first().child(3).text());
+				upVoteUser.setAsks(doc.select(".status").first().child(2).text());
+			} else {
+				upVoteUser.setName(avatar.attr("title"));
+			}
+			userList.add(upVoteUser);
+		}
+		String nextUrl = upVoteResult.getPaging().getNext();
+		if (!nextUrl.equals("") && nextUrl.trim().length() > 0) {
+			page.getTargetRequest().add(new Request(HttpConstant.GET, nextUrl));
+		}
+		return userList;
+	}
 
 	public static void main(String[] args) {
-		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/20790679");
-
+		//		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/20790679");
+		String url = "https://www.zhihu.com/question/20790679";
 		ZhiHuSpider.getInstance(new ZhiHuAnswerProcessor()).setThreadNum(3).setDomain("answer")
-				.addPipeline(new ConsolePipeline())
-				.setStartRequest(new Request(getRequest.getMethod(), getRequest.getURI().toString(), getRequest)).run();
+				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
 }

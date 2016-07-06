@@ -19,6 +19,7 @@ import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.UpVoteUser;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.Constant;
+import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.vo.UpVoteResult;
 
 public class ZhiAnswerUpVoteProcessor implements Processor {
@@ -38,6 +39,7 @@ public class ZhiAnswerUpVoteProcessor implements Processor {
 	}
 
 	private static List<UpVoteUser> processUpVoteUserList(Page page) {
+		logger.info("问题的url : " + page.getRequest().getUrl());
 		UpVoteResult upVoteResult = null;
 		List<UpVoteUser> userList = new LinkedList<>();
 		upVoteResult = JSON.parseObject(page.getRawtext(), UpVoteResult.class);
@@ -62,8 +64,8 @@ public class ZhiAnswerUpVoteProcessor implements Processor {
 		}
 		String nextUrl = upVoteResult.getPaging().getNext();
 		if (!nextUrl.equals("") && nextUrl.trim().length() > 0) {
-			HttpGet getMethod = new HttpGet(Constant.ZHIHU_URL + nextUrl);
-			page.getTargetRequest().add(new Request(getMethod.getMethod(), getMethod.getURI().toString(), getMethod));
+			String methodUrl = Constant.ZHIHU_URL + nextUrl;
+			page.getTargetRequest().add(new Request(HttpConstant.GET, methodUrl));
 		}
 		return userList;
 	}
@@ -90,15 +92,12 @@ public class ZhiAnswerUpVoteProcessor implements Processor {
 		answer.setDataAid(dataAid);
 
 		String upvoteUserUrl = Constant.ZHIHU_URL + "/answer/" + dataAid + "/voters_profile?&offset=0";
-		answer.setStartUpvoteUserUrl(upvoteUserUrl);
-		HttpGet upVoteUserRequest = new HttpGet(upvoteUserUrl);
-		page.getTargetRequest().add(
-				new Request(upVoteUserRequest.getMethod(), upVoteUserRequest.getURI().toString(), upVoteUserRequest));
+		page.getTargetRequest().add(new Request(HttpConstant.GET, upvoteUserUrl));
 	}
 
 	public static void main(String[] args) {
-		HttpGet answerRequest = new HttpGet("https://www.zhihu.com/question/35407612/answer/62619476");
-		ZhiHuSpider.getInstance(new ZhiAnswerUpVoteProcessor()).setDomain("upvote").setThreadNum(5).setStartRequest(
-				new Request(answerRequest.getMethod(), answerRequest.getURI().toString(), answerRequest)).run();
+		String startUrl = "https://www.zhihu.com/question/35407612/answer/62619476";
+		ZhiHuSpider.getInstance(new ZhiAnswerUpVoteProcessor()).setDomain("upvote").setThreadNum(5)
+				.setStartRequest(new Request(HttpConstant.GET, startUrl)).run();
 	}
 }

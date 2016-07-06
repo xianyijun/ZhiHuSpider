@@ -5,11 +5,10 @@ import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.Scheduler.remover.DuplicateRemover;
 import me.kuye.spider.Scheduler.remover.HashSetDulicateRemover;
-import me.kuye.spider.Scheduler.remover.RedisDuplicateRemover;
 import me.kuye.spider.entity.Request;
 
-public abstract class Duplicatecheduler implements Scheduler {
-	private static Logger logger = LoggerFactory.getLogger(Duplicatecheduler.class);
+public abstract class DuplicateScheduler implements Scheduler {
+	private static Logger logger = LoggerFactory.getLogger(DuplicateScheduler.class);
 
 	private DuplicateRemover remover = new HashSetDulicateRemover();
 
@@ -31,14 +30,14 @@ public abstract class Duplicatecheduler implements Scheduler {
 	}
 
 	public static void setLogger(Logger logger) {
-		Duplicatecheduler.logger = logger;
+		DuplicateScheduler.logger = logger;
 	}
 
 	public DuplicateRemover getRemover() {
 		return remover;
 	}
 
-	public Duplicatecheduler setRemover(DuplicateRemover remover) {
+	public DuplicateScheduler setRemover(DuplicateRemover remover) {
 		this.remover = remover;
 		return this;
 	}

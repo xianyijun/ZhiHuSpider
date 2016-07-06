@@ -2,21 +2,29 @@ package me.kuye.spider.entity;
 
 public class User implements Entity {
 	private static final long serialVersionUID = -6389497861623596669L;
-
-	private String location;
-	private String business;
-	private String gender;
-	private String employment;
-	private String position;
-	private String education;
-	private String educationExtra;
+	private long userId;
 	private String userName;
+	private String gender;
+	private String location;
+	private String education;
+	private String position;
+	private String business;
+	private String employment;
 	private String userUrl;
 	private int agree;
 	private int thanks;
 	private int followees;
 	private int followers;
+	private String educationExtra;
 	private String hashId;
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
 
 	public String getLocation() {
 		return location;
@@ -146,6 +154,7 @@ public class User implements Entity {
 		result = prime * result + ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((position == null) ? 0 : position.hashCode());
 		result = prime * result + thanks;
+		result = prime * result + (int) (userId ^ (userId >>> 32));
 		result = prime * result + ((userName == null) ? 0 : userName.hashCode());
 		result = prime * result + ((userUrl == null) ? 0 : userUrl.hashCode());
 		return result;
@@ -207,6 +216,8 @@ public class User implements Entity {
 		} else if (!position.equals(other.position))
 			return false;
 		if (thanks != other.thanks)
+			return false;
+		if (userId != other.userId)
 			return false;
 		if (userName == null) {
 			if (other.userName != null)

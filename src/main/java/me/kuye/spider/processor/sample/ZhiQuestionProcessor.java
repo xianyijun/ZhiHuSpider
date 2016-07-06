@@ -18,6 +18,7 @@ import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.pipeline.MongoPipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.Constant;
+import me.kuye.spider.util.HttpConstant;
 
 /**
  * @author xianyijun
@@ -27,10 +28,11 @@ public class ZhiQuestionProcessor implements Processor {
 	private static Logger logger = LoggerFactory.getLogger(ZhiQuestionProcessor.class);
 
 	public static void main(String[] args) {
-		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/40924763");
+		//		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/40924763");
+		String url = "https://www.zhihu.com/question/40924763";
 		ZhiHuSpider.getInstance(new ZhiQuestionProcessor()).setThreadNum(3).setDomain("question")
 				.addPipeline(new MongoPipeline()).addPipeline(new ConsolePipeline())
-				.setStartRequest(new Request(getRequest.getMethod(), getRequest.getURI().toString(), getRequest)).run();
+				.setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
 
 	@Override
@@ -39,9 +41,7 @@ public class ZhiQuestionProcessor implements Processor {
 		processQuestion(page.getDocument(), question);
 		page.getResult().add(question);
 		page.getDocument().select("#zh-question-related-questions ul li a").forEach((Element e) -> {
-			HttpGet getRequest = new HttpGet(Constant.ZHIHU_URL + e.attr("href"));
-			page.getTargetRequest()
-					.add(new Request(getRequest.getMethod(), getRequest.getURI().toString(), getRequest));
+			page.getTargetRequest().add(new Request(HttpConstant.GET, Constant.ZHIHU_URL + e.attr("href")));
 		});
 	}
 

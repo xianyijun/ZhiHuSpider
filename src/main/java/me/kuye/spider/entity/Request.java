@@ -8,23 +8,21 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 public class Request implements Serializable {
 	private static final long serialVersionUID = -2124102246753044544L;
-	private HttpRequestBase request;
 	private String method;
 	private String url;
-	private Map<String, String> extra = new HashMap<String, String>();
+	private Map<String, Object> extra = new HashMap<>();
 
-	public Request(String method, String url, HttpRequestBase request) {
+	public Request() {
+
+	}
+
+	public Request(String url) {
+
+	}
+
+	public Request(String method, String url) {
 		this.method = method;
 		this.url = url;
-		this.request = request;
-	}
-
-	public HttpRequestBase getRequest() {
-		return request;
-	}
-
-	public void setRequest(HttpRequestBase request) {
-		this.request = request;
 	}
 
 	public String getMethod() {
@@ -43,17 +41,24 @@ public class Request implements Serializable {
 		this.url = url;
 	}
 
-	public Map<String, String> getExtra() {
+	public Map<String, Object> getExtra() {
 		return extra;
 	}
 
-	public void setExtra(Map<String, String> extra) {
+	public void setExtra(Map<String, Object> extra) {
 		this.extra = extra;
 	}
 
-	public Request addExtra(String key, String value) {
+	public Request addExtra(String key, Object value) {
 		extra.put(key, value);
 		return this;
+	}
+
+	public Object getExtra(String key) {
+		if (key == null) {
+			return null;
+		}
+		return extra.get(key);
 	}
 
 	@Override
@@ -62,7 +67,6 @@ public class Request implements Serializable {
 		int result = 1;
 		result = prime * result + ((extra == null) ? 0 : extra.hashCode());
 		result = prime * result + ((method == null) ? 0 : method.hashCode());
-		result = prime * result + ((request == null) ? 0 : request.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
@@ -86,11 +90,6 @@ public class Request implements Serializable {
 				return false;
 		} else if (!method.equals(other.method))
 			return false;
-		if (request == null) {
-			if (other.request != null)
-				return false;
-		} else if (!request.equals(other.request))
-			return false;
 		if (url == null) {
 			if (other.url != null)
 				return false;
@@ -101,7 +100,7 @@ public class Request implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Request [request=" + request + ", method=" + method + ", url=" + url + ", extra=" + extra + "]";
+		return "Request [method=" + method + ", url=" + url + ", extra=" + extra + "]";
 	}
 
 }

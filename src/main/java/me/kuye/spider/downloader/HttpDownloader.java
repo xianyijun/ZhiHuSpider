@@ -2,12 +2,16 @@ package me.kuye.spider.downloader;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
@@ -46,7 +50,7 @@ public class HttpDownloader {
 	}
 
 	public Page download(Request request, String domain) {
-		HttpRequestBase executeRequest = request.getRequest();
+		HttpUriRequest executeRequest = buildExecuteRequest(request).setUri(request.getUrl()).build();
 		CloseableHttpResponse response = null;
 		if (request.getExtra().containsKey(HttpConstant.NO_COOKIE)) {
 			domain = HttpConstant.NO_COOKIE;
@@ -89,7 +93,6 @@ public class HttpDownloader {
 				if (response.getEntity() != null) {
 					try {
 						response.getEntity().writeTo(System.out);
-						executeRequest.releaseConnection();
 						EntityUtils.consumeQuietly(response.getEntity());
 						response.close();
 					} catch (UnsupportedOperationException e) {
@@ -101,6 +104,32 @@ public class HttpDownloader {
 			}
 		}
 		return null;
+	}
+
+	private RequestBuilder buildExecuteRequest(Request request) {
+		String method = request.getMethod();
+		if (method == null || method.equalsIgnoreCase(HttpConstant.GET)) {
+			return RequestBuilder.get();
+		} else if (method.equalsIgnoreCase(HttpConstant.POST)) {
+			RequestBuilder requestBuilder = RequestBuilder.post();
+			@SuppressWarnings("unchecked")
+			List<NameValuePair> nameValuePairList = (List<NameValuePair>) request.getExtra(HttpConstant.NAMEVALUEPAIR);
+			if (nameValuePairList != null && nameValuePairList.size() > 0) {
+				for (NameValuePair nameValuePair : nameValuePairList) {
+					requestBuilder.addParameter(nameValuePair);
+				}
+			}
+			return requestBuilder;
+		} else if (method.equalsIgnoreCase(HttpConstant.HEAD)) {
+			return RequestBuilder.head();
+		} else if (method.equalsIgnoreCase(HttpConstant.PUT)) {
+			return RequestBuilder.put();
+		} else if (method.equalsIgnoreCase(HttpConstant.DELETE)) {
+			return RequestBuilder.delete();
+		} else if (method.equalsIgnoreCase(HttpConstant.TRACE)) {
+			return RequestBuilder.trace();
+		}
+		throw new IllegalArgumentException(" the http method vaild");
 	}
 
 	private Page handlePage(String content, Request request) {

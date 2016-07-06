@@ -1,11 +1,7 @@
 package me.kuye.spider;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.Chronology;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -195,10 +191,6 @@ public class ZhiHuSpider implements Runnable {
 	public ZhiHuSpider setDownloader(HttpDownloader downloader) {
 		this.downloader = downloader;
 		return this;
-	}
-
-	public static Logger getLogger() {
-		return logger;
 	}
 
 	public List<Pipeline> getPipelineList() {

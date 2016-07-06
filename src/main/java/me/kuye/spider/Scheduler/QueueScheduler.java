@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.entity.Request;
 
-public class QueueScheduler extends Duplicatecheduler {
+public class QueueScheduler extends DuplicateScheduler {
 	private static Logger logger = LoggerFactory.getLogger(QueueScheduler.class);
 	private BlockingQueue<Request> queue = new LinkedBlockingQueue<>();
 
