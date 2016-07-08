@@ -25,13 +25,8 @@ public class UserDao {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return false;
+		} finally {
+			ConnectionManager.close(connection);
 		}
-	}
-
-	public static void main(String[] args) {
-		User user = new User();
-		user.setUserName("冼毅俊");
-		UserDao userDao = new UserDao();
-		userDao.insert(user);
 	}
 }
