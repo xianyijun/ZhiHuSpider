@@ -1,7 +1,9 @@
 package me.kuye.spider.util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -13,21 +15,25 @@ public class BeanUtil {
 
 	public static Map<String, Object> getFieldMap(Object obj, boolean ignoreStatic) {
 		Map<String, Object> fieldMap = new LinkedHashMap<>();
-		Field[] fields = obj.getClass().getDeclaredFields();
-		for (Field field : fields) {
-			if (ignoreStatic && Modifier.isStatic(field.getModifiers())) {
-				continue;
+		Class<?> clazz = obj.getClass();
+		try {
+			BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
+			PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+			for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+				String key = propertyDescriptor.getName();
+				if (!key.equals("class")) {
+					Method getter = propertyDescriptor.getReadMethod();
+					Object value = getter.invoke(obj);
+					fieldMap.put(key, value);
+				}
 			}
-			String fieldName = field.getName();
-			Object value = null;
-			try {
-				value = field.get(obj);
-				fieldMap.put(fieldName, value);
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				logger.error(e.getLocalizedMessage(), e);
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
 		return fieldMap;
+	}
+
+	public static Map<String, Object> getFieldMap(Object obj) {
+		return getFieldMap(obj, true);
 	}
 }
