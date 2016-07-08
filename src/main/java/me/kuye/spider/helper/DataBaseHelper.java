@@ -143,8 +143,7 @@ public class DataBaseHelper {
 	}
 
 	// 查询指定列名对应的记录映射
-	public static <T> Map<T, Map<String, Object>> queryKeyMap(String column, String sql,
-			Object... params) {
+	public static <T> Map<T, Map<String, Object>> queryKeyMap(String column, String sql, Object... params) {
 		Map<T, Map<String, Object>> result = null;
 		try {
 			result = runner.query(sql, new KeyedHandler<T>(column), params);
@@ -165,10 +164,11 @@ public class DataBaseHelper {
 			} else {
 				result = runner.update(sql, params);
 			}
-			printSQL(sql);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage(), e);
+		} finally {
+			printSQL(sql);
 		}
 		return result;
 	}

@@ -47,5 +47,8 @@ public class ConnectionManager {
 	public static DruidDataSource getDataSource() {
 		return dataSource;
 	}
-
+	public static void main(String[] args) {
+		Properties properties = ConfigUtil.getProperties("/jdbc.properties");
+		System.out.println(properties);
+	}
 }

@@ -1,6 +1,5 @@
 package me.kuye.spider.processor.sample;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -14,7 +13,7 @@ import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.User;
 import me.kuye.spider.helper.UserInfoProcessorHelper;
 import me.kuye.spider.pipeline.ConsolePipeline;
-import me.kuye.spider.pipeline.MongoPipeline;
+import me.kuye.spider.pipeline.UserPipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.HttpConstant;
 
@@ -54,7 +53,7 @@ public class ZhiHuUserProcessor implements Processor {
 		//		HttpGet getRequest = new HttpGet("https://www.zhihu.com/people/van-bruce");
 		String url = "https://www.zhihu.com/people/van-bruce/followees";
 		ZhiHuSpider.getInstance(new ZhiHuUserProcessor()).setThreadNum(3).setDomain("question")
-				.setScheduler(new RedisScheduler()).addPipeline(new MongoPipeline()).addPipeline(new ConsolePipeline())
+				.setScheduler(new RedisScheduler()).addPipeline(new UserPipeline()).addPipeline(new ConsolePipeline())
 				.setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
 

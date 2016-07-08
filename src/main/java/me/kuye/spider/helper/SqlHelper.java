@@ -28,8 +28,4 @@ public class SqlHelper {
 		}
 		return sql.toString();
 	}
-
-	public static void main(String[] args) {
-		//		System.out.println(User.class.getSimpleName());
-	}
 }

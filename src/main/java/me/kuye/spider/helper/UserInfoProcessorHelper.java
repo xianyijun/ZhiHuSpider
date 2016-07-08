@@ -15,8 +15,8 @@ public class UserInfoProcessorHelper {
 	public  static User parseUserDetail(Document document) {
 		User user = new User();
 		user.setLocation(getUserInfo(document, UserInfo.LOCATION));
-		user.setLocation(getUserInfo(document, UserInfo.BUSINESS));
-		user.setLocation(getUserInfo(document, UserInfo.GENDER));
+		user.setBusiness(getUserInfo(document, UserInfo.BUSINESS));
+		user.setGender(getUserInfo(document, UserInfo.GENDER));
 		user.setEmployment(getUserInfo(document, UserInfo.EMPLOYMENT));
 		user.setPosition((getUserInfo(document, UserInfo.POSITION)));
 		user.setEducation(getUserInfo(document, UserInfo.EDUCATION));

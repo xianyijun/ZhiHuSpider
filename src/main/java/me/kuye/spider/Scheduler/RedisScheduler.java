@@ -17,6 +17,10 @@ public class RedisScheduler extends DuplicateScheduler implements DuplicateRemov
 	private static final String QUEUE_KEY = "zhihu_queue";
 	private static final String ITEM_KEY = "zhihu_item";
 
+	public RedisScheduler() {
+		setRemover(this);
+	}
+
 	@Override
 	public Request poll() {
 		String url = redisManager.lpop(QUEUE_KEY);

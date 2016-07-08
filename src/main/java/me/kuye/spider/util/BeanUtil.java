@@ -21,7 +21,7 @@ public class BeanUtil {
 			PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 			for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
 				String key = propertyDescriptor.getName();
-				if (!key.equals("class")) {
+				if (!key.equals("class")&&!key.equals("key")) {
 					Method getter = propertyDescriptor.getReadMethod();
 					Object value = getter.invoke(obj);
 					fieldMap.put(key, value);
