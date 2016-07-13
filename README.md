@@ -37,8 +37,10 @@
 - - -
 
 - 模拟登录，序列化cookie
-
-在default.properties中配置email和password账号信息进行配置设置。
+在src/main/resources文件夹下创建default.properties文件
+在default.properties中配置username和password账号信息进行配置设置。
+如果是用邮箱登录的话,username就填充对应的邮箱;
+如果是用手机登录的话,username就填充对应的手机号码。
 然后执行
 
 >	mvn exec:java -Dexec.mainClass="me.kuye.spider.helper.LoginCookiesHelper"
