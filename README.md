@@ -35,8 +35,13 @@
 
 
 - - -
+- 配置数据库信息
+
+配置文件在src/main/resources/下，具体配置在jdbc.properties进行配置
+用户根据自身环境对username和password进行修改。
 
 - 模拟登录，序列化cookie
+
 在src/main/resources文件夹下创建default.properties文件
 在default.properties中配置username和password账号信息进行配置设置。
 如果是用邮箱登录的话,username就填充对应的邮箱;
