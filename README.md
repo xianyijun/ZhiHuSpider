@@ -25,7 +25,7 @@
 
 - Clone the project
 
->  git clone git@git.oschina.net:xianyijun/ZhiHuSpider.git
+>  git clone git@github.com:xianyijun/ZhiHuSpider.git
 
 - build the project
 
