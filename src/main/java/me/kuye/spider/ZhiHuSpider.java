@@ -22,10 +22,7 @@ import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.pipeline.Pipeline;
 import me.kuye.spider.processor.Processor;
 
-/**
- * @author xianyijun
- *
- */
+
 /**
  * @author xianyijun
  *
@@ -151,9 +148,9 @@ public class ZhiHuSpider implements Runnable {
 		scheduler.push(request);
 	}
 
-	private void sleep(int retryTime) {
+	private void sleep(int sleepTime) {
 		try {
-			Thread.sleep(retryTime);
+			Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

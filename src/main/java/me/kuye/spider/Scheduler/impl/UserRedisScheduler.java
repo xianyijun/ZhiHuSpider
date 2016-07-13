@@ -1,5 +1,6 @@
-package me.kuye.spider.Scheduler;
+package me.kuye.spider.Scheduler.impl;
 
+import me.kuye.spider.Scheduler.RedisScheduler;
 import me.kuye.spider.entity.Request;
 
 public class UserRedisScheduler extends RedisScheduler {
@@ -7,12 +8,12 @@ public class UserRedisScheduler extends RedisScheduler {
 	private static final String USER_INFO_QUEUE_KEY = "zhihu_info_url_queue";
 
 	@Override
-	public Request poll() {
+	public String getNextUrl() {
 		String url = redisManager.lpop(USER_INFO_QUEUE_KEY);
 		if (url == null) {
 			url = redisManager.lpop(USER_FOLLOWEE_QUEUE_KEY);
 		}
-		return doPoll(url);
+		return url;
 	}
 
 	@Override

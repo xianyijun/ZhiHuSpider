@@ -5,11 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.ZhiHuSpider;
+import me.kuye.spider.Scheduler.impl.QuestionRedisScheduler;
 import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Question;
 import me.kuye.spider.entity.Request;
 import me.kuye.spider.pipeline.ConsolePipeline;
-import me.kuye.spider.pipeline.MongoPipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.processor.helper.ZhiHuQuestionProcessorHelper;
 import me.kuye.spider.util.Constant;
@@ -35,9 +35,8 @@ public class ZhiHuQuestionProcessor implements Processor {
 	public static void main(String[] args) {
 		String url = "https://www.zhihu.com/question/40924763";
 		ZhiHuSpider.getInstance(new ZhiHuQuestionProcessor()).setThreadNum(3).setDomain("question")
-				.addPipeline(new MongoPipeline()).addPipeline(new ConsolePipeline())
+				.setScheduler(new QuestionRedisScheduler()).addPipeline(new ConsolePipeline())
 				.setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
-
 
 }

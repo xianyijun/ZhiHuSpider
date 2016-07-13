@@ -23,8 +23,19 @@ public class RedisScheduler extends DuplicateScheduler implements DuplicateRemov
 
 	@Override
 	public Request poll() {
-		String url = redisManager.lpop(QUEUE_KEY);
+		String url = getNextUrl();
 		return doPoll(url);
+	}
+
+	/**
+	* @Title: getNextUrl
+	* @Description: 返回下个请求对应的url
+	* @param     参数
+	* @return String    返回类型
+	* @throws
+	*/
+	protected String getNextUrl() {
+		return redisManager.lpop(QUEUE_KEY);
 	}
 
 	protected Request doPoll(String url) {

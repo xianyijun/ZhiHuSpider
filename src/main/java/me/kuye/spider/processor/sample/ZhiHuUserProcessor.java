@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.ZhiHuSpider;
-import me.kuye.spider.Scheduler.UserRedisScheduler;
+import me.kuye.spider.Scheduler.impl.UserRedisScheduler;
 import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.User;
