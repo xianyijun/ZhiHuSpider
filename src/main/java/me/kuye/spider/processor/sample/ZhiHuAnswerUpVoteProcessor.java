@@ -39,7 +39,6 @@ public class ZhiHuAnswerUpVoteProcessor implements Processor {
 		}
 	}
 
-	
 	public static void main(String[] args) {
 		String startUrl = "https://www.zhihu.com/question/35407612/answer/62619476";
 		ZhiHuSpider.getInstance(new ZhiHuAnswerUpVoteProcessor()).setDomain("upvote").setThreadNum(5)

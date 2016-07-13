@@ -12,7 +12,7 @@ import me.kuye.spider.util.UserInfo;
 public class UserInfoProcessorHelper {
 	private static Logger logger = LoggerFactory.getLogger(UserInfoProcessorHelper.class);
 
-	public  static User parseUserDetail(Document document) {
+	public static User parseUserDetail(Document document) throws Exception {
 		User user = new User();
 		user.setLocation(getUserInfo(document, UserInfo.LOCATION));
 		user.setBusiness(getUserInfo(document, UserInfo.BUSINESS));
@@ -25,7 +25,6 @@ public class UserInfoProcessorHelper {
 			user.setUserName(document.select(".title-section.ellipsis a").first().text());
 			user.setUserUrl(Constant.ZHIHU_URL + document.select(".title-section.ellipsis a").first().attr("href"));
 		} catch (NullPointerException e) {
-			logger.info(document.toString());
 			logger.info("NullPointerException", e);
 		}
 		user.setAgree(Integer.valueOf(document.select(".zm-profile-header-user-agree strong").first().text()));

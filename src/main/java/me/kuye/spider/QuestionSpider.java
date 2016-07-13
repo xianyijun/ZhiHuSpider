@@ -68,8 +68,6 @@ public class QuestionSpider {
 
 			List<Answer> answerList = processAnswerList(question.getUrlToken(), xsrf, question.getAnswerNum());
 
-			question.setAllAnswerList(answerList);
-
 			logger.info(" question url : " + question.getUrl());
 			logger.info(" title : " + question.getTitle());
 			logger.info(" description : " + question.getDescription());

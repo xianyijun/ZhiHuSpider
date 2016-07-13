@@ -30,12 +30,15 @@ public class ZhiHuUserProcessor implements Processor {
 		// 用户个人页面
 		if (document.select("title").size() > 0) {
 			User user = null;
-			user = UserInfoProcessorHelper.parseUserDetail(document);
+			try {
+				user = UserInfoProcessorHelper.parseUserDetail(document);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 			for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
 				String url = "https://www.zhihu.com/node/ProfileFolloweesListV2?params={%22offset%22:" + 20 * i
 						+ ",%22order_by%22:%22created%22,%22hash_id%22:%22" + user.getHashId() + "%22}";
 				url = url.replaceAll("[{]", "%7B").replaceAll("[}]", "%7D").replaceAll(" ", "%20");
-				//				HttpGet httpGet = new HttpGet(url);
 				page.getTargetRequest().add(new Request(HttpConstant.GET, url));
 			}
 			page.getResult().add(user);
@@ -49,11 +52,10 @@ public class ZhiHuUserProcessor implements Processor {
 	}
 
 	public static void main(String[] args) {
-		//		HttpGet getRequest = new HttpGet("https://www.zhihu.com/people/van-bruce");
-		String url = "https://www.zhihu.com/people/jasinyip/followees";
+		String url = "https://www.zhihu.com/people/seawaver/followees";
 		ZhiHuSpider.getInstance(new ZhiHuUserProcessor()).setThreadNum(3).setDomain("question")
-				.setScheduler(new UserRedisScheduler()).addPipeline(new UserPipeline()).addPipeline(new ConsolePipeline())
-				.setStartRequest(new Request(HttpConstant.GET, url)).run();
+				.setScheduler(new UserRedisScheduler()).addPipeline(new UserPipeline())
+				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
 
 }

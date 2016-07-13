@@ -52,7 +52,6 @@ public class ZhiHuAnswerProcessor implements Processor {
 	}
 
 	public static void main(String[] args) {
-		//		HttpGet getRequest = new HttpGet("https://www.zhihu.com/question/20790679");
 		String url = "https://www.zhihu.com/question/20790679";
 		ZhiHuSpider.getInstance(new ZhiHuAnswerProcessor()).setThreadNum(3).setDomain("answer")
 				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();

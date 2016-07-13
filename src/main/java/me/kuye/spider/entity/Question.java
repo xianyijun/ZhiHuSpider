@@ -5,6 +5,7 @@ import java.util.List;
 public class Question implements Entity {
 
 	private static final long serialVersionUID = -109150094039975443L;
+	private long questionId;
 	private String urlToken;// 用来获取回答
 	private String url;// 绝对路径
 	private String title;
@@ -13,7 +14,6 @@ public class Question implements Entity {
 	private long answerFollowersNum;
 	private long visitTimes;
 	private List<String> topics;
-	private List<Answer> allAnswerList;
 
 	public Question() {
 
@@ -21,6 +21,14 @@ public class Question implements Entity {
 
 	public Question(String url) {
 		this.url = url;
+	}
+
+	public long getQuestionId() {
+		return questionId;
+	}
+
+	public void setQuestionId(long questionId) {
+		this.questionId = questionId;
 	}
 
 	public String getUrl() {
@@ -79,14 +87,6 @@ public class Question implements Entity {
 		this.topics = topics;
 	}
 
-	public List<Answer> getAllAnswerList() {
-		return allAnswerList;
-	}
-
-	public void setAllAnswerList(List<Answer> allAnswerList) {
-		this.allAnswerList = allAnswerList;
-	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
@@ -95,10 +95,10 @@ public class Question implements Entity {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((allAnswerList == null) ? 0 : allAnswerList.hashCode());
 		result = prime * result + (int) (answerFollowersNum ^ (answerFollowersNum >>> 32));
 		result = prime * result + (int) (answerNum ^ (answerNum >>> 32));
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + (int) (questionId ^ (questionId >>> 32));
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		result = prime * result + ((topics == null) ? 0 : topics.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
@@ -116,11 +116,6 @@ public class Question implements Entity {
 		if (getClass() != obj.getClass())
 			return false;
 		Question other = (Question) obj;
-		if (allAnswerList == null) {
-			if (other.allAnswerList != null)
-				return false;
-		} else if (!allAnswerList.equals(other.allAnswerList))
-			return false;
 		if (answerFollowersNum != other.answerFollowersNum)
 			return false;
 		if (answerNum != other.answerNum)
@@ -129,6 +124,8 @@ public class Question implements Entity {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
+			return false;
+		if (questionId != other.questionId)
 			return false;
 		if (title == null) {
 			if (other.title != null)
