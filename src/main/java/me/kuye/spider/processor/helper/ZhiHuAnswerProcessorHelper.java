@@ -24,47 +24,6 @@ import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.vo.UpVoteResult;
 
 public class ZhiHuAnswerProcessorHelper {
-	/**
-	* @Title: processQuestion
-	* @Description: 解析问题详情
-	* @param     参数
-	* @return void    返回类型
-	* @throws
-	*/
-	public static void processQuestion(Page page, Question question) {
-		Document doc = page.getDocument();
-		String urlToken = doc.select("#zh-single-question-page").attr("data-urltoken");
-		question.setUrlToken(urlToken);
-
-		String title = doc.select("#zh-question-title  h2  span").first().text();
-		question.setTitle(title);
-
-		String description = doc.select("#zh-question-detail div").first().text();
-		question.setDescription(description);
-
-		int answerNum = 0;
-		try {
-			answerNum = Integer.parseInt(doc.select("#zh-question-answer-num").attr("data-num"));
-		} catch (NumberFormatException e) {
-			//当问题回答数目小于1的时候，#zh-question-answer-num元素不存在。
-			answerNum = doc.select(".zm-item-answer").size();
-		}
-		question.setAnswerNum(answerNum);
-
-		// 只有登录才存在
-		int visitTimes = Integer.parseInt(doc.select("div.zg-gray-normal strong").eq(1).text());
-		question.setVisitTimes(visitTimes);
-
-		int answerFollowersNum = Integer.parseInt(doc.select("div.zh-question-followers-sidebar strong").text());
-		question.setAnswerFollowersNum(answerFollowersNum);
-
-		Elements topicElements = doc.select(".zm-tag-editor-labels a");
-		List<String> topics = new LinkedList<>();
-		for (int i = 0; i < topicElements.size(); i++) {
-			topics.add(topicElements.get(i).text());
-		}
-		question.setTopics(topics);
-	}
 
 	/**
 	* @Title: processAnswerList
@@ -77,9 +36,6 @@ public class ZhiHuAnswerProcessorHelper {
 		List<Request> answerRequestList = new ArrayList<>();
 
 		for (int i = 0; i < answerNum / 10 + 1; i++) {
-
-			//			HttpPost answerRequest = new HttpPost(Constant.ZHIHU_ANSWER_URL);
-
 			List<NameValuePair> valuePairs = new ArrayList<NameValuePair>();
 			valuePairs.add(new BasicNameValuePair("method", "next"));
 			valuePairs.add(new BasicNameValuePair("xsrf", xsrf));
@@ -89,12 +45,6 @@ public class ZhiHuAnswerProcessorHelper {
 			obj.put("pagesize", 10);
 			obj.put("offset", 10 * i);
 			valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
-			//			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);			
-			//			
-			//			answerRequest.setEntity(entity);
-			//			
-			//			answerRequest.setHeader("Referer", "https://www.zhihu.com");
-
 			answerRequestList.add(new Request(HttpConstant.POST, Constant.ZHIHU_ANSWER_URL)
 					.addExtra(HttpConstant.NAMEVALUEPAIR, valuePairs)
 					.addExtra(HttpConstant.NO_COOKIE, HttpConstant.NO_COOKIE));

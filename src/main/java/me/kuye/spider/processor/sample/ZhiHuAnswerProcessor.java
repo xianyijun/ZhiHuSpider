@@ -17,6 +17,7 @@ import me.kuye.spider.entity.Request;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.processor.helper.ZhiHuAnswerProcessorHelper;
+import me.kuye.spider.processor.helper.ZhiHuQuestionProcessorHelper;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.vo.AnswerResult;
@@ -42,7 +43,7 @@ public class ZhiHuAnswerProcessor implements Processor {
 		} else {
 			//解析问题详情请求
 			Question question = new Question(requestUrl);
-			ZhiHuAnswerProcessorHelper.processQuestion(page, question);
+			ZhiHuQuestionProcessorHelper.processQuestion(page, question);
 			page.getResult().add(question);
 			String xsrf = doc.select("input[name=_xsrf]").attr("value");
 			List<Request> answerList = ZhiHuAnswerProcessorHelper.processAnswerList(question.getUrlToken(), xsrf,
