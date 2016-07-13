@@ -9,14 +9,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import me.kuye.spider.entity.Answer;
 import me.kuye.spider.entity.Page;
-import me.kuye.spider.entity.Question;
 import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.UpVoteUser;
 import me.kuye.spider.util.Constant;
@@ -24,6 +24,7 @@ import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.vo.UpVoteResult;
 
 public class ZhiHuAnswerProcessorHelper {
+	private static Logger logger = LoggerFactory.getLogger(ZhiHuQuestionProcessorHelper.class);
 
 	/**
 	* @Title: processAnswerList
@@ -47,7 +48,8 @@ public class ZhiHuAnswerProcessorHelper {
 			valuePairs.add(new BasicNameValuePair("params", obj.toJSONString()));
 			answerRequestList.add(new Request(HttpConstant.POST, Constant.ZHIHU_ANSWER_URL)
 					.addExtra(HttpConstant.NAMEVALUEPAIR, valuePairs)
-					.addExtra(HttpConstant.NO_COOKIE, HttpConstant.NO_COOKIE));
+					.addExtra(HttpConstant.NO_COOKIE, HttpConstant.NO_COOKIE)
+					.addExtra(Constant.QUESTION_URL_TOKEN, urlToken));
 		}
 		return answerRequestList;
 	}

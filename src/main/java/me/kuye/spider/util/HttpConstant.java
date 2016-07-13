@@ -5,7 +5,6 @@ public final class HttpConstant {
 	public static final int DEFAULT_RETRY_TIMES = 5;
 	public static final String NO_COOKIE = "noCookie";
 	public static final String NAMEVALUEPAIR = "nameValuePair";
-
 	//=====================Http Method==================
 
 	public static final String GET = "GET";

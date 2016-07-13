@@ -27,9 +27,11 @@ public class ZhiHuAnswerProcessor implements Processor {
 
 	@Override
 	public void process(Page page) {
-		String requestUrl = page.getRequest().getUrl();
+		Request request = page.getRequest();
+		String requestUrl = request.getUrl();
 		Document doc = page.getDocument();
 		if (requestUrl.equals(Constant.ZHIHU_ANSWER_URL)) {
+			String urlToken = (String) request.getExtra(Constant.QUESTION_URL_TOKEN);
 			AnswerResult answerResult = null;
 			answerResult = JSONObject.parseObject(page.getRawtext(), AnswerResult.class);
 			String[] msg = answerResult.getMsg();
@@ -38,6 +40,7 @@ public class ZhiHuAnswerProcessor implements Processor {
 				String relativeUrl = answerDoc.select("div.zm-item-answer link").attr("href");
 				Answer answer = new Answer(relativeUrl, Constant.ZHIHU_URL + relativeUrl);
 				ZhiHuAnswerProcessorHelper.processAnswerDetail(answerDoc, answer);
+				answer.setUrlToken(urlToken);
 				page.getResult().add(answer);
 			}
 		} else {

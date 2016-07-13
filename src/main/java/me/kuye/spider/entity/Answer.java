@@ -11,6 +11,7 @@ public class Answer implements Entity {
 	private String upvote;
 	private String content;
 	private String dataAid;
+	private String urlToken;//回答对应问题的urlToken
 	private String startUpvoteUserUrl;
 	/*
 	 * https://www.zhihu.com/answer/38441951/voters_profile?&offset=10
@@ -88,6 +89,14 @@ public class Answer implements Entity {
 		this.startUpvoteUserUrl = startUpvoteUserUrl;
 	}
 
+	public String getUrlToken() {
+		return urlToken;
+	}
+
+	public void setUrlToken(String urlToken) {
+		this.urlToken = urlToken;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -100,6 +109,7 @@ public class Answer implements Entity {
 		result = prime * result + ((startUpvoteUserUrl == null) ? 0 : startUpvoteUserUrl.hashCode());
 		result = prime * result + ((upvote == null) ? 0 : upvote.hashCode());
 		result = prime * result + ((upvoteUserList == null) ? 0 : upvoteUserList.hashCode());
+		result = prime * result + ((urlToken == null) ? 0 : urlToken.hashCode());
 		return result;
 	}
 
@@ -152,14 +162,19 @@ public class Answer implements Entity {
 				return false;
 		} else if (!upvoteUserList.equals(other.upvoteUserList))
 			return false;
+		if (urlToken == null) {
+			if (other.urlToken != null)
+				return false;
+		} else if (!urlToken.equals(other.urlToken))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "Answer [absUrl=" + absUrl + ", relativeUrl=" + relativeUrl + ", author=" + author + ", upvote=" + upvote
-				+ ", content=" + content + ", dataAid=" + dataAid + ", startUpvoteUserUrl=" + startUpvoteUserUrl
-				+ ", upvoteUserList=" + upvoteUserList + "]";
+				+ ", content=" + content + ", dataAid=" + dataAid + ", urlToken=" + urlToken + ", startUpvoteUserUrl="
+				+ startUpvoteUserUrl + ", upvoteUserList=" + upvoteUserList + "]";
 	}
 
 	@Override
