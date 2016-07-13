@@ -1,4 +1,4 @@
-package me.kuye.spider.helper;
+package me.kuye.spider.processor.helper;
 
 import java.util.LinkedList;
 import java.util.List;

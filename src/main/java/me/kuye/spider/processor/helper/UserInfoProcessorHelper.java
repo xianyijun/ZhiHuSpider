@@ -1,4 +1,4 @@
-package me.kuye.spider.helper;
+package me.kuye.spider.processor.helper;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

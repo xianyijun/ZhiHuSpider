@@ -11,10 +11,10 @@ import me.kuye.spider.Scheduler.UserRedisScheduler;
 import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.User;
-import me.kuye.spider.helper.UserInfoProcessorHelper;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.pipeline.UserPipeline;
 import me.kuye.spider.processor.Processor;
+import me.kuye.spider.processor.helper.UserInfoProcessorHelper;
 import me.kuye.spider.util.HttpConstant;
 
 /**
