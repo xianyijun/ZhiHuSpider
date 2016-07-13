@@ -1,9 +1,8 @@
-package me.kuye.spider.processor.sample;
+package me.kuye.spider.helper;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.http.client.methods.HttpGet;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,33 +11,18 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 
-import me.kuye.spider.ZhiHuSpider;
 import me.kuye.spider.entity.Answer;
 import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.UpVoteUser;
-import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.vo.UpVoteResult;
 
-public class ZhiAnswerUpVoteProcessor implements Processor {
-	private static Logger logger = LoggerFactory.getLogger(ZhiAnswerUpVoteProcessor.class);
+public class ZhiHuAnswerUpVoteProcessorHelper {
+	private static Logger logger = LoggerFactory.getLogger(ZhiHuAnswerUpVoteProcessorHelper.class);
 
-	@Override
-	public void process(Page page) {
-		Document doc = page.getDocument();
-		if (doc.select("title").size() > 0) {
-			String relativeUrl = doc.select("div.zm-item-answer link").attr("href");
-			Answer answer = new Answer(relativeUrl, Constant.ZHIHU_URL + relativeUrl);
-			processAnswerDetail(page, doc, answer);
-		} else {
-			List<UpVoteUser> upVoteUserList = processUpVoteUserList(page);
-			page.getResult().addAll(upVoteUserList);
-		}
-	}
-
-	private static List<UpVoteUser> processUpVoteUserList(Page page) {
+	public static List<UpVoteUser> processUpVoteUserList(Page page) {
 		logger.info("问题的url : " + page.getRequest().getUrl());
 		UpVoteResult upVoteResult = null;
 		List<UpVoteUser> userList = new LinkedList<>();
@@ -70,7 +54,7 @@ public class ZhiAnswerUpVoteProcessor implements Processor {
 		return userList;
 	}
 
-	private static void processAnswerDetail(Page page, Document answerDoc, Answer answer) {
+	public static void processAnswerDetail(Page page, Document answerDoc, Answer answer) {
 		answer.setContent(answerDoc.select("div[data-entry-url=" + answer.getRelativeUrl() + "]  .zm-editable-content")
 				.html().replaceAll("<br>", ""));
 		answer.setUpvote(answerDoc.select(".zm-votebar span.count").first().text());
@@ -95,9 +79,4 @@ public class ZhiAnswerUpVoteProcessor implements Processor {
 		page.getTargetRequest().add(new Request(HttpConstant.GET, upvoteUserUrl));
 	}
 
-	public static void main(String[] args) {
-		String startUrl = "https://www.zhihu.com/question/35407612/answer/62619476";
-		ZhiHuSpider.getInstance(new ZhiAnswerUpVoteProcessor()).setDomain("upvote").setThreadNum(5)
-				.setStartRequest(new Request(HttpConstant.GET, startUrl)).run();
-	}
 }

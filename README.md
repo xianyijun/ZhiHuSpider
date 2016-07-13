@@ -9,9 +9,9 @@
 一个知乎的Java爬虫，目前实现了以下功能:
 -	模拟登录
 -	抓取用户信息
--	问题详情
--	答案信息
--	答案点赞用户列表
+-	~~问题详情~~
+-	~~答案信息~~
+-	~~答案点赞用户列表~~
 
 ## Requirements
 
@@ -48,7 +48,7 @@
 
 - 用户信息抓取
 
->mvn exec:java -Dexec.mainClass="me.kuye.spider.UserInfoSpider" userInfoUrl
+>mvn exec:java
 
 ## TODO List
 

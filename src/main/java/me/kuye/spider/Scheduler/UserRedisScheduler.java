@@ -4,7 +4,7 @@ import me.kuye.spider.entity.Request;
 
 public class UserRedisScheduler extends RedisScheduler {
 	private static final String USER_FOLLOWEE_QUEUE_KEY = "zhihu_user_followee_url_queue";
-	private static final String USER_INFO_QUEUE_KEY = "zhi_info_url_queue";
+	private static final String USER_INFO_QUEUE_KEY = "zhihu_info_url_queue";
 
 	@Override
 	public Request poll() {
