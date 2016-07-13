@@ -17,7 +17,7 @@ public class Request implements Serializable {
 	}
 
 	public Request(String url) {
-
+		this.url = url;
 	}
 
 	public Request(String method, String url) {

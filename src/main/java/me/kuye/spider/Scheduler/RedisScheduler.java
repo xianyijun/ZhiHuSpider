@@ -12,7 +12,7 @@ import me.kuye.spider.util.MD5Util;
 
 public class RedisScheduler extends DuplicateScheduler implements DuplicateRemover {
 	private static Logger logger = LoggerFactory.getLogger(RedisScheduler.class);
-	private RedisManager redisManager = new RedisManager();
+	protected RedisManager redisManager = new RedisManager();
 	private static final String SET_KEY = "zhihu_set";
 	private static final String QUEUE_KEY = "zhihu_queue";
 	private static final String ITEM_KEY = "zhihu_item";
@@ -24,6 +24,10 @@ public class RedisScheduler extends DuplicateScheduler implements DuplicateRemov
 	@Override
 	public Request poll() {
 		String url = redisManager.lpop(QUEUE_KEY);
+		return doPoll(url);
+	}
+
+	protected Request doPoll(String url) {
 		if (url == null) {
 			return null;
 		}
@@ -31,6 +35,7 @@ public class RedisScheduler extends DuplicateScheduler implements DuplicateRemov
 		String value = redisManager.hget(getItemKey(), field);
 		if (value != null) {
 			Request request = JSON.parseObject(value, Request.class);
+			logger.info(request.getUrl() + "从请求队列中弹出");
 			return request;
 		}
 		return null;
@@ -38,10 +43,25 @@ public class RedisScheduler extends DuplicateScheduler implements DuplicateRemov
 
 	@Override
 	protected void doPush(Request request) {
-		redisManager.rpush(getQueueKey(), request.getUrl());
-		String field = MD5Util.MD5Encode(request.getUrl());
-		String value = JSON.toJSONString(request);
-		redisManager.hset(getItemKey(), field, value);
+		logger.info(request.getUrl() + "添加到请求队列中");
+		if (doQueuePush(request)) {
+			String field = MD5Util.MD5Encode(request.getUrl());
+			String value = JSON.toJSONString(request);
+			redisManager.hset(getItemKey(), field, value);
+
+		}
+	}
+
+	private boolean doQueuePush(Request request) {
+		String key = null;
+		try {
+			key = getQueueKey(request);
+			redisManager.rpush(key, request.getUrl());
+			return true;
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return false;
+		}
 	}
 
 	@Override
@@ -57,7 +77,14 @@ public class RedisScheduler extends DuplicateScheduler implements DuplicateRemov
 		return SET_KEY;
 	}
 
-	private String getQueueKey() {
+	/**
+	* @Title: getQueueKey
+	* @Description: 获取url在redis中对应的key值
+	* @param     参数
+	* @return String    返回类型
+	* @throws
+	*/
+	protected String getQueueKey(Request request) {
 		return QUEUE_KEY;
 	}
 

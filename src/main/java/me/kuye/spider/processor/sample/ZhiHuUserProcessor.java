@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.ZhiHuSpider;
-import me.kuye.spider.Scheduler.RedisScheduler;
+import me.kuye.spider.Scheduler.UserRedisScheduler;
 import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.User;
@@ -31,7 +31,6 @@ public class ZhiHuUserProcessor implements Processor {
 		if (document.select("title").size() > 0) {
 			User user = null;
 			user = UserInfoProcessorHelper.parseUserDetail(document);
-			logger.info(user.toString());
 			for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
 				String url = "https://www.zhihu.com/node/ProfileFolloweesListV2?params={%22offset%22:" + 20 * i
 						+ ",%22order_by%22:%22created%22,%22hash_id%22:%22" + user.getHashId() + "%22}";
@@ -51,9 +50,9 @@ public class ZhiHuUserProcessor implements Processor {
 
 	public static void main(String[] args) {
 		//		HttpGet getRequest = new HttpGet("https://www.zhihu.com/people/van-bruce");
-		String url = "https://www.zhihu.com/people/van-bruce/followees";
+		String url = "https://www.zhihu.com/people/jasinyip/followees";
 		ZhiHuSpider.getInstance(new ZhiHuUserProcessor()).setThreadNum(3).setDomain("question")
-				.setScheduler(new RedisScheduler()).addPipeline(new UserPipeline()).addPipeline(new ConsolePipeline())
+				.setScheduler(new UserRedisScheduler()).addPipeline(new UserPipeline()).addPipeline(new ConsolePipeline())
 				.setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
 
