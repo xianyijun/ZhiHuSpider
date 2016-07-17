@@ -1,16 +1,10 @@
 package me.kuye.spider.processor.sample;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.http.client.methods.HttpGet;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
 
 import me.kuye.spider.ZhiHuSpider;
 import me.kuye.spider.entity.Answer;
@@ -21,7 +15,6 @@ import me.kuye.spider.processor.Processor;
 import me.kuye.spider.processor.helper.ZhiHuAnswerUpVoteProcessorHelper;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
-import me.kuye.spider.vo.UpVoteResult;
 
 public class ZhiHuAnswerUpVoteProcessor implements Processor {
 	private static Logger logger = LoggerFactory.getLogger(ZhiHuAnswerUpVoteProcessor.class);
