@@ -1,8 +1,8 @@
 package me.kuye.spider.downloader;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +74,7 @@ public class HttpDownloader {
 				}
 			}
 			if (statusCode == HttpStatus.SC_OK) {
-				String content = EntityUtils.toString(response.getEntity());
+				String content = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
 				Page page = handlePage(content, request);
 				return page;
 			} else if (statusCode == 500 || statusCode == 502 || statusCode == 504) {
