@@ -17,7 +17,7 @@ import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 
 public class ZhiHuAnswerUpVoteProcessor implements Processor {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuAnswerUpVoteProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZhiHuAnswerUpVoteProcessor.class);
 
 	@Override
 	public void process(Page page) {

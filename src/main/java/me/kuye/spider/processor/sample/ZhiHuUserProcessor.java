@@ -22,7 +22,7 @@ import me.kuye.spider.util.HttpConstant;
  * 批量抓取用户信息
  */
 public class ZhiHuUserProcessor implements Processor {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuUserProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZhiHuUserProcessor.class);
 
 	@Override
 	public void process(Page page) {

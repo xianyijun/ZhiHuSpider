@@ -20,7 +20,7 @@ import me.kuye.spider.util.HttpConstant;
  *批量抓取问题，只抓问题信息不抓问题回答
  */
 public class ZhiHuQuestionProcessor implements Processor {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuQuestionProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZhiHuQuestionProcessor.class);
 
 	@Override
 	public void process(Page page) {

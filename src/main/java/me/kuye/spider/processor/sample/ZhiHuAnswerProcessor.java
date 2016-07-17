@@ -23,7 +23,7 @@ import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.vo.AnswerResult;
 
 public class ZhiHuAnswerProcessor implements Processor {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuAnswerProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(ZhiHuAnswerProcessor.class);
 
 	@Override
 	public void process(Page page) {

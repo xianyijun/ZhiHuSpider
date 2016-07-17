@@ -1,5 +1,10 @@
 package me.kuye.spider.downloader;
 
+import java.io.IOException;
+
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -18,6 +23,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BestMatchSpecFactory;
 import org.apache.http.impl.cookie.BrowserCompatSpecFactory;
 import org.apache.http.impl.cookie.RFC6265CookieSpecProvider;
+import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +55,17 @@ public class ZhiHuClientGenerator {
 		// HttpHost proxy = ProxyManager.getNextProxy();
 		HttpClientBuilder builder = HttpClients.custom().setConnectionManager(connectionManager);
 
-		// 暂时设置默认userAgent;
+		// 暂时设置默认userAgent;TODO
 		builder.setUserAgent(HttpConstant.DEFAULT_USER_AGENT);
+
+		builder.addInterceptorFirst(new HttpRequestInterceptor() {
+			@Override
+			public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+				if (!request.containsHeader("Accept-Encoding")) {
+					request.addHeader("Accept-Encoding", "gzip");
+				}
+			}
+		});
 
 		SocketConfig socketConfig = SocketConfig.custom().setSoKeepAlive(true).setTcpNoDelay(true).build();
 		// 设置请求超时，使用代理的话应该配置时间长
