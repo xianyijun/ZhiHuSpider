@@ -1,8 +1,8 @@
-package me.kuye.spider.vo.zhuanlan;
+package me.kuye.spider.vo.column;
 
 import java.util.Arrays;
 
-public class ZhuanLanDetail {
+public class ColumnDetail {
 	private long followersCount;
 	private Creator creator;
 	private Topic[] topics;
@@ -283,7 +283,7 @@ public class ZhuanLanDetail {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ZhuanLanDetail other = (ZhuanLanDetail) obj;
+		ColumnDetail other = (ColumnDetail) obj;
 		if (acceptSubmission != other.acceptSubmission)
 			return false;
 		if (activateAuthorRequested == null) {

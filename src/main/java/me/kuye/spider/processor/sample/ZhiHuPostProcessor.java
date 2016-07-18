@@ -14,16 +14,17 @@ import me.kuye.spider.entity.Request;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.processor.helper.ZhiHuPostProcessorHelper;
+import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
+import me.kuye.spider.vo.column.ColumnDetail;
 import me.kuye.spider.vo.post.PostDetail;
-import me.kuye.spider.vo.zhuanlan.ZhuanLanDetail;
 
 /**
  * @author xianyijun
  *	抓取具体专栏信息
  */
-public class ZhiHuZhuanLanDetailProcessor implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(ZhiHuZhuanLanDetailProcessor.class);
+public class ZhiHuPostProcessor implements Processor {
+	private static final Logger logger = LoggerFactory.getLogger(ZhiHuPostProcessor.class);
 
 	/*
 	 * https://zhuanlan.zhihu.com/api/columns/iamelection/posts?limit=20&offset=20 获取更多的文章
@@ -35,13 +36,14 @@ public class ZhiHuZhuanLanDetailProcessor implements Processor {
 	@Override
 	public void process(Page page) {
 		Request request = page.getRequest();
+		// TODO 使用正则匹配
 		if (request.getUrl().indexOf("/posts") == -1) {
-			ZhuanLanDetail zhuanLanDetail = JSON.parseObject(page.getRawtext(), ZhuanLanDetail.class);
-			String firstPostUrl = "https://zhuanlan.zhihu.com/api/columns/" + zhuanLanDetail.getSlug() + "/posts";
+			ColumnDetail columnDetail = JSON.parseObject(page.getRawtext(), ColumnDetail.class);
+			String firstPostUrl = "https://zhuanlan.zhihu.com/api/columns/" + columnDetail.getSlug() + "/posts";
 			page.getTargetRequest().add(new Request(HttpConstant.GET, firstPostUrl));
-			if (zhuanLanDetail.getPostsCount() > 20) {
-				for (int i = 0; i < zhuanLanDetail.getPostsCount() / 20; i++) {
-					String postUrl = "https://zhuanlan.zhihu.com/api/columns/" + zhuanLanDetail.getSlug()
+			if (columnDetail.getPostsCount() > 20) {
+				for (int i = 0; i < columnDetail.getPostsCount() / 20; i++) {
+					String postUrl = "https://zhuanlan.zhihu.com/api/columns/" + columnDetail.getSlug()
 							+ "/posts?limit=" + (i + 1) * 20 + "&offset=20";
 					page.getTargetRequest().add(new Request(HttpConstant.GET, postUrl));
 				}
@@ -54,11 +56,16 @@ public class ZhiHuZhuanLanDetailProcessor implements Processor {
 	}
 
 	public static void main(String[] args) {
-		String url = "https://zhuanlan.zhihu.com/iamelection";
+		//默认种子url
+		String url = "https://zhuanlan.zhihu.com/Chenrui18124";
+		//从命令行中传入种子url
+		if (args != null && args.length > 0) {
+			url = args[0];
+		}
 		//也可以通过正则来匹配对应slug
-		String columnsUrl = "https://zhuanlan.zhihu.com/api/columns/" + url.substring(url.lastIndexOf("/") + 1);
-		logger.info(columnsUrl);
-		ZhiHuSpider.getInstance(new ZhiHuZhuanLanDetailProcessor()).setThreadNum(3).setDomain("question")
-				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, columnsUrl)).run();
+		String slug = url.substring(url.lastIndexOf("/") + 1);
+		String columnUrl = Constant.ZHIHU_ZHUANLAN_COLUMN_URL.replace("{slug}", slug);
+		ZhiHuSpider.getInstance(new ZhiHuPostProcessor()).setThreadNum(3).setDomain("column")
+				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, columnUrl)).run();
 	}
 }

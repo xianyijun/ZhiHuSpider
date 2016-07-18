@@ -23,4 +23,4 @@
  * @author xianyijun
  *
  */
-package me.kuye.spider.vo.zhuanlan;
+package me.kuye.spider.vo.column;

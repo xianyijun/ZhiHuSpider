@@ -1,4 +1,4 @@
-package me.kuye.spider.vo.zhuanlan;
+package me.kuye.spider.vo.column;
 
 public class Avatar {
 	private String id;

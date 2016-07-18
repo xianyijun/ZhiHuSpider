@@ -1,6 +1,6 @@
 package me.kuye.spider.vo.post;
 
-import me.kuye.spider.vo.zhuanlan.Avatar;
+import me.kuye.spider.vo.column.Avatar;
 
 public class Author {
 	private Avatar avatar;
