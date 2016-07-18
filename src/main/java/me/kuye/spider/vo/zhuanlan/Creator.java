@@ -138,4 +138,10 @@ public class Creator {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Creator [profileUrl=" + profileUrl + ", bio=" + bio + ", hash=" + hash + ", name=" + name + ", isOrg="
+				+ isOrg + ", slug=" + slug + ", avatar=" + avatar + ", description=" + description + "]";
+	}
+
 }

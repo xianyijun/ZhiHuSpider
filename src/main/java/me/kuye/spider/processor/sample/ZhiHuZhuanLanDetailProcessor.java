@@ -11,6 +11,7 @@ import me.kuye.spider.entity.Request;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.HttpConstant;
+import me.kuye.spider.util.StringUtil;
 import me.kuye.spider.vo.zhuanlan.ZhuanLanDetail;
 
 /**
@@ -29,8 +30,20 @@ public class ZhiHuZhuanLanDetailProcessor implements Processor {
 	 * */
 	@Override
 	public void process(Page page) {
-		ZhuanLanDetail zhuanLanDetail = JSON.parseObject(page.getRawtext(), ZhuanLanDetail.class);
-		logger.info(zhuanLanDetail.toString());
+		Request request = page.getRequest();
+		if (request.getUrl().indexOf("/posts?")==-1) {
+			String result = StringUtil.decodeUnicode(page.getRawtext());
+			ZhuanLanDetail zhuanLanDetail = JSON.parseObject(result, ZhuanLanDetail.class);
+			logger.info(zhuanLanDetail.toString());
+			for (int i = 0; i < zhuanLanDetail.getPostsCount() / 20 + 1; i++) {
+				String postUrl = "https://zhuanlan.zhihu.com/api/columns/" + zhuanLanDetail.getSlug() + "/posts?limit="
+						+ i * 20 + "&offset=20";
+				page.getTargetRequest().add(new Request(HttpConstant.GET,postUrl));
+			}
+		}else{
+			String result = StringUtil.decodeUnicode(page.getRawtext());
+			logger.debug(result);
+		}
 	}
 
 	public static void main(String[] args) {
@@ -41,4 +54,5 @@ public class ZhiHuZhuanLanDetailProcessor implements Processor {
 		ZhiHuSpider.getInstance(new ZhiHuZhuanLanDetailProcessor()).setThreadNum(3).setDomain("question")
 				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, columnsUrl)).run();
 	}
+	
 }
