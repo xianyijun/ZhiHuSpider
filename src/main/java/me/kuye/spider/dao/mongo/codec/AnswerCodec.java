@@ -24,10 +24,8 @@ public class AnswerCodec implements Codec<Answer> {
 	@Override
 	public void encode(BsonWriter writer, Answer answer, EncoderContext encoderContext) {
 		writer.writeStartDocument();
-		writer.writeName("absUrl");
-		writer.writeString(answer.getAbsUrl());
-		writer.writeName("relativeUrl");
-		writer.writeString(answer.getRelativeUrl());
+		writer.writeName("url");
+		writer.writeString(answer.getUrl());
 		writer.writeName("author");
 		writer.writeString(answer.getAuthor());
 		writer.writeName("content");
@@ -48,11 +46,9 @@ public class AnswerCodec implements Codec<Answer> {
 	@Override
 	public Answer decode(BsonReader reader, DecoderContext decoderContext) {
 		reader.readStartDocument();
-		reader.readName("absUrl");
-		String absUrl = reader.readString();
-		reader.readName("relativeUrl");
-		String relativeUrl = reader.readString();
-		Answer answer = new Answer(relativeUrl, absUrl);
+		reader.readName("url");
+		String url = reader.readString();
+		Answer answer = new Answer(url);
 		reader.readName("author");
 		answer.setAuthor(reader.readString());
 		reader.readName("content");
