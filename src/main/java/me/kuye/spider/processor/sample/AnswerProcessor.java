@@ -16,6 +16,7 @@ import me.kuye.spider.core.SimpleSpider;
 import me.kuye.spider.dto.answer.AnswerResult;
 import me.kuye.spider.entity.Answer;
 import me.kuye.spider.entity.Question;
+import me.kuye.spider.pipeline.impl.AnswerPipeline;
 import me.kuye.spider.pipeline.impl.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.processor.helper.AnswerProcessorHelper;
@@ -66,6 +67,7 @@ public class AnswerProcessor implements Processor {
 			url = args[0];
 		}
 		SimpleSpider.getInstance(new AnswerProcessor()).setThreadNum(3).setDomain("answer")
-				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();
+				.setScheduler(new AnswerRedisScheduler()).addPipeline(new ConsolePipeline())
+				.addPipeline(new AnswerPipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
 }
