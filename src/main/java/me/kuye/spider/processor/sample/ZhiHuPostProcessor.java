@@ -7,17 +7,17 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 
-import me.kuye.spider.ZhiHuSpider;
-import me.kuye.spider.entity.Page;
+import me.kuye.spider.core.Page;
+import me.kuye.spider.core.Request;
+import me.kuye.spider.core.SimpleSpider;
+import me.kuye.spider.dto.column.ColumnDetail;
+import me.kuye.spider.dto.post.PostDetail;
 import me.kuye.spider.entity.Post;
-import me.kuye.spider.entity.Request;
-import me.kuye.spider.pipeline.ConsolePipeline;
+import me.kuye.spider.pipeline.impl.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
-import me.kuye.spider.processor.helper.ZhiHuPostProcessorHelper;
+import me.kuye.spider.processor.helper.PostProcessorHelper;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
-import me.kuye.spider.vo.column.ColumnDetail;
-import me.kuye.spider.vo.post.PostDetail;
 
 /**
  * @author xianyijun
@@ -50,7 +50,7 @@ public class ZhiHuPostProcessor implements Processor {
 			}
 		} else {
 			List<PostDetail> postDetailList = JSON.parseArray(page.getRawtext(), PostDetail.class);
-			List<Post> postList = ZhiHuPostProcessorHelper.convertPostDetailListToPostList(postDetailList);
+			List<Post> postList = PostProcessorHelper.convertPostDetailListToPostList(postDetailList);
 			page.getResult().addAll(postList);
 		}
 	}
@@ -65,7 +65,7 @@ public class ZhiHuPostProcessor implements Processor {
 		//也可以通过正则来匹配对应slug
 		String slug = url.substring(url.lastIndexOf("/") + 1);
 		String columnUrl = Constant.ZHIHU_ZHUANLAN_COLUMN_URL.replace("{slug}", slug);
-		ZhiHuSpider.getInstance(new ZhiHuPostProcessor()).setThreadNum(3).setDomain("post")
+		SimpleSpider.getInstance(new ZhiHuPostProcessor()).setThreadNum(3).setDomain("post")
 				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, columnUrl)).run();
 	}
 }

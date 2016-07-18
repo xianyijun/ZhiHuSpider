@@ -1,6 +1,6 @@
 package me.kuye.spider.Scheduler;
 
-import me.kuye.spider.entity.Request;
+import me.kuye.spider.core.Request;
 
 public interface Scheduler {
 	public void push(Request request);

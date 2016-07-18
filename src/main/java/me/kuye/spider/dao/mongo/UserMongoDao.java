@@ -8,7 +8,7 @@ import me.kuye.spider.util.MongoUtil;
 public class UserMongoDao extends MongoBaseDao<User> {
 	private static final String USER_COLLECTION_NAME = "user";
 
-	public boolean save(User user) {
+	public boolean insert(User user) {
 		return mongoManager.insertOne(USER_COLLECTION_NAME, MongoUtil.objectToDocument(User.class, user));
 	}
 

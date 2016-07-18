@@ -8,11 +8,11 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.entity.Page;
+import me.kuye.spider.core.Page;
 import me.kuye.spider.entity.Question;
 
-public class ZhiHuQuestionProcessorHelper {
-	public static Logger logger = LoggerFactory.getLogger(ZhiHuQuestionProcessorHelper.class);
+public class QuestionProcessorHelper {
+	public static Logger logger = LoggerFactory.getLogger(QuestionProcessorHelper.class);
 
 	/**
 	* @Title: processQuestion

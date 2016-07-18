@@ -5,8 +5,8 @@ import java.util.List;
 public class Answer implements Entity {
 
 	private static final long serialVersionUID = -3316280175987809356L;
-	private String absUrl;
-	private String relativeUrl;
+	private String answerId;
+	private String url;
 	private String author;
 	private String upvote;
 	private String content;
@@ -20,25 +20,8 @@ public class Answer implements Entity {
 	 */
 	private List<UpVoteUser> upvoteUserList;// 点赞用户列表
 
-	public Answer(String relativeUrl, String absUrl) {
-		this.relativeUrl = relativeUrl;
-		this.absUrl = absUrl;
-	}
-
-	public String getAbsUrl() {
-		return absUrl;
-	}
-
-	public void setAbsUrl(String absUrl) {
-		this.absUrl = absUrl;
-	}
-
-	public String getRelativeUrl() {
-		return relativeUrl;
-	}
-
-	public void setRelativeUrl(String relativeUrl) {
-		this.relativeUrl = relativeUrl;
+	public Answer(String url) {
+		this.url = url;
 	}
 
 	public String getAuthor() {
@@ -97,18 +80,38 @@ public class Answer implements Entity {
 		this.urlToken = urlToken;
 	}
 
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	@Override
+	public String getKey() {
+		return "answer";
+	}
+	
+	public String getAnswerId() {
+		return answerId;
+	}
+
+	public void setAnswerId(String answerId) {
+		this.answerId = answerId;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((absUrl == null) ? 0 : absUrl.hashCode());
 		result = prime * result + ((author == null) ? 0 : author.hashCode());
 		result = prime * result + ((content == null) ? 0 : content.hashCode());
 		result = prime * result + ((dataAid == null) ? 0 : dataAid.hashCode());
-		result = prime * result + ((relativeUrl == null) ? 0 : relativeUrl.hashCode());
 		result = prime * result + ((startUpvoteUserUrl == null) ? 0 : startUpvoteUserUrl.hashCode());
 		result = prime * result + ((upvote == null) ? 0 : upvote.hashCode());
 		result = prime * result + ((upvoteUserList == null) ? 0 : upvoteUserList.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		result = prime * result + ((urlToken == null) ? 0 : urlToken.hashCode());
 		return result;
 	}
@@ -122,11 +125,6 @@ public class Answer implements Entity {
 		if (getClass() != obj.getClass())
 			return false;
 		Answer other = (Answer) obj;
-		if (absUrl == null) {
-			if (other.absUrl != null)
-				return false;
-		} else if (!absUrl.equals(other.absUrl))
-			return false;
 		if (author == null) {
 			if (other.author != null)
 				return false;
@@ -141,11 +139,6 @@ public class Answer implements Entity {
 			if (other.dataAid != null)
 				return false;
 		} else if (!dataAid.equals(other.dataAid))
-			return false;
-		if (relativeUrl == null) {
-			if (other.relativeUrl != null)
-				return false;
-		} else if (!relativeUrl.equals(other.relativeUrl))
 			return false;
 		if (startUpvoteUserUrl == null) {
 			if (other.startUpvoteUserUrl != null)
@@ -162,6 +155,11 @@ public class Answer implements Entity {
 				return false;
 		} else if (!upvoteUserList.equals(other.upvoteUserList))
 			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
 		if (urlToken == null) {
 			if (other.urlToken != null)
 				return false;
@@ -172,14 +170,9 @@ public class Answer implements Entity {
 
 	@Override
 	public String toString() {
-		return "Answer [absUrl=" + absUrl + ", relativeUrl=" + relativeUrl + ", author=" + author + ", upvote=" + upvote
-				+ ", content=" + content + ", dataAid=" + dataAid + ", urlToken=" + urlToken + ", startUpvoteUserUrl="
-				+ startUpvoteUserUrl + ", upvoteUserList=" + upvoteUserList + "]";
-	}
-
-	@Override
-	public String getKey() {
-		return "answer";
+		return "Answer [url=" + url + ", author=" + author + ", upvote=" + upvote + ", content=" + content
+				+ ", dataAid=" + dataAid + ", urlToken=" + urlToken + ", startUpvoteUserUrl=" + startUpvoteUserUrl
+				+ ", upvoteUserList=" + upvoteUserList + "]";
 	}
 
 }

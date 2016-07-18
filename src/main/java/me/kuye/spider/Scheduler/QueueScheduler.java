@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.entity.Request;
+import me.kuye.spider.core.Request;
 
 public class QueueScheduler extends DuplicateScheduler {
 	private static Logger logger = LoggerFactory.getLogger(QueueScheduler.class);

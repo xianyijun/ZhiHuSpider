@@ -18,8 +18,8 @@ import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.entity.Page;
-import me.kuye.spider.entity.Request;
+import me.kuye.spider.core.Page;
+import me.kuye.spider.core.Request;
 import me.kuye.spider.util.HttpConstant;
 
 public class HttpDownloader {

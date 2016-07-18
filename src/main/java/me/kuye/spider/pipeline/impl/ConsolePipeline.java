@@ -1,8 +1,9 @@
-package me.kuye.spider.pipeline;
+package me.kuye.spider.pipeline.impl;
 
 import java.util.List;
 
 import me.kuye.spider.entity.Entity;
+import me.kuye.spider.pipeline.Pipeline;
 
 public class ConsolePipeline implements Pipeline {
 

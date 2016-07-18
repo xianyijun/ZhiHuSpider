@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONObject;
 
 import me.kuye.spider.downloader.HttpDownloader;
+import me.kuye.spider.dto.answer.AnswerResult;
 import me.kuye.spider.util.Constant;
-import me.kuye.spider.vo.answer.AnswerResult;
 
 /**
  * @author xianyijun

@@ -3,10 +3,10 @@ package me.kuye.spider.processor.helper;
 import java.util.LinkedList;
 import java.util.List;
 
+import me.kuye.spider.dto.post.PostDetail;
 import me.kuye.spider.entity.Post;
-import me.kuye.spider.vo.post.PostDetail;
 
-public class ZhiHuPostProcessorHelper {
+public class PostProcessorHelper {
 
 	public static List<Post> convertPostDetailListToPostList(List<PostDetail> postDetailList) {
 		List<Post> postList = new LinkedList<>();

@@ -11,16 +11,17 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 
+import me.kuye.spider.core.Page;
+import me.kuye.spider.core.Request;
+import me.kuye.spider.dto.answer.UpVoteResult;
 import me.kuye.spider.entity.Answer;
-import me.kuye.spider.entity.Page;
-import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.UpVoteUser;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
-import me.kuye.spider.vo.answer.UpVoteResult;
 
-public class ZhiHuAnswerUpVoteProcessorHelper {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuAnswerUpVoteProcessorHelper.class);
+public class AnswerUpVoteProcessorHelper {
+	private static Logger logger = LoggerFactory.getLogger(AnswerUpVoteProcessorHelper.class);
+
 	/**
 	* @Title: processUpVoteUserList
 	* @Description: 解析点赞用户列表信息，并添加next请求
@@ -59,30 +60,4 @@ public class ZhiHuAnswerUpVoteProcessorHelper {
 		}
 		return userList;
 	}
-
-	public static void processAnswerDetail(Page page, Document answerDoc, Answer answer) {
-		answer.setContent(answerDoc.select("div[data-entry-url=" + answer.getRelativeUrl() + "]  .zm-editable-content")
-				.html().replaceAll("<br>", ""));
-		answer.setUpvote(answerDoc.select(".zm-votebar span.count").first().text());
-
-		/*
-		 * 不可以直接用a.author-link来获取，如果是知乎用户的话，不存在该标签 
-		 * #zh-question-answer-wrap >div > div.answer-head > div.zm-item-answer-author-info >a.author-link 普通用户 2 
-		 * #zh-question-answer-wrap > div > div.answer-head> div.zm-item-answer-author-info > span 知乎用户 2
-		 * #zh-question-answer-wrap > div > div.answer-head >div.zm-item-answer-author-info > span 匿名用户 1
-		 * 我们可以先通过获取zm-item-answer-author-info来获取用户名，因为是否为知乎用户的话
-		 */
-		Element authorInfo = answerDoc.select(".zm-item-answer-author-info").first();
-
-		String author = authorInfo.select(".name").size() == 0 ? authorInfo.select("a.author-link").text()
-				: authorInfo.select(".name").text();
-		answer.setAuthor(author);
-
-		String dataAid = answerDoc.select(".zm-item-answer").attr("data-aid");
-		answer.setDataAid(dataAid);
-
-		String upvoteUserUrl = Constant.ZHIHU_URL + "/answer/" + dataAid + "/voters_profile?&offset=0";
-		page.getTargetRequest().add(new Request(HttpConstant.GET, upvoteUserUrl));
-	}
-
 }

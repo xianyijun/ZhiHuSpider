@@ -6,13 +6,13 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.ZhiHuSpider;
 import me.kuye.spider.Scheduler.impl.UserRedisScheduler;
-import me.kuye.spider.entity.Page;
-import me.kuye.spider.entity.Request;
+import me.kuye.spider.core.Page;
+import me.kuye.spider.core.Request;
+import me.kuye.spider.core.SimpleSpider;
 import me.kuye.spider.entity.User;
-import me.kuye.spider.pipeline.ConsolePipeline;
-import me.kuye.spider.pipeline.UserPipeline;
+import me.kuye.spider.pipeline.impl.ConsolePipeline;
+import me.kuye.spider.pipeline.impl.UserPipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.processor.helper.UserInfoProcessorHelper;
 import me.kuye.spider.util.HttpConstant;
@@ -53,7 +53,7 @@ public class ZhiHuUserProcessor implements Processor {
 
 	public static void main(String[] args) {
 		String url = "https://www.zhihu.com/people/seawaver/followees";
-		ZhiHuSpider.getInstance(new ZhiHuUserProcessor()).setThreadNum(3).setDomain("question")
+		SimpleSpider.getInstance(new ZhiHuUserProcessor()).setThreadNum(3).setDomain("question")
 				.setScheduler(new UserRedisScheduler()).addPipeline(new UserPipeline())
 				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}

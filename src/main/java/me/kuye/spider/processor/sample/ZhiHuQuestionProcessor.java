@@ -4,14 +4,14 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.ZhiHuSpider;
 import me.kuye.spider.Scheduler.impl.QuestionRedisScheduler;
-import me.kuye.spider.entity.Page;
+import me.kuye.spider.core.Page;
+import me.kuye.spider.core.Request;
+import me.kuye.spider.core.SimpleSpider;
 import me.kuye.spider.entity.Question;
-import me.kuye.spider.entity.Request;
-import me.kuye.spider.pipeline.ConsolePipeline;
+import me.kuye.spider.pipeline.impl.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
-import me.kuye.spider.processor.helper.ZhiHuQuestionProcessorHelper;
+import me.kuye.spider.processor.helper.QuestionProcessorHelper;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 
@@ -25,7 +25,7 @@ public class ZhiHuQuestionProcessor implements Processor {
 	@Override
 	public void process(Page page) {
 		Question question = new Question(page.getRequest().getUrl().toString());
-		ZhiHuQuestionProcessorHelper.processQuestion(page, question);
+		QuestionProcessorHelper.processQuestion(page, question);
 		page.getResult().add(question);
 		page.getDocument().select("#zh-question-related-questions ul li a").forEach((Element e) -> {
 			page.getTargetRequest().add(new Request(HttpConstant.GET, Constant.ZHIHU_URL + e.attr("href")));
@@ -34,7 +34,7 @@ public class ZhiHuQuestionProcessor implements Processor {
 
 	public static void main(String[] args) {
 		String url = "https://www.zhihu.com/question/40924763";
-		ZhiHuSpider.getInstance(new ZhiHuQuestionProcessor()).setThreadNum(3).setDomain("question")
+		SimpleSpider.getInstance(new ZhiHuQuestionProcessor()).setThreadNum(3).setDomain("question")
 				.setScheduler(new QuestionRedisScheduler()).addPipeline(new ConsolePipeline())
 				.setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}

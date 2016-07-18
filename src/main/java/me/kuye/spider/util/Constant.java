@@ -14,5 +14,6 @@ public final class Constant {
 	public static final String ZHIHU_DEFAULT_PROPERTIES = "/default.properties";
 	public static final String ZHIHU_ANSWER_URL = "https://www.zhihu.com/node/QuestionAnswerListV2";
 	public static final String QUESTION_URL_TOKEN = "urlToken";
-	public static final String ZHIHU_ZHUANLAN_COLUMN_URL ="https://zhuanlan.zhihu.com/api/columns/{slug}";
+	public static final String ZHIHU_ZHUANLAN_COLUMN_URL = "https://zhuanlan.zhihu.com/api/columns/{slug}";
+	public static final String ANSWER_UPVOTE_USER_URL = "https://www.zhihu.com/answer/{dataAid}/voters_profile?&offset=0";
 }

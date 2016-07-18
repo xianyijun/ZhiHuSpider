@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RedisUtil {
-	private static Logger logger = LoggerFactory.getLogger(RedisUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(RedisUtil.class);
 	
 	private RedisUtil() {
 	}

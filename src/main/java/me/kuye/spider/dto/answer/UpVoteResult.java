@@ -1,4 +1,4 @@
-package me.kuye.spider.vo.answer;
+package me.kuye.spider.dto.answer;
 
 public class UpVoteResult {
 	private Paging paging;

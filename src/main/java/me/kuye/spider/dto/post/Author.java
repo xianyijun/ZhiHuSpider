@@ -1,6 +1,6 @@
-package me.kuye.spider.vo.post;
+package me.kuye.spider.dto.post;
 
-import me.kuye.spider.vo.column.Avatar;
+import me.kuye.spider.dto.column.Avatar;
 
 public class Author {
 	private Avatar avatar;

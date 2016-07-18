@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BeanUtil {
-	private static Logger logger = LoggerFactory.getLogger(BeanUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
 
 	public static Map<String, Object> getFieldMap(Object obj, boolean ignoreStatic) {
 		Map<String, Object> fieldMap = new LinkedHashMap<>();

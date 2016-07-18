@@ -1,10 +1,12 @@
-package me.kuye.spider.entity;
+package me.kuye.spider.core;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
+
+import me.kuye.spider.entity.Entity;
 
 public class Page {
 	private Document document;

@@ -1,4 +1,4 @@
-package me.kuye.spider.vo.answer;
+package me.kuye.spider.dto.answer;
 
 import java.util.Arrays;
 

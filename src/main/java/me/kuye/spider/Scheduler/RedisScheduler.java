@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 
 import me.kuye.spider.Scheduler.remover.DuplicateRemover;
-import me.kuye.spider.entity.Request;
+import me.kuye.spider.core.Request;
 import me.kuye.spider.manager.RedisManager;
 import me.kuye.spider.util.MD5Util;
 

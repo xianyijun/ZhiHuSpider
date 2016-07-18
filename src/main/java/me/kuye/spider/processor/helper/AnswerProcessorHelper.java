@@ -15,16 +15,16 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import me.kuye.spider.core.Page;
+import me.kuye.spider.core.Request;
+import me.kuye.spider.dto.answer.UpVoteResult;
 import me.kuye.spider.entity.Answer;
-import me.kuye.spider.entity.Page;
-import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.UpVoteUser;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
-import me.kuye.spider.vo.answer.UpVoteResult;
 
-public class ZhiHuAnswerProcessorHelper {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuQuestionProcessorHelper.class);
+public class AnswerProcessorHelper {
+	private static Logger logger = LoggerFactory.getLogger(QuestionProcessorHelper.class);
 
 	/**
 	* @Title: processAnswerList
@@ -62,8 +62,8 @@ public class ZhiHuAnswerProcessorHelper {
 	* @throws
 	*/
 	public static void processAnswerDetail(Document answerDoc, Answer answer) {
-		answer.setContent(answerDoc.select("div[data-entry-url=" + answer.getRelativeUrl() + "]  .zm-editable-content")
-				.html().replaceAll("<br>", ""));
+		answer.setContent(answerDoc.select("div[data-entry-url=" + answer.getUrl() + "]  .zm-editable-content").html()
+				.replaceAll("<br>", ""));
 		answer.setUpvote(answerDoc.select(".zm-votebar span.count").first().text());
 
 		/*

@@ -1,7 +1,7 @@
 package me.kuye.spider.Scheduler.impl;
 
 import me.kuye.spider.Scheduler.RedisScheduler;
-import me.kuye.spider.entity.Request;
+import me.kuye.spider.core.Request;
 
 public class UserRedisScheduler extends RedisScheduler {
 	private static final String USER_FOLLOWEE_QUEUE_KEY = "zhihu_user_followee_url_queue";

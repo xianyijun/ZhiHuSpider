@@ -1,4 +1,4 @@
-package me.kuye.spider.entity;
+package me.kuye.spider.core;
 
 import java.io.Serializable;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package me.kuye.spider.vo.post;
+package me.kuye.spider.dto.post;
 
 public class Meta {
 	private String next;

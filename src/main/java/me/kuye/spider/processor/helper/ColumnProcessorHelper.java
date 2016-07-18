@@ -3,12 +3,12 @@ package me.kuye.spider.processor.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.kuye.spider.dto.column.ColumnDetail;
+import me.kuye.spider.dto.column.PostTopic;
 import me.kuye.spider.entity.Column;
-import me.kuye.spider.vo.column.ColumnDetail;
-import me.kuye.spider.vo.column.PostTopic;
 
-public class ZhiHuColumnProcessorHelper {
-	private static final Logger logger = LoggerFactory.getLogger(ZhiHuColumnProcessorHelper.class);
+public class ColumnProcessorHelper {
+	private static final Logger logger = LoggerFactory.getLogger(ColumnProcessorHelper.class);
 
 	public static Column convertColumnDetailToColumn(ColumnDetail columnDetail) {
 		Column column = new Column();

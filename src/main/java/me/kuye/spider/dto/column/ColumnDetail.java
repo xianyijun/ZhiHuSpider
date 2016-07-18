@@ -1,4 +1,4 @@
-package me.kuye.spider.vo.column;
+package me.kuye.spider.dto.column;
 
 import java.util.Arrays;
 

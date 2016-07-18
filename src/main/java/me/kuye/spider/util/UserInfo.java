@@ -1,6 +1,6 @@
 package me.kuye.spider.util;
 
-public class UserInfo {
+public interface UserInfo {
 
 	public static final String LOCATION = "location";
 	public static final String BUSINESS = "business";
@@ -11,7 +11,4 @@ public class UserInfo {
 	public static final String EDUCATION_EXTRA = "education-extra";
 	public static final String NAME = "name";
 	public static final String BIO ="bio";
-	private UserInfo(){
-		
-	}
 }

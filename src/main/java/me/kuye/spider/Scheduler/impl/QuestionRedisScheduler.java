@@ -1,7 +1,7 @@
 package me.kuye.spider.Scheduler.impl;
 
 import me.kuye.spider.Scheduler.RedisScheduler;
-import me.kuye.spider.entity.Request;
+import me.kuye.spider.core.Request;
 
 public class QuestionRedisScheduler extends RedisScheduler {
 	private static final String QUESTION_DETAIL_QUEUE_KEY = "question_detail_url_queue";

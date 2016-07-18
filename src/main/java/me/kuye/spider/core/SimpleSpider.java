@@ -1,4 +1,4 @@
-package me.kuye.spider;
+package me.kuye.spider.core;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,11 +15,9 @@ import org.slf4j.LoggerFactory;
 import me.kuye.spider.Scheduler.QueueScheduler;
 import me.kuye.spider.Scheduler.Scheduler;
 import me.kuye.spider.downloader.HttpDownloader;
-import me.kuye.spider.entity.Page;
-import me.kuye.spider.entity.Request;
 import me.kuye.spider.executor.ThreadPool;
-import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.pipeline.Pipeline;
+import me.kuye.spider.pipeline.impl.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
 
 
@@ -27,8 +25,8 @@ import me.kuye.spider.processor.Processor;
  * @author xianyijun
  *
  */
-public class ZhiHuSpider implements Runnable {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuSpider.class);
+public class SimpleSpider implements Runnable {
+	private static Logger logger = LoggerFactory.getLogger(SimpleSpider.class);
 
 	protected HttpDownloader downloader;
 
@@ -58,12 +56,12 @@ public class ZhiHuSpider implements Runnable {
 
 	private Processor processor;
 
-	private ZhiHuSpider(Processor processor) {
+	private SimpleSpider(Processor processor) {
 		this.processor = processor;
 	}
 
-	public static ZhiHuSpider getInstance(Processor processor) {
-		return new ZhiHuSpider(processor);
+	public static SimpleSpider getInstance(Processor processor) {
+		return new SimpleSpider(processor);
 	}
 
 	@Override
@@ -185,7 +183,7 @@ public class ZhiHuSpider implements Runnable {
 		return downloader;
 	}
 
-	public ZhiHuSpider setDownloader(HttpDownloader downloader) {
+	public SimpleSpider setDownloader(HttpDownloader downloader) {
 		this.downloader = downloader;
 		return this;
 	}
@@ -230,12 +228,12 @@ public class ZhiHuSpider implements Runnable {
 		return scheduler;
 	}
 
-	public ZhiHuSpider setScheduler(Scheduler scheduler) {
+	public SimpleSpider setScheduler(Scheduler scheduler) {
 		this.scheduler = scheduler;
 		return this;
 	}
 
-	public ZhiHuSpider addPipeline(Pipeline pipeline) {
+	public SimpleSpider addPipeline(Pipeline pipeline) {
 		this.pipelineList.add(pipeline);
 		return this;
 	}
@@ -244,7 +242,7 @@ public class ZhiHuSpider implements Runnable {
 		return startRequest;
 	}
 
-	public ZhiHuSpider setStartRequest(Request startRequest) {
+	public SimpleSpider setStartRequest(Request startRequest) {
 		this.startRequest = startRequest;
 		return this;
 	}
@@ -253,7 +251,7 @@ public class ZhiHuSpider implements Runnable {
 		return executorService;
 	}
 
-	public ZhiHuSpider setExecutorService(ExecutorService executorService) {
+	public SimpleSpider setExecutorService(ExecutorService executorService) {
 		this.executorService = executorService;
 		return this;
 	}
@@ -262,7 +260,7 @@ public class ZhiHuSpider implements Runnable {
 		return threadNum;
 	}
 
-	public ZhiHuSpider setThreadNum(int threadNum) {
+	public SimpleSpider setThreadNum(int threadNum) {
 		this.threadNum = threadNum;
 		return this;
 	}
@@ -271,7 +269,7 @@ public class ZhiHuSpider implements Runnable {
 		return domain;
 	}
 
-	public ZhiHuSpider setDomain(String domain) {
+	public SimpleSpider setDomain(String domain) {
 		this.domain = domain;
 		return this;
 	}

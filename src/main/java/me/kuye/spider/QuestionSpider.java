@@ -26,6 +26,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import me.kuye.spider.downloader.HttpDownloader;
+import me.kuye.spider.dto.answer.AnswerResult;
+import me.kuye.spider.dto.answer.UpVoteResult;
 import me.kuye.spider.entity.Answer;
 import me.kuye.spider.entity.Question;
 import me.kuye.spider.entity.UpVoteUser;
@@ -33,8 +35,6 @@ import me.kuye.spider.manager.MongoManager;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.util.MongoUtil;
-import me.kuye.spider.vo.answer.AnswerResult;
-import me.kuye.spider.vo.answer.UpVoteResult;
 
 /**
  * @author xianyijun

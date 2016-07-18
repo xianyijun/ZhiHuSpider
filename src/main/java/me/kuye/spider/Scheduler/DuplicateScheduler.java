@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import me.kuye.spider.Scheduler.remover.DuplicateRemover;
 import me.kuye.spider.Scheduler.remover.HashSetDulicateRemover;
-import me.kuye.spider.entity.Request;
+import me.kuye.spider.core.Request;
 
 public abstract class DuplicateScheduler implements Scheduler {
 	private static Logger logger = LoggerFactory.getLogger(DuplicateScheduler.class);
