@@ -27,15 +27,15 @@ import me.kuye.spider.util.HttpConstant;
  * @author xianyijun
  *	抓取该问题所有回答
  */
-public class ZhiHuAnswerProcessor implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(ZhiHuAnswerProcessor.class);
+public class AnswerProcessor implements Processor {
+	private static final Logger logger = LoggerFactory.getLogger(AnswerProcessor.class);
 
 	@Override
 	public void process(Page page) {
 		Request request = page.getRequest();
 		String requestUrl = request.getUrl();
 		Document doc = page.getDocument();
-		if (requestUrl.equals(Constant.ZHIHU_ANSWER_URL)) {
+		if (requestUrl.startsWith(Constant.ZHIHU_ANSWER_URL)) {
 			String urlToken = (String) request.getExtra(Constant.QUESTION_URL_TOKEN);
 			AnswerResult answerResult = null;
 			answerResult = JSONObject.parseObject(page.getRawtext(), AnswerResult.class);
@@ -65,8 +65,7 @@ public class ZhiHuAnswerProcessor implements Processor {
 		if (args != null && args.length > 0) {
 			url = args[0];
 		}
-		SimpleSpider.getInstance(new ZhiHuAnswerProcessor()).setThreadNum(3).setDomain("answer")
-				.setScheduler(new AnswerRedisScheduler()).addPipeline(new ConsolePipeline())
-				.setStartRequest(new Request(HttpConstant.GET, url)).run();
+		SimpleSpider.getInstance(new AnswerProcessor()).setThreadNum(3).setDomain("answer")
+				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
 }

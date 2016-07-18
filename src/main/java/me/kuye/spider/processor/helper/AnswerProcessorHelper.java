@@ -37,7 +37,8 @@ public class AnswerProcessorHelper {
 		List<Request> answerRequestList = new ArrayList<>();
 
 		for (int i = 0; i < answerNum / 10 + 1; i++) {
-			List<NameValuePair> valuePairs = new ArrayList<NameValuePair>();
+		
+		/*	List<NameValuePair> valuePairs = new ArrayList<NameValuePair>();
 			valuePairs.add(new BasicNameValuePair("method", "next"));
 			valuePairs.add(new BasicNameValuePair("xsrf", xsrf));
 			JSONObject obj = new JSONObject();
@@ -49,7 +50,14 @@ public class AnswerProcessorHelper {
 			answerRequestList.add(new Request(HttpConstant.POST, Constant.ZHIHU_ANSWER_URL)
 					.addExtra(HttpConstant.NAMEVALUEPAIR, valuePairs)
 					.addExtra(HttpConstant.NO_COOKIE, HttpConstant.NO_COOKIE)
-					.addExtra(Constant.QUESTION_URL_TOKEN, urlToken));
+					.addExtra(Constant.QUESTION_URL_TOKEN, urlToken));*/
+			
+			String url = Constant.ZHIHU_ANSWER_POST_URL.replace("{url_token}", urlToken).replace("{pagesize}", "10")
+					.replace("{_xsrf}", xsrf).replace("{offset}", 10 * i + "");
+			answerRequestList
+					.add(new Request(HttpConstant.POST, url).addExtra("HttpConstant.NO_COOKIE", HttpConstant.NO_COOKIE)
+							.addExtra(Constant.QUESTION_URL_TOKEN, urlToken));
+
 		}
 		return answerRequestList;
 	}

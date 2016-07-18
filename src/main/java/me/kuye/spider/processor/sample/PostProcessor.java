@@ -23,8 +23,8 @@ import me.kuye.spider.util.HttpConstant;
  * @author xianyijun
  *	抓取具体专栏信息
  */
-public class ZhiHuPostProcessor implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(ZhiHuPostProcessor.class);
+public class PostProcessor implements Processor {
+	private static final Logger logger = LoggerFactory.getLogger(PostProcessor.class);
 
 	/*
 	 * https://zhuanlan.zhihu.com/api/columns/iamelection/posts?limit=20&offset=20 获取更多的文章
@@ -65,7 +65,7 @@ public class ZhiHuPostProcessor implements Processor {
 		//也可以通过正则来匹配对应slug
 		String slug = url.substring(url.lastIndexOf("/") + 1);
 		String columnUrl = Constant.ZHIHU_ZHUANLAN_COLUMN_URL.replace("{slug}", slug);
-		SimpleSpider.getInstance(new ZhiHuPostProcessor()).setThreadNum(3).setDomain("post")
+		SimpleSpider.getInstance(new PostProcessor()).setThreadNum(3).setDomain("post")
 				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, columnUrl)).run();
 	}
 }

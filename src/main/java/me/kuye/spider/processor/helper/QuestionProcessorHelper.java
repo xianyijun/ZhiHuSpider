@@ -25,7 +25,7 @@ public class QuestionProcessorHelper {
 		Document doc = page.getDocument();
 		String urlToken = doc.select("#zh-single-question-page").attr("data-urltoken");
 		question.setUrlToken(urlToken);
-
+		logger.debug(doc.toString());
 		String title = doc.select("#zh-question-title  h2  span").first().text();
 		question.setTitle(title);
 

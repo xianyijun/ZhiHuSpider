@@ -16,8 +16,8 @@ import me.kuye.spider.processor.helper.ColumnProcessorHelper;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 
-public class ZhiHuColumnProcessor implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(ZhiHuColumnProcessor.class);
+public class ColumnProcessor implements Processor {
+	private static final Logger logger = LoggerFactory.getLogger(ColumnProcessor.class);
 
 	@Override
 	public void process(Page page) {
@@ -37,7 +37,7 @@ public class ZhiHuColumnProcessor implements Processor {
 		//也可以通过正则来匹配对应slug
 		String slug = url.substring(url.lastIndexOf("/") + 1);
 		String columnUrl = Constant.ZHIHU_ZHUANLAN_COLUMN_URL.replace("{slug}", slug);
-		SimpleSpider.getInstance(new ZhiHuColumnProcessor()).setThreadNum(3).setDomain("column")
+		SimpleSpider.getInstance(new ColumnProcessor()).setThreadNum(3).setDomain("column")
 				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, columnUrl)).run();
 	}
 }

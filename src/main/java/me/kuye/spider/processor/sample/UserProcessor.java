@@ -21,8 +21,8 @@ import me.kuye.spider.util.HttpConstant;
  * @author xianyijun
  * 批量抓取用户信息
  */
-public class ZhiHuUserProcessor implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(ZhiHuUserProcessor.class);
+public class UserProcessor implements Processor {
+	private static final Logger logger = LoggerFactory.getLogger(UserProcessor.class);
 
 	@Override
 	public void process(Page page) {
@@ -53,7 +53,7 @@ public class ZhiHuUserProcessor implements Processor {
 
 	public static void main(String[] args) {
 		String url = "https://www.zhihu.com/people/seawaver/followees";
-		SimpleSpider.getInstance(new ZhiHuUserProcessor()).setThreadNum(3).setDomain("question")
+		SimpleSpider.getInstance(new UserProcessor()).setThreadNum(3).setDomain("question")
 				.setScheduler(new UserRedisScheduler()).addPipeline(new UserPipeline())
 				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}

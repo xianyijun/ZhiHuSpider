@@ -17,8 +17,8 @@ import me.kuye.spider.processor.helper.AnswerUpVoteProcessorHelper;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 
-public class ZhiHuAnswerUpVoteProcessor implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(ZhiHuAnswerUpVoteProcessor.class);
+public class AnswerUpVoteProcessor implements Processor {
+	private static final Logger logger = LoggerFactory.getLogger(AnswerUpVoteProcessor.class);
 
 	@Override
 	public void process(Page page) {
@@ -37,7 +37,7 @@ public class ZhiHuAnswerUpVoteProcessor implements Processor {
 
 	public static void main(String[] args) {
 		String startUrl = "https://www.zhihu.com/question/35407612/answer/62619476";
-		SimpleSpider.getInstance(new ZhiHuAnswerUpVoteProcessor()).setDomain("upvote").setThreadNum(5)
+		SimpleSpider.getInstance(new AnswerUpVoteProcessor()).setDomain("upvote").setThreadNum(5)
 				.setStartRequest(new Request(HttpConstant.GET, startUrl)).run();
 	}
 }
