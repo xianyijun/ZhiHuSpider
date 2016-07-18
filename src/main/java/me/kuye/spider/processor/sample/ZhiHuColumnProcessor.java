@@ -11,6 +11,7 @@ import me.kuye.spider.entity.Page;
 import me.kuye.spider.entity.Request;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
+import me.kuye.spider.processor.helper.ZhiHuColumnProcessorHelper;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.vo.column.ColumnDetail;

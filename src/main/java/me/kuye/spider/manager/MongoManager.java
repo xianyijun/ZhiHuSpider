@@ -17,8 +17,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.UpdateResult;
 
-import me.kuye.spider.mongo.codec.UpvoteUserCodec;
-import me.kuye.spider.mongo.provider.AnswerProvider;;
+import me.kuye.spider.dao.mongo.codec.UpvoteUserCodec;
+import me.kuye.spider.dao.mongo.provider.AnswerProvider;;
 
 public class MongoManager {
 	private static Logger logger = LoggerFactory.getLogger(MongoManager.class);

@@ -1,4 +1,4 @@
-package me.kuye.spider.mongo.codec;
+package me.kuye.spider.dao.mongo.codec;
 
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
