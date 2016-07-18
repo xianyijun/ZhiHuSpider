@@ -5,7 +5,7 @@ import java.util.List;
 public class Answer implements Entity {
 
 	private static final long serialVersionUID = -3316280175987809356L;
-	private String answerId;
+	private long  answerId;
 	private String url;
 	private String author;
 	private String upvote;
@@ -93,11 +93,11 @@ public class Answer implements Entity {
 		return "answer";
 	}
 	
-	public String getAnswerId() {
+	public long getAnswerId() {
 		return answerId;
 	}
 
-	public void setAnswerId(String answerId) {
+	public void setAnswerId(long answerId) {
 		this.answerId = answerId;
 	}
 

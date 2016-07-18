@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
 
+import me.kuye.spider.Scheduler.impl.AnswerRedisScheduler;
 import me.kuye.spider.core.Page;
 import me.kuye.spider.core.Request;
 import me.kuye.spider.core.SimpleSpider;
@@ -65,6 +66,7 @@ public class ZhiHuAnswerProcessor implements Processor {
 			url = args[0];
 		}
 		SimpleSpider.getInstance(new ZhiHuAnswerProcessor()).setThreadNum(3).setDomain("answer")
-				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, url)).run();
+				.setScheduler(new AnswerRedisScheduler()).addPipeline(new ConsolePipeline())
+				.setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
 }

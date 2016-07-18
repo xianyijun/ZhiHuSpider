@@ -56,11 +56,21 @@ public class RedisScheduler extends DuplicateScheduler implements DuplicateRemov
 	protected void doPush(Request request) {
 		logger.info(request.getUrl() + "添加到请求队列中");
 		if (doQueuePush(request)) {
-			String field = MD5Util.MD5Encode(request.getUrl());
+			String field = getRequestKey(request);
 			String value = JSON.toJSONString(request);
 			redisManager.hset(getItemKey(), field, value);
-
 		}
+	}
+
+	/**
+	* @Title: getRequestKey
+	* @Description: 根据request生成对应的key,默认为request的url，
+	* @param     参数
+	* @return String    返回类型
+	* @throws
+	*/
+	protected String getRequestKey(Request request) {
+		return MD5Util.MD5Encode(request.getUrl());
 	}
 
 	private boolean doQueuePush(Request request) {

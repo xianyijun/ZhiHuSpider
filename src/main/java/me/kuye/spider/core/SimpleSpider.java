@@ -25,7 +25,7 @@ import me.kuye.spider.processor.Processor;
  * @author xianyijun
  *
  */
-public class SimpleSpider implements Runnable {
+public class SimpleSpider implements Task {
 	private static Logger logger = LoggerFactory.getLogger(SimpleSpider.class);
 
 	protected HttpDownloader downloader;
