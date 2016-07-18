@@ -17,11 +17,17 @@ import me.kuye.spider.entity.Request;
 import me.kuye.spider.entity.UpVoteUser;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
-import me.kuye.spider.vo.UpVoteResult;
+import me.kuye.spider.vo.answer.UpVoteResult;
 
 public class ZhiHuAnswerUpVoteProcessorHelper {
 	private static Logger logger = LoggerFactory.getLogger(ZhiHuAnswerUpVoteProcessorHelper.class);
-
+	/**
+	* @Title: processUpVoteUserList
+	* @Description: 解析点赞用户列表信息，并添加next请求
+	* @param     参数
+	* @return List<UpVoteUser>    返回类型
+	* @throws
+	*/
 	public static List<UpVoteUser> processUpVoteUserList(Page page) {
 		logger.info("问题的url : " + page.getRequest().getUrl());
 		UpVoteResult upVoteResult = null;

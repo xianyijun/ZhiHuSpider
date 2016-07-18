@@ -33,8 +33,8 @@ import me.kuye.spider.manager.MongoManager;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
 import me.kuye.spider.util.MongoUtil;
-import me.kuye.spider.vo.AnswerResult;
-import me.kuye.spider.vo.UpVoteResult;
+import me.kuye.spider.vo.answer.AnswerResult;
+import me.kuye.spider.vo.answer.UpVoteResult;
 
 /**
  * @author xianyijun

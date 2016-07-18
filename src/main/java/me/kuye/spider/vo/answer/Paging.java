@@ -1,4 +1,4 @@
-package me.kuye.spider.vo;
+package me.kuye.spider.vo.answer;
 
 public class Paging {
 	private int total;

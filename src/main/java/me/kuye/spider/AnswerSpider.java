@@ -23,7 +23,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import me.kuye.spider.downloader.HttpDownloader;
 import me.kuye.spider.util.Constant;
-import me.kuye.spider.vo.AnswerResult;
+import me.kuye.spider.vo.answer.AnswerResult;
 
 /**
  * @author xianyijun

@@ -11,7 +11,7 @@ import me.kuye.spider.entity.Request;
 import me.kuye.spider.pipeline.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
 import me.kuye.spider.util.HttpConstant;
-import me.kuye.spider.vo.ZhuanLanDetail;
+import me.kuye.spider.vo.zhuanlan.ZhuanLanDetail;
 
 /**
  * @author xianyijun
@@ -29,13 +29,12 @@ public class ZhiHuZhuanLanDetailProcessor implements Processor {
 	 * */
 	@Override
 	public void process(Page page) {
-		logger.info(page.getRawtext());
 		ZhuanLanDetail zhuanLanDetail = JSON.parseObject(page.getRawtext(), ZhuanLanDetail.class);
 		logger.info(zhuanLanDetail.toString());
 	}
 
 	public static void main(String[] args) {
-		String url = "https://zhuanlan.zhihu.com/stress-w0v0w-";
+		String url = "https://zhuanlan.zhihu.com/chuapp";
 		//也可以通过正则来匹配对应slug
 		String columnsUrl = "https://zhuanlan.zhihu.com/api/columns/" + url.substring(url.lastIndexOf("/") + 1);
 		logger.info(columnsUrl);

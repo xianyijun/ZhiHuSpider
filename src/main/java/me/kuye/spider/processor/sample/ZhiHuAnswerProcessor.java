@@ -20,7 +20,7 @@ import me.kuye.spider.processor.helper.ZhiHuAnswerProcessorHelper;
 import me.kuye.spider.processor.helper.ZhiHuQuestionProcessorHelper;
 import me.kuye.spider.util.Constant;
 import me.kuye.spider.util.HttpConstant;
-import me.kuye.spider.vo.AnswerResult;
+import me.kuye.spider.vo.answer.AnswerResult;
 
 public class ZhiHuAnswerProcessor implements Processor {
 	private static final Logger logger = LoggerFactory.getLogger(ZhiHuAnswerProcessor.class);

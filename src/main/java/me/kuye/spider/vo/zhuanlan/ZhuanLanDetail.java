@@ -1,4 +1,4 @@
-package me.kuye.spider.vo;
+package me.kuye.spider.vo.zhuanlan;
 
 import java.util.Arrays;
 
