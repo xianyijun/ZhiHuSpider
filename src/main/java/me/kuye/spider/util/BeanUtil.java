@@ -60,6 +60,7 @@ public class BeanUtil {
 			}
 			try {
 				String key = field.getName();
+				field.setAccessible(true);
 				Object value = field.get(obj);
 				fieldMap.put(key, value);
 			} catch (IllegalArgumentException | IllegalAccessException e) {

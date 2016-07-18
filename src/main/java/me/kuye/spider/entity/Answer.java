@@ -2,10 +2,12 @@ package me.kuye.spider.entity;
 
 import java.util.List;
 
+import me.kuye.spider.entity.annotation.Exclude;
+
 public class Answer implements Entity {
 
 	private static final long serialVersionUID = -3316280175987809356L;
-	private long  answerId;
+	private long answerId;
 	private String url;
 	private String author;
 	private String upvote;
@@ -18,6 +20,7 @@ public class Answer implements Entity {
 	 * 根据answer的data-aid获取点赞用户列表，然后根据返回的json数据的next是否为空判断 此处存储点赞用户的url地址
 	 * 
 	 */
+	@Exclude
 	private List<UpVoteUser> upvoteUserList;// 点赞用户列表
 
 	public Answer(String url) {
@@ -92,7 +95,7 @@ public class Answer implements Entity {
 	public String getKey() {
 		return "answer";
 	}
-	
+
 	public long getAnswerId() {
 		return answerId;
 	}
