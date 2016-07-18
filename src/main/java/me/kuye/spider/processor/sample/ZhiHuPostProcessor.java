@@ -65,7 +65,7 @@ public class ZhiHuPostProcessor implements Processor {
 		//也可以通过正则来匹配对应slug
 		String slug = url.substring(url.lastIndexOf("/") + 1);
 		String columnUrl = Constant.ZHIHU_ZHUANLAN_COLUMN_URL.replace("{slug}", slug);
-		ZhiHuSpider.getInstance(new ZhiHuPostProcessor()).setThreadNum(3).setDomain("column")
+		ZhiHuSpider.getInstance(new ZhiHuPostProcessor()).setThreadNum(3).setDomain("post")
 				.addPipeline(new ConsolePipeline()).setStartRequest(new Request(HttpConstant.GET, columnUrl)).run();
 	}
 }
