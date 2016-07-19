@@ -19,8 +19,8 @@ import me.kuye.spider.util.HttpConstant;
  * @author xianyijun
  *批量抓取问题，只抓问题信息不抓问题回答
  */
-public class QestionProcessor implements Processor {
-	private static final Logger logger = LoggerFactory.getLogger(QestionProcessor.class);
+public class QuestionProcessor implements Processor {
+	private static final Logger logger = LoggerFactory.getLogger(QuestionProcessor.class);
 
 	@Override
 	public void process(Page page) {
@@ -34,7 +34,7 @@ public class QestionProcessor implements Processor {
 
 	public static void main(String[] args) {
 		String url = "https://www.zhihu.com/question/40924763";
-		SimpleSpider.getInstance(new QestionProcessor()).setThreadNum(3).setDomain("question")
+		SimpleSpider.getInstance(new QuestionProcessor()).setThreadNum(3).setDomain("question")
 				.setScheduler(new QuestionRedisScheduler()).addPipeline(new ConsolePipeline())
 				.setStartRequest(new Request(HttpConstant.GET, url)).run();
 	}
