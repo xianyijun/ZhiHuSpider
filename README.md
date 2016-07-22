@@ -1,4 +1,4 @@
-#[ZhiHuSpider](http://git.oschina.net/xianyijun/ZhiHuSpider)
+#[ZhiHuSpider](https://github.com/xianyijun/ZhiHuSpider)
 
 
 - - -
