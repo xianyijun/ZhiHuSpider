@@ -34,6 +34,8 @@ public class UserProcessor implements Processor {
 				user = UserInfoProcessorHelper.parseUserDetail(document);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
+				page.getTargetRequest().add(page.getRequest());
+				return;
 			}
 			for (int i = 0; i < user.getFollowees() / 20 + 1; i++) {
 				String url = "https://www.zhihu.com/node/ProfileFolloweesListV2?params={%22offset%22:" + 20 * i

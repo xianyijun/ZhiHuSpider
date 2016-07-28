@@ -20,7 +20,6 @@ import me.kuye.spider.pipeline.Pipeline;
 import me.kuye.spider.pipeline.impl.ConsolePipeline;
 import me.kuye.spider.processor.Processor;
 
-
 /**
  * @author xianyijun
  *
@@ -33,7 +32,6 @@ public class SimpleSpider implements Task {
 	protected Scheduler scheduler = new QueueScheduler();
 
 	protected List<Pipeline> pipelineList = new ArrayList<>();
-	// TODO 将http request进行抽象
 	protected Request startRequest;
 
 	protected ThreadPool threadPool;
@@ -55,6 +53,8 @@ public class SimpleSpider implements Task {
 	private String domain;
 
 	private Processor processor;
+
+	private volatile boolean running = true;
 
 	private SimpleSpider(Processor processor) {
 		this.processor = processor;
@@ -107,7 +107,7 @@ public class SimpleSpider implements Task {
 			}
 			newUrlCondition.await(sleepTime, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			urlLock.unlock();
 		}
