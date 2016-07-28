@@ -57,7 +57,19 @@
 
 - 用户信息抓取
 
->	mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.UserProcessor.java"
+>	mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.UserProcessor"
+
+- 问题批量抓取
+
+>	mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.QuestionProcessor"
+
+- 专栏文章抓取
+
+>	mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.PostProcessor"
+
+- 专栏详情抓取
+
+> mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.ColumnProcessor"
 
 ## TODO List
 
