@@ -22,7 +22,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.kuye.spider.downloader.ZhiHuClientGenerator;
+import me.kuye.spider.downloader.HttpClientGenerator;
 import me.kuye.spider.util.ConfigUtil;
 import me.kuye.spider.util.Constant;
 
@@ -85,7 +85,7 @@ public class LoginCookiesHelper {
 	}
 
 	public static void main(String[] args) {
-		ZhiHuClientGenerator generator = new ZhiHuClientGenerator();
+		HttpClientGenerator generator = new HttpClientGenerator();
 		CloseableHttpClient client = generator.getClient(null);
 		HttpClientContext context = new HttpClientContext();
 		login(client, context);

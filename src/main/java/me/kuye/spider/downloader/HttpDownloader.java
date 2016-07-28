@@ -26,7 +26,7 @@ public class HttpDownloader {
 	private static Logger logger = LoggerFactory.getLogger(HttpDownloader.class);
 
 	private final Map<String, CloseableHttpClient> clientMap = new HashMap<>();
-	private ZhiHuClientGenerator generator = new ZhiHuClientGenerator();
+	private HttpClientGenerator generator = new HttpClientGenerator();
 
 	public CloseableHttpClient getHttpClient(String domain) {
 		if (domain == HttpConstant.NO_COOKIE) {

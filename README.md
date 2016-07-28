@@ -57,7 +57,7 @@
 
 - 用户信息抓取
 
->mvn exec:java
+>	mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.UserProcessor.java"
 
 ## TODO List
 

@@ -25,7 +25,8 @@ public class UserInfoProcessorHelper {
 			user.setUserName(document.select(".title-section.ellipsis a").first().text());
 			user.setUserUrl(Constant.ZHIHU_URL + document.select(".title-section.ellipsis a").first().attr("href"));
 		} catch (NullPointerException e) {
-			logger.info("NullPointerException", e);
+			logger.info(e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 		user.setAgree(Integer.valueOf(document.select(".zm-profile-header-user-agree strong").first().text()));
 		user.setThanks(Integer.valueOf(document.select(".zm-profile-header-user-thanks strong").first().text()));

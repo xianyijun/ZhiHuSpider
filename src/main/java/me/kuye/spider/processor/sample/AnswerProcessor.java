@@ -53,7 +53,6 @@ public class AnswerProcessor implements Processor {
 			//解析问题详情请求
 			Question question = new Question(requestUrl);
 			QuestionProcessorHelper.processQuestion(page, question);
-			//			page.getResult().add(question);
 			String xsrf = doc.select("input[name=_xsrf]").attr("value");
 			List<Request> answerList = AnswerProcessorHelper.processAnswerList(question.getUrlToken(), xsrf,
 					question.getAnswerNum());

@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
 import me.kuye.spider.helper.LoginCookiesHelper;
 import me.kuye.spider.util.HttpConstant;
 
-public class ZhiHuClientGenerator {
-	private static Logger logger = LoggerFactory.getLogger(ZhiHuClientGenerator.class);
+public class HttpClientGenerator {
+	private static Logger logger = LoggerFactory.getLogger(HttpClientGenerator.class);
 	private PoolingHttpClientConnectionManager connectionManager;
 
-	public ZhiHuClientGenerator() {
+	public HttpClientGenerator() {
 		Registry<ConnectionSocketFactory> req = RegistryBuilder.<ConnectionSocketFactory> create()
 				.register("http", PlainConnectionSocketFactory.INSTANCE)
 				.register("https", SSLConnectionSocketFactory.getSocketFactory()).build();
@@ -42,7 +42,7 @@ public class ZhiHuClientGenerator {
 		connectionManager.setDefaultMaxPerRoute(100);
 	}
 
-	public ZhiHuClientGenerator setPoolSize(int poolSize) {
+	public HttpClientGenerator setPoolSize(int poolSize) {
 		connectionManager.setMaxTotal(poolSize);
 		return this;
 	}
