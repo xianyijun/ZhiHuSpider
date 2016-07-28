@@ -31,7 +31,7 @@ import me.kuye.spider.helper.LoginCookiesHelper;
 import me.kuye.spider.util.HttpConstant;
 
 public class HttpClientGenerator {
-	private static Logger logger = LoggerFactory.getLogger(HttpClientGenerator.class);
+	private static  final Logger logger = LoggerFactory.getLogger(HttpClientGenerator.class);
 	private PoolingHttpClientConnectionManager connectionManager;
 
 	public HttpClientGenerator() {

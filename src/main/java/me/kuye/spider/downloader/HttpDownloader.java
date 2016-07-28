@@ -60,7 +60,7 @@ public class HttpDownloader {
 			try {
 				response = client.execute(executeRequest);
 			} catch (IOException e) {
-				logger.info("IOException", e);
+				logger.info(e.getMessage(), e);
 				return null;
 			}
 
@@ -82,11 +82,11 @@ public class HttpDownloader {
 				return null;
 			}
 		} catch (ClientProtocolException e) {
-			logger.info(" clientProtocolException ", e);
+			logger.error(e.getMessage(), e);
 		} catch (IOException e) {
-			logger.info(" IOException ", e);
+			logger.error(e.getMessage(), e);
 		} catch (InterruptedException e) {
-			logger.info(" InterruptedException ", e);
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (response != null && response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 				executeRequest.abort();
