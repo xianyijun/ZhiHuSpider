@@ -71,6 +71,15 @@
 
 > mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.ColumnProcessor"
 
+- 回答点赞用户抓取
+
+> mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.AnswerUpVoteProcessor"
+
+- 问题回答抓取
+
+> mvn exec:java -Dexec.mainClass="me.kuye.spider.processor.sample.AnswerProcessor"
+
+
 ## TODO List
 
 - - -
